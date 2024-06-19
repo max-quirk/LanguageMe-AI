@@ -1,0 +1,182 @@
+
+import React, { useState, useEffect } from 'react';
+import { View, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { Button, Text, Card as PaperCard, ActivityIndicator } from 'react-native-paper';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { firebase } from '../../../config/firebase';
+import tw from 'twrnc';
+import { FlashCard, RootStackParamList } from 'types';
+import { DEFAULT_INTERVALS, Ease, getNextCard, getNextIntervals, adjustCard } from '../../../utils/flashcards';
+import FlashcardEaseButtons from './FlashcardEaseButtons';
+
+type FlashcardsScreenNavigationProp = NavigationProp<RootStackParamList>;
+
+const FlashcardsScreen = () => {
+  const [flashcards, setFlashcards] = useState<FlashCard[]>([]);
+  const [currentFlashcard, setCurrentFlashcard] = useState<FlashCard | null>(null);
+  const [isFront, setIsFront] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [completed, setCompleted] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const navigation = useNavigation<FlashcardsScreenNavigationProp>();
+
+  const cardNextIntervals = currentFlashcard ? getNextIntervals(currentFlashcard) : DEFAULT_INTERVALS;
+
+  const fetchFlashcards = async () => {
+    const user = firebase.auth().currentUser;
+    if (user) {
+      const flashcardsSnapshot = await firebase.firestore()
+        .collection('users')
+        .doc(user.uid)
+        .collection('flashcards')
+        .get();
+      const cards: FlashCard[] = flashcardsSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          due: data.due.toDate()
+        } as FlashCard;
+      });
+
+      // Filter out flashcards that are due tomorrow or later
+      const now = new Date();
+      const startOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const todayFlashcards = cards.filter(card => card.due < startOfTomorrow);
+
+      setFlashcards(todayFlashcards);
+      const nextCard = getNextCard(todayFlashcards);
+      setCurrentFlashcard(nextCard);
+      setCompleted(!nextCard);
+    }
+    setLoading(false);
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    fetchFlashcards();
+  }, []);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchFlashcards();
+  };
+
+  const handleNextFlashcard = async (ease: Ease) => {
+    if (currentFlashcard) {
+      const { card } = await adjustCard(currentFlashcard, ease); // Adjust card and save to Firebase
+      const updatedFlashcards = flashcards.map(fc => fc.id === card.id ? card : fc);
+      const now = new Date();
+      const startOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      const filteredFlashcards = updatedFlashcards.filter(fc => fc.due < startOfTomorrow); // Filter out due tomorrow or later
+      setFlashcards(filteredFlashcards);
+      const nextCard = getNextCard(filteredFlashcards.length > 1 ? filteredFlashcards.filter(fc => fc.id !== card.id) : filteredFlashcards);
+      setCurrentFlashcard(nextCard);
+      setCompleted(!nextCard);
+      setIsFront(true);
+    }
+  };
+
+  const handleFlipCard = () => {
+    setIsFront(!isFront);
+  };
+
+  const renderCardContent = () => {
+    if (isFront) {
+      return (
+        <>
+          <Text style={tw`text-2xl mb-4 capitalize`}>{currentFlashcard?.front.word}</Text>
+          <Text style={tw`text-lg mb-4`}>{currentFlashcard?.front.example}</Text>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Text style={tw`text-2xl mb-4 capitalize`}>{currentFlashcard?.back.word}</Text>
+          <Text style={tw`text-lg mb-4`}>{currentFlashcard?.back.example}</Text>
+          <FlashcardEaseButtons
+            cardNextIntervals={cardNextIntervals}
+            handleNextFlashcard={handleNextFlashcard}
+          />
+        </>
+      );
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (completed) {
+    return (
+      <ScrollView
+        contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        <Text style={tw`text-xl mb-4`}>You&apos;ve completed today&apos;s flashcards!</Text>
+        <Text style={tw`text-lg mb-4`}>Great job! Add some new words or review your readings to keep up the momentum.</Text>
+        <Button
+          mode="contained"
+          onPress={() => navigation.reset({
+            index: 0,
+            routes: [{ name: 'Main', params: { screen: 'Read' } }],
+          })}
+          style={tw`bg-purple-600`}
+        >
+          Go to Readings
+        </Button>
+      </ScrollView>
+    );
+  }
+
+  if (flashcards.length === 0) {
+    return (
+      <ScrollView
+        contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        <Text style={tw`text-xl mb-4`}>You have no flashcards.</Text>
+        <Button
+          mode="contained"
+          onPress={() => navigation.reset({
+            index: 0,
+            routes: [{ name: 'Main', params: { screen: 'Read' } }],
+          })}
+          style={tw`bg-purple-600`}
+        >
+          Go to Readings
+        </Button>
+      </ScrollView>
+    );
+  }
+
+  return (
+    <ScrollView
+      contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
+    >
+      {currentFlashcard && (
+        <TouchableOpacity onPress={handleFlipCard}>
+          <PaperCard style={tw`mb-4 py-5 w-90`}>
+            <PaperCard.Content>
+              {renderCardContent()}
+            </PaperCard.Content>
+          </PaperCard>
+        </TouchableOpacity>
+      )}
+    </ScrollView>
+  );
+};
+
+export default FlashcardsScreen;

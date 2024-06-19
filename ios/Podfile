@@ -1,11 +1,8 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
-    {paths: [process.argv[1]]},
-  )', __dir__]).strip
+require 'open3'
+react_native_pods_rb = Open3.capture2("node -p 'require.resolve(\"react-native/scripts/react_native_pods.rb\", {paths: [\"#{__dir__}\"]})'").first.strip
+require react_native_pods_rb
 
-platform :ios, min_ios_version_supported
+platform :ios, '14.0'
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -16,25 +13,45 @@ end
 
 target 'LearnProAi' do
   config = use_native_modules!
+  use_frameworks! :linkage => :static
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :app_path => "#{Pod::Config.instance.installation_root}/..",
+    :hermes_enabled => true 
   )
+
+  # Add Firebase pods
+  pod 'Firebase/Auth', :modular_headers => true
+  pod 'Firebase/Firestore', :modular_headers => true
+  pod 'Firebase/Messaging', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
+
+  pod 'GoogleUtilities', :modular_headers => true
 
   target 'LearnProAiTests' do
     inherit! :complete
-    # Pods for testing
   end
 
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
-    react_native_post_install(
-      installer,
-      config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
-    )
+    react_native_post_install(installer)
+    installer.pods_project.targets.each do |target|
+      if target.name == 'ReactCommon'
+        target.build_configurations.each do |config|
+          config.build_settings['SWIFT_VERSION'] = '5.0'
+        end
+      end
+      # Patch Hermes to remove the debug symbols entry from the Info.plist
+      if target.name == "hermes-engine"
+        installer.pods_project.files.each do |fileref|
+          if fileref.path.end_with? "hermes.xcframework"
+            hermes_plist_file = "#{fileref.real_path}/Info.plist"
+            Open3.capture3('/usr/libexec/PlistBuddy', '-c', 'Delete :AvailableLibraries:0:DebugSymbolsPath', hermes_plist_file)
+            Open3.capture3('/usr/libexec/PlistBuddy', '-c', 'Delete :AvailableLibraries:1:DebugSymbolsPath', hermes_plist_file)
+            Open3.capture3('/usr/libexec/PlistBuddy', '-c', 'Delete :AvailableLibraries:2:DebugSymbolsPath', hermes_plist_file)
+          end
+        end
+      end
+    end
   end
 end
