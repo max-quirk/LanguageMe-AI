@@ -24,10 +24,10 @@ export const generateReadingPassage = async ({
 
   switch (difficulty) {
     case 'easy':
-      difficultyPrompt = 'Use AS SIMPLE AS POSSIBLE vocabulary. This is aimed for language learning beginners.'
+      difficultyPrompt = 'Use extremely simple words for beginners learning this language.'
       break;
     case 'medium':
-      difficultyPrompt = 'Use simple vocabulary aimed for an 6 year old child.'
+      difficultyPrompt = 'Use simple vocabulary for a 6 year old child.'
       break;
   }
   
@@ -36,10 +36,11 @@ export const generateReadingPassage = async ({
       model: "gpt-3.5-turbo",
       messages: [{ 
         role: "user", 
-        content: `Generate a ${wordCount} word passage with the following description: ${description}, in the language with code '${targetLanguage}'. ${difficultyPrompt}` }],
+        content: `Generate a ${wordCount}-word passage about "${description}" in the language with code '${targetLanguage}' with each word separated by a space. ${difficultyPrompt} For example, in Chinese (zh), "当 我们 谈到 撒旦 时， 我们 常常 ..."` }],
       temperature: 0.7,
       n: 1
     });
+    console.log('response: ', response)
 
     return response.choices[0].message.content;
   } catch (error) {
@@ -74,7 +75,7 @@ export const generateExampleSentences = async ({
     const translatedExampleSentenceResponse = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
-        { role: "user", content: `Translate the following sentence into the language with code ${translateTo}: "${exampleSentence}"` }
+        { role: "user", content: `Translate the following sentence into the language with code ${translateTo}: "${exampleSentence}". Do not include quotation marks.` }
       ],
       temperature: 0.7,
       n: 1

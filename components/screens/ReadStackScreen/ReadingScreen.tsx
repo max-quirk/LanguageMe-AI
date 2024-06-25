@@ -1,13 +1,16 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Text, ScrollView, TouchableOpacity, View } from 'react-native';
 import tw from 'twrnc';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../types';
-import { Button, Dialog, Paragraph, Portal, ActivityIndicator } from 'react-native-paper';
+import { Dialog, Paragraph, Portal, ActivityIndicator } from 'react-native-paper';
 import { LanguageContext } from '../../../contexts/LanguageContext';
 import { getPossibleTranslations } from '../../../services/chatGpt';
 import { addFlashcard } from '../../../utils/flashcards';
 import { cleanPunctuation } from '../../../utils/readings';
+import HelperPopup from '../../HelperPopup';
+import { isFirstTimeUser } from '../../../utils/storageUtils';
+import Button from '../../Button';
 
 type ReadingScreenRouteProp = RouteProp<RootStackParamList, 'Reading'>;
 
@@ -24,6 +27,19 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   const [addToFlashcardsLoading, setAddToFlashcardsLoading] = useState(false);
   const [translations, setTranslations] = useState<string[]>([]);
   const [added, setAdded] = useState(false);
+  const [helperVisible, setHelperVisible] = useState(false);
+
+  useEffect(() => {
+    const checkFirstTimeUser = async () => {
+      const firstTime = await isFirstTimeUser();
+      if (firstTime) {
+        setTimeout(() => {
+          setHelperVisible(true);
+        }, 1000);
+      }
+    };
+    checkFirstTimeUser();
+  }, []);
 
   const handleWordPress = async (word: string) => {
     const cleanedWord = cleanPunctuation(word);
@@ -69,14 +85,21 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
 
   const handleModalClose = () => {
     setVisible(false);
+    setAddToFlashcardsLoading(false)
     setAdded(false);
   };
-
+  
   return (
-    <View style={tw`flex-1 p-5 mt-20`}>
-      <ScrollView style={tw`flex-1 p-5`}>
+    <View style={tw`flex-1 px-5`}>
+      <ScrollView style={tw`flex-1 px-5 pt-20`}>
         <Text style={tw`text-2xl mb-4`}>{reading.description}</Text>
-        {reading.passage.split('\n').map((line, index) => renderLine(line, index))}
+        <View style={tw`mb-25`}>{reading.passage?.split('\n').map((line, index) => renderLine(line, index))}</View>
+        <HelperPopup
+          title="How to use"
+          text="Tap any word you don't know to see its definition and add it to your flashcards."
+          visible={helperVisible}
+          onClose={() => setHelperVisible(false)}
+        />
         <Portal>
           <Dialog visible={visible} onDismiss={handleModalClose}>
             <Dialog.Title style={tw`capitalize`}>{selectedWord}</Dialog.Title>
@@ -101,11 +124,11 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
               <Button
                 mode="contained"
                 onPress={handleAddToFlashcards}
-                style={tw`px-2 w-[160px]`}
+                style={tw`w-[160px]`}
                 disabled={added || addToFlashcardsLoading}
               >
                 {addToFlashcardsLoading ? (
-                  <ActivityIndicator style={tw`p-0`} size={18} />
+                  <ActivityIndicator style={tw`p-0 pt-1`} size={18} />
                 ) : (
                   added ? 'Added' : 'Add to Flashcards'
                 )}

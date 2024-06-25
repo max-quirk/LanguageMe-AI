@@ -8,7 +8,7 @@ import LoginScreen from './components/screens/LoginScreen';
 import RegisterScreen from './components/screens/RegisterScreen';
 import LanguageSelectionScreen from './components/screens/LanguageSelectionScreen';
 import TargetLanguageSelectionScreen from './components/screens/TargetLanguageSelectionScreen';
-// import HomeStackScreen from './components/screens/HomeStackScreen';
+
 import ReadStackScreen from './components/screens/ReadStackScreen';
 import LearnStackScreen from './components/screens/LearnStackScreen';
 import SettingsStackScreen from './components/screens/SettingsStackScreen';
@@ -45,7 +45,6 @@ function TabNavigator() {
         inactiveTintColor: 'gray',
       }}
     >
-      {/* <Tab.Screen name="Home" component={HomeStackScreen}/> */}
       <Tab.Screen name="Read" component={ReadStackScreen} />
       <Tab.Screen name="Learn" component={LearnStackScreen} />
       <Tab.Screen name="Settings" component={SettingsStackScreen} />

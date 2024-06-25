@@ -23,3 +23,7 @@ export const deleteReading = async ({
 export const cleanPunctuation = (str: string) => {
   return str.replace(/^-+/g, '').replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').trim();
 }
+
+export const stripQuotes = (str: string) => {
+  return str.replace(/["']/g, '');
+}

@@ -4,6 +4,7 @@ import { generateExampleSentences } from "../services/chatGpt";
 import { firebase } from "@react-native-firebase/auth";
 import { getUserDoc, recordProgress } from "./firebase";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
+import { stripQuotes } from "./readings";
 
 const BATCH_SIZE = 500;
 
@@ -136,11 +137,11 @@ export const addFlashcard = async ({
     const newFlashcard = {
       front: {
         word,
-        example: exampleSentence,
+        example: stripQuotes(exampleSentence ?? ''),
       },
       back: {
         word: translation,
-        example: translatedExampleSentence,
+        example: stripQuotes(translatedExampleSentence ?? ''),
       },
       due: new Date(Date.now()),
       interval: 1,

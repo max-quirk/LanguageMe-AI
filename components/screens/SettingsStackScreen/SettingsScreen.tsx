@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { View, ScrollView, Alert, TouchableOpacity } from 'react-native';
-import { Button, Text, Menu, Provider, ActivityIndicator, Divider, IconButton } from 'react-native-paper';
+import { Text, Menu, Provider, ActivityIndicator, Divider, IconButton } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { firebase } from '../../../config/firebase';
+import Button from '../../Button';
 
 import languages from '../../../utils/languages';
 import tw from 'twrnc';
@@ -10,6 +11,7 @@ import iso6391 from 'iso-639-1';
 import { RootStackParamList } from '../../../types';
 import { LanguageContext } from '../../../contexts/LanguageContext';
 import { deleteAllFlashcards } from '../../../utils/flashcards';
+import { clearAndReload } from '../../../utils/storageUtils';
 
 type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -153,18 +155,18 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         <Button
           mode="contained"
           onPress={handleSaveLanguages}
-          style={tw`bg-purple-600 mb-4`}
+          style={tw`bg-purple-600 mb-`}
           labelStyle={tw`text-white`}
-          disabled={loading || success}
+          disabled={loading}
         >
-          {loading ? <ActivityIndicator color="white" /> : (success ? 'Saved!' : 'Save Settings')}
+          {loading ? <ActivityIndicator color="white" /> : (success ? 'Saved!' : 'Save')}
         </Button>
 
         <Divider style={tw`my-4`} />
 
         <TouchableOpacity
           onPress={() => setDangerZoneVisible(!dangerZoneVisible)}
-          style={tw`flex flex-row justify-between items-center`}
+          style={tw`flex flex-row justify-between items-center h-11`}
         >
           <Text style={tw`font-bold`}>{dangerZoneVisible ? 'More' : 'More'}</Text>
           <IconButton icon={dangerZoneVisible ? 'chevron-up' : 'chevron-down'} size={20} />
@@ -177,6 +179,13 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
               style={tw`border-gray-300 text-gray-800`}
             >
               Delete All Flashcards
+            </Button>
+            <Button
+              mode="outlined"
+              onPress={clearAndReload}
+              style={tw`border-gray-300 text-gray-800 mt-4`}
+            >
+              Hard Refresh App
             </Button>
             <Button
               mode="outlined"

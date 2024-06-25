@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, ScrollView } from 'react-native';
-import { Button, Text, Menu, Provider } from 'react-native-paper';
+import { Text, Menu, Provider } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 import languages from '../../utils/languages';
 import tw from 'twrnc';
 import iso6391 from 'iso-639-1';
 import { RootStackParamList } from '../../types';
+import Button from '../Button';
 
 type LanguageSelectionScreenNavigationProp = StackNavigationProp<RootStackParamList, 'LanguageSelection'>;
 

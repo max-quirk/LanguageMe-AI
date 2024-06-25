@@ -1,13 +1,15 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
-import { Button, Text, Card as PaperCard, ActivityIndicator } from 'react-native-paper';
+import { Text, Card as PaperCard, ActivityIndicator } from 'react-native-paper';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { firebase } from '../../../config/firebase';
 import tw from 'twrnc';
 import { FlashCard, RootStackParamList } from 'types';
 import { DEFAULT_INTERVALS, Ease, getNextCard, getNextIntervals, adjustCard } from '../../../utils/flashcards';
 import FlashcardEaseButtons from './FlashcardEaseButtons';
+import HelperPopup from '../../HelperPopup';
+import { isFirstTimeUser, setFirstTimeUser } from '../../../utils/storageUtils'; // Adjust the path as necessary
+import Button from '../../Button';
 
 type FlashcardsScreenNavigationProp = NavigationProp<RootStackParamList>;
 
@@ -18,7 +20,9 @@ const FlashcardsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [completed, setCompleted] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [frontCardHelperVisible, setFrontCardHelperVisible] = useState(false);
+  const [backCardHelperVisible, setBackCardHelperVisible] = useState(false);
+  const [_firstTimeUser, _setFirstTimeUser] = useState(false);
   const navigation = useNavigation<FlashcardsScreenNavigationProp>();
 
   const cardNextIntervals = currentFlashcard ? getNextIntervals(currentFlashcard) : DEFAULT_INTERVALS;
@@ -48,14 +52,24 @@ const FlashcardsScreen = () => {
       setFlashcards(todayFlashcards);
       const nextCard = getNextCard(todayFlashcards);
       setCurrentFlashcard(nextCard);
-      setCompleted(!nextCard);
+      setCompleted(!nextCard && cards.length > 0);
     }
     setLoading(false);
     setRefreshing(false);
   };
 
   useEffect(() => {
-    fetchFlashcards();
+    const initialize = async () => {
+      const firstTimeUser = await isFirstTimeUser();
+      if (firstTimeUser) {
+        _setFirstTimeUser(true)
+        setTimeout(() => {
+          setFrontCardHelperVisible(true);
+        }, 1000);
+      }
+      fetchFlashcards();
+    };
+    initialize();
   }, []);
 
   const handleRefresh = () => {
@@ -80,6 +94,15 @@ const FlashcardsScreen = () => {
 
   const handleFlipCard = () => {
     setIsFront(!isFront);
+    if (_firstTimeUser) {
+      setTimeout(() => {
+        setBackCardHelperVisible(true);
+        // End of first time user flow popups
+        setFirstTimeUser(false);
+        _setFirstTimeUser(false);
+      }, 1000);
+    }
+    setFrontCardHelperVisible(false);
   };
 
   const renderCardContent = () => {
@@ -144,7 +167,7 @@ const FlashcardsScreen = () => {
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
       >
-        <Text style={tw`text-xl mb-4`}>You have no flashcards.</Text>
+        <Text style={tw`text-xl mb-8 text-center px-4`}>You haven&apos;t added any flashcards from your readings yet!</Text>
         <Button
           mode="contained"
           onPress={() => navigation.reset({
@@ -175,6 +198,18 @@ const FlashcardsScreen = () => {
           </PaperCard>
         </TouchableOpacity>
       )}
+      <HelperPopup 
+        title="How to use"
+        text="Tap the flashcard to reveal the other side."
+        visible={frontCardHelperVisible}
+        onClose={() => setFrontCardHelperVisible(false)}
+      />
+      <HelperPopup 
+        title="How to use"
+        text="Select how easy you found the card. Each button shows the approximate time it will take for you to see the card again."
+        visible={backCardHelperVisible}
+        onClose={() => setBackCardHelperVisible(false)}
+      />
     </ScrollView>
   );
 };

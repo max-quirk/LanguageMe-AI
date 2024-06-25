@@ -28,7 +28,7 @@ const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onDelete }) => {
 
   const renderRightActions = () => (
     <TouchableOpacity
-      style={tw`bg-red-500 justify-center p-4 mb-4 rounded-r-lg`}
+      style={tw`bg-red-500 justify-center p-4 mb-4 rounded-r-lg overflow-hidden`}
       onPress={() => {
         Alert.alert(
           'Confirm Deletion',

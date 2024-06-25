@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, ScrollView } from 'react-native';
-import { Button, Text, Menu, Provider } from 'react-native-paper';
+import { Text, Menu, Provider } from 'react-native-paper';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { firebase } from '../../config/firebase';
+import Button from '../Button';
 
 import languages from '../../utils/languages';
 import tw from 'twrnc';
@@ -22,7 +23,7 @@ type Props = {
 const TargetLanguageSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   const { nativeLanguage } = route.params;
   const { saveLanguages } = useContext(LanguageContext);
-  const [targetLanguage, setTargetLanguage] = useState<string>('zh');
+  const [targetLanguage, setTargetLanguage] = useState<string>('es');
   const [visible, setVisible] = useState<boolean>(false);
   
   const openMenu = () => setVisible(true);

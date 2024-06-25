@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
-import { TextInput, Button, Text } from 'react-native-paper';
+import { View, Image } from 'react-native';
+import { TextInput, Text } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { firebase } from '../../config/firebase';
 import tw from 'twrnc';
 import { RootStackParamList } from '../../types';
+import Button from '../Button';
 
 type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
 type RegisterScreenRouteProp = RouteProp<RootStackParamList, 'Register'>;
@@ -37,13 +38,17 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={tw`flex-1 justify-center p-5`}>
-      <Text style={tw`text-2xl mb-4`}>Register</Text>
+      <View style={tw`flex items-center`}>
+        <Image source={require('../../assets/images/logo-full.png')} style={tw`w-70 h-70 mb-6`} />
+      </View>
+      <Text style={tw`text-xl mb-4`}>Register</Text>
       {error && <Text style={tw`text-red-500 mb-4`}>{error}</Text>}
       <TextInput
         label="Email"
         value={email}
         onChangeText={setEmail}
         style={tw`mb-4`}
+        autoCapitalize="none"
       />
       <TextInput
         label="Password"
@@ -51,11 +56,12 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
         style={tw`mb-4`}
+        autoCapitalize="none"
       />
       <Button
         mode="contained"
         onPress={handleRegister}
-        style={tw`mt-4`}
+        style={tw`mt-4 bg-purple-600`}
       >
         Register
       </Button>

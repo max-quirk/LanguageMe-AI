@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, View } from 'react-native';
+import { View } from 'react-native';
 import { firebase } from '../../../config/firebase';
 import { deleteAllFlashcards } from '../../../utils/flashcards';
 import tw from 'twrnc';
+import Button from '../../Button';
 
 const DeleteFlashcardsButton: React.FC = () => {
 

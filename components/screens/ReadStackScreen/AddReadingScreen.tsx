@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { ScrollView } from 'react-native';
-import { Button, Text, TextInput, RadioButton } from 'react-native-paper';
+import { Text, TextInput, RadioButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { firebase } from '../../../config/firebase';
@@ -8,6 +8,7 @@ import tw from 'twrnc';
 import { generateReadingPassage } from '../../../services/chatGpt';
 import { LanguageContext } from '../../../contexts/LanguageContext';
 import { RootStackParamList } from '../../../types'; 
+import Button from '../../Button';
 
 type AddReadingsListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'AddReading'>;
 
@@ -59,21 +60,22 @@ const AddReadingScreen: React.FC = () => {
 
   return (
     <ScrollView style={tw`flex-1 p-5 mt-20`}>
-      <Text style={tw`text-2xl mb-4`}>Add New Reading</Text>
+      <Text style={tw`text-2xl mb-4`}>New Reading</Text>
       <TextInput
-        label="Description"
+        label="What do you want to read about?"
         value={description}
         onChangeText={setDescription}
         style={tw`mb-4`}
+        placeholder="E.g. History of the Roman Empire"
       />
       <Text style={tw`mb-2 mt-4 text-base`}>Difficulty</Text>
       <RadioButton.Group
         onValueChange={(newDifficulty: string) => setDifficulty(newDifficulty)}
         value={difficulty}
       >
-        <RadioButton.Item label="Easy" value="easy" style={tw`border-b rounded-t-[4px] border-slate-300 bg-[${getBackgroundColor('easy')}]`} labelStyle={tw`text-sm`} />
-        <RadioButton.Item label="Medium" value="medium" style={tw`border-b border-slate-300 bg-[${getBackgroundColor('medium')}]`} labelStyle={tw`text-sm`} />
-        <RadioButton.Item label="Hard" value="hard" style={tw`border-b border-gray-400 bg-[${getBackgroundColor('hard')}]`} labelStyle={tw`text-sm`} />
+        <RadioButton.Item label="Beginner" value="easy" style={tw`border-b rounded-t-[4px] border-slate-300 bg-[${getBackgroundColor('easy')}]`} labelStyle={tw`text-sm`} />
+        <RadioButton.Item label="Intermediate" value="medium" style={tw`border-b border-slate-300 bg-[${getBackgroundColor('medium')}]`} labelStyle={tw`text-sm`} />
+        <RadioButton.Item label="Advanced" value="hard" style={tw`border-b border-gray-400 bg-[${getBackgroundColor('hard')}]`} labelStyle={tw`text-sm`} />
       </RadioButton.Group>
       <TextInput
         label="Word Count"
