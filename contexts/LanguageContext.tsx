@@ -2,13 +2,14 @@ import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { firebase } from '../config/firebase';
 import { getUserLanguageFromFirebase } from '../utils/firebase';
+import { LanguageCode } from 'iso-639-1';
 
 const DEFAULT_LANGUAGE = 'en'
 
 interface LanguageContextType {
-  nativeLanguage: string;
-  targetLanguage: string;
-  saveLanguages: (nativeLanguage: string, targetLanguage: string) => Promise<void>;
+  nativeLanguage: LanguageCode;
+  targetLanguage: LanguageCode;
+  saveLanguages: (nativeLanguage: LanguageCode, targetLanguage: LanguageCode) => Promise<void>;
 }
 
 export const LanguageContext = createContext<LanguageContextType>({
@@ -22,14 +23,14 @@ interface LanguageProviderProps {
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [nativeLanguage, setNativeLanguage] = useState<string>(DEFAULT_LANGUAGE);
-  const [targetLanguage, setTargetLanguage] = useState<string>(DEFAULT_LANGUAGE);
+  const [nativeLanguage, setNativeLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
+  const [targetLanguage, setTargetLanguage] = useState<LanguageCode>(DEFAULT_LANGUAGE);
 
   useEffect(() => {
     const loadLanguages = async () => {
       try {
-        const storedNativeLanguage = await AsyncStorage.getItem('nativeLanguage');
-        const storedTargetLanguage = await AsyncStorage.getItem('targetLanguage');
+        const storedNativeLanguage = await AsyncStorage.getItem('nativeLanguage') as LanguageCode;
+        const storedTargetLanguage = await AsyncStorage.getItem('targetLanguage') as LanguageCode;
         if (storedNativeLanguage && storedTargetLanguage) {
           setNativeLanguage(storedNativeLanguage);
           setTargetLanguage(storedTargetLanguage);
@@ -39,8 +40,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
             const data = await getUserLanguageFromFirebase(user.uid);
             if (data) {
               const { nativeLanguage, targetLanguage } = data;
-              setNativeLanguage(nativeLanguage);
-              setTargetLanguage(targetLanguage);
+              setNativeLanguage(nativeLanguage as LanguageCode);
+              setTargetLanguage(targetLanguage as LanguageCode);
               await AsyncStorage.setItem('nativeLanguage', nativeLanguage);
               await AsyncStorage.setItem('targetLanguage', targetLanguage);
             }
@@ -54,7 +55,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     loadLanguages();
   }, []);
 
-  const saveLanguages = async (newNativeLanguage: string, newTargetLanguage: string) => {
+  const saveLanguages = async (newNativeLanguage: LanguageCode, newTargetLanguage: LanguageCode) => {
     try {
       await AsyncStorage.setItem('nativeLanguage', newNativeLanguage);
       await AsyncStorage.setItem('targetLanguage', newTargetLanguage);

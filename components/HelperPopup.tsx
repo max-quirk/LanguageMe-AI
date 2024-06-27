@@ -24,7 +24,7 @@ const HelperPopup: React.FC<HelperPopupProps> = ({ title, text, visible, onClose
           <Text style={tw`text-base`}>{text}</Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button mode="contained" onPress={onClose} style={tw`px-2 w-[100px]`}>
+          <Button mode="contained" onPress={onClose} style={tw`bg-purple-600 w-[100px]`}>
             Got it
           </Button>
         </Dialog.Actions>

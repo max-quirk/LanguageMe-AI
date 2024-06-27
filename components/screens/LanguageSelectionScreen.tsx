@@ -45,7 +45,7 @@ const LanguageSelectionScreen: React.FC = () => {
         <Button
           mode="contained"
           onPress={() => navigation.navigate('TargetLanguageSelection', { nativeLanguage })}
-          style={tw`mt-4`}
+          style={tw`mt-4 bg-purple-600`}
         >
           Next
         </Button>

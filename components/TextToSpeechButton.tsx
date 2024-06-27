@@ -1,0 +1,67 @@
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, ActivityIndicator } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import tw from 'twrnc';
+import SoundPlayer from 'react-native-sound-player';
+import { fetchSpeechUrl } from '../services/chatGpt';
+
+type TextToSpeechButtonProps = {
+  text: string;
+  type: 'word' | 'flashcard' 
+  id: string
+};
+
+const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({ text, type, id }) => {
+  const [audioFile, setAudioFile] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isFirstClick, setIsFirstClick] = useState<boolean>(true);
+
+  useEffect(() => {
+    // Reset states when the word changes
+    setAudioFile(null);
+    setLoading(false);
+    setIsFirstClick(true);
+  }, [text]);
+
+  const fetchAudio = async () => {
+    setLoading(true);
+    const filePath = await fetchSpeechUrl({ text, type, id });
+    if (filePath) {
+      setAudioFile(filePath);
+      setLoading(false);
+      if (isFirstClick) {
+        playAudio(filePath); // Automatically play audio once loaded after the first click
+        setIsFirstClick(false);
+      }
+    }
+  };
+
+  const playAudio = (filePath: string) => {
+    try {
+      SoundPlayer.playUrl(filePath);
+    } catch (error) {
+      console.error('Failed to play the sound', error);
+      Alert.alert('Error', 'Failed to play the sound. Please try again.');
+    }
+  };
+
+  const handlePress = () => {
+    if (audioFile) {
+      playAudio(audioFile);
+    } else if (!loading) {
+      fetchAudio();
+    }
+  };
+
+  return (
+    <TouchableOpacity style={tw`flex-row items-center p-3 bg-gray-200 rounded`} onPress={handlePress} disabled={loading}>
+      {loading ? (
+        <ActivityIndicator size="small" color="#0000ff" style={tw`mr-3`} />
+      ) : (
+        <MaterialCommunityIcons name="volume-high" size={24} color="black" />
+      )}
+    </TouchableOpacity>
+  );
+};
+
+export default TextToSpeechButton;

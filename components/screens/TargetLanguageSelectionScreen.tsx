@@ -85,7 +85,7 @@ const TargetLanguageSelectionScreen: React.FC<Props> = ({ navigation, route }) =
         <Button
           mode="contained"
           onPress={handleFinish}
-          style={tw`mt-4`}
+          style={tw`mt-4 bg-purple-600`}
         >
           Let&apos;s go
         </Button>

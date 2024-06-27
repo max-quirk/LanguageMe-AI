@@ -8,8 +8,9 @@ import { FlashCard, RootStackParamList } from 'types';
 import { DEFAULT_INTERVALS, Ease, getNextCard, getNextIntervals, adjustCard } from '../../../utils/flashcards';
 import FlashcardEaseButtons from './FlashcardEaseButtons';
 import HelperPopup from '../../HelperPopup';
-import { isFirstTimeUser, setFirstTimeUser } from '../../../utils/storageUtils'; // Adjust the path as necessary
+import { isFirstTimeUser, setFirstTimeUser } from '../../../utils/storageUtils';
 import Button from '../../Button';
+import TextToSpeechButton from '../../TextToSpeechButton';
 
 type FlashcardsScreenNavigationProp = NavigationProp<RootStackParamList>;
 
@@ -105,12 +106,20 @@ const FlashcardsScreen = () => {
     setFrontCardHelperVisible(false);
   };
 
+  const frontWord = currentFlashcard?.front.word
+  const frontExampleSentence = currentFlashcard?.front.example
+  
   const renderCardContent = () => {
     if (isFront) {
       return (
         <>
           <Text style={tw`text-2xl mb-4 capitalize`}>{currentFlashcard?.front.word}</Text>
           <Text style={tw`text-lg mb-4`}>{currentFlashcard?.front.example}</Text>
+          <TextToSpeechButton 
+            type='flashcard' 
+            text={`${frontWord}. ${frontExampleSentence}`} 
+            id={currentFlashcard?.id ?? `flashcard_${frontWord}`} 
+          />
         </>
       );
     } else {
@@ -205,7 +214,7 @@ const FlashcardsScreen = () => {
         onClose={() => setFrontCardHelperVisible(false)}
       />
       <HelperPopup 
-        title="How to use"
+        title="Select difficulty"
         text="Select how easy you found the card. Each button shows the approximate time it will take for you to see the card again."
         visible={backCardHelperVisible}
         onClose={() => setBackCardHelperVisible(false)}

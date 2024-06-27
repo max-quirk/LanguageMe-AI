@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -15,6 +15,8 @@ import SettingsStackScreen from './components/screens/SettingsStackScreen';
 
 import { PaperProvider } from 'react-native-paper';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { AudioProvider } from './contexts/AudioContext';
+import TrackPlayer from 'react-native-track-player';
 
 const Tab = createBottomTabNavigator();
 const RootStack = createStackNavigator();
@@ -53,19 +55,41 @@ function TabNavigator() {
 }
 
 export default function App() {
+  useEffect(() => {
+    const setupPlayer = async () => {
+      await TrackPlayer.setupPlayer();
+      await TrackPlayer.updateOptions({
+        stopWithApp: true,
+        capabilities: [
+          TrackPlayer.CAPABILITY_PLAY,
+          TrackPlayer.CAPABILITY_PAUSE,
+          TrackPlayer.CAPABILITY_STOP,
+          TrackPlayer.CAPABILITY_SEEK_TO,
+        ],
+        compactCapabilities: [
+          TrackPlayer.CAPABILITY_PLAY,
+          TrackPlayer.CAPABILITY_PAUSE,
+        ],
+      });
+    };
+
+    setupPlayer();
+  }, []);
   return (
     <LanguageProvider>
-      <PaperProvider>
-        <NavigationContainer>
-          <RootStack.Navigator initialRouteName="Login">
-            <RootStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-            <RootStack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-            <RootStack.Screen name="LanguageSelection" component={LanguageSelectionScreen} options={{ headerShown: false }} />
-            <RootStack.Screen name="TargetLanguageSelection" component={TargetLanguageSelectionScreen} options={{ headerShown: false }} />
-            <RootStack.Screen name="Main" component={TabNavigator} options={{ headerShown: false }} />
-          </RootStack.Navigator>
-        </NavigationContainer>
-      </PaperProvider>
+      <AudioProvider>
+        <PaperProvider>
+          <NavigationContainer>
+            <RootStack.Navigator initialRouteName="Login">
+              <RootStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+              <RootStack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+              <RootStack.Screen name="LanguageSelection" component={LanguageSelectionScreen} options={{ headerShown: false }} />
+              <RootStack.Screen name="TargetLanguageSelection" component={TargetLanguageSelectionScreen} options={{ headerShown: false }} />
+              <RootStack.Screen name="Main" component={TabNavigator} options={{ headerShown: false }} />
+            </RootStack.Navigator>
+          </NavigationContainer>
+        </PaperProvider>
+      </AudioProvider>
     </LanguageProvider>
   );
 }

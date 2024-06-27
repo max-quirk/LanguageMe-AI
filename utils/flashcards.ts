@@ -5,6 +5,7 @@ import { firebase } from "@react-native-firebase/auth";
 import { getUserDoc, recordProgress } from "./firebase";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import { stripQuotes } from "./readings";
+import { LanguageCode } from "iso-639-1";
 
 const BATCH_SIZE = 500;
 
@@ -108,12 +109,12 @@ export function getNextCard(cards: FlashCard[]): FlashCard | null {
 
 export const addFlashcard = async ({
   word,
-  language,
+  wordLanguage,
   translateTo,
 }: {
   word: string,
-  language: string,
-  translateTo: string,
+  wordLanguage: LanguageCode,
+  translateTo: LanguageCode,
 }) => {
   try {
     const user = firebase.auth().currentUser;
@@ -130,7 +131,7 @@ export const addFlashcard = async ({
 
     const { exampleSentence, translation, translatedExampleSentence } = await generateExampleSentences({
       word,
-      language,
+      wordLanguage,
       translateTo
     });
 

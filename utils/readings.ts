@@ -19,10 +19,9 @@ export const deleteReading = async ({
     console.error('Error deleting reading:', error);
   }
 };
-
 export const cleanPunctuation = (str: string) => {
-  return str.replace(/^-+/g, '').replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').trim();
-}
+  return str.replace(/^-+/g, '').replace(/[\p{P}\p{S}]/gu, '').trim();
+};
 
 export const stripQuotes = (str: string) => {
   return str.replace(/["']/g, '');

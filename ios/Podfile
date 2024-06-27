@@ -29,6 +29,8 @@ target 'LearnProAi' do
 
   pod 'GoogleUtilities', :modular_headers => true
 
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+  
   target 'LearnProAiTests' do
     inherit! :complete
   end
