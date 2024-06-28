@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, RefreshControl } from 'react-native';
-import { ActivityIndicator, Text, MD3Colors } from 'react-native-paper';
+import { ActivityIndicator, Text } from 'react-native-paper';
 import { firebase } from '../../../config/firebase';
 import tw from 'twrnc';
 import { Reading, RootStackParamList } from '../../../types';

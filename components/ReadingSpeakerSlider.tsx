@@ -26,7 +26,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
       const filePath = await fetchSpeechUrl({ text: reading.passage as string, type: 'reading', id: reading.id });
       if (filePath) {
         setAudioFile(filePath);
-        await TrackPlayer.reset(); // Ensure the player is reset
+        await TrackPlayer.reset(); 
         await TrackPlayer.add({
           id: reading.id,
           url: filePath,

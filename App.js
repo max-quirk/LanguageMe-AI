@@ -34,8 +34,8 @@ function TabNavigator() {
             iconName = 'home';
           } else if (route.name === 'Read') {
             iconName = 'book-open';
-          } else if (route.name === 'Learn') {
-            iconName = 'brain';
+          } else if (route.name === 'Flashcards') {
+            iconName = 'clone';
           } else if (route.name === 'Settings') {
             iconName = 'bars';
           }
@@ -50,7 +50,7 @@ function TabNavigator() {
       }}
     >
       <Tab.Screen name="Read" component={ReadStackScreen} />
-      <Tab.Screen name="Learn" component={LearnStackScreen} />
+      <Tab.Screen name="Flashcards" component={LearnStackScreen} />
       <Tab.Screen name="Settings" component={SettingsStackScreen} />
     </Tab.Navigator>
   );

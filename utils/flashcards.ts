@@ -163,7 +163,6 @@ export const addFlashcard = async ({
       factor: 2500,
       reps: 0,
     };
-
     const flashcardsCollectionRef = firebase.firestore().collection('users').doc(user.uid).collection('flashcards');
     await flashcardsCollectionRef.add(newFlashcard);
   } catch (error) {

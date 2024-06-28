@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import { Text, Card as PaperCard, ActivityIndicator } from 'react-native-paper';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -11,7 +11,6 @@ import HelperPopup from '../../HelperPopup';
 import { isFirstTimeUser, setFirstTimeUser } from '../../../utils/storageUtils';
 import Button from '../../Button';
 import TextToSpeechButton from '../../TextToSpeechButton';
-import { LanguageContext } from '../../../contexts/LanguageContext';
 import RomanizeButton from '../../RomanizeButton';
 
 type FlashcardsScreenNavigationProp = NavigationProp<RootStackParamList>;
@@ -53,7 +52,6 @@ const FlashcardsScreen = () => {
       const now = new Date();
       const startOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
       const todayFlashcards = cards.filter(card => card.due < startOfTomorrow);
-
       setFlashcards(todayFlashcards);
       const nextCard = getNextCard(todayFlashcards);
       setCurrentFlashcard(nextCard);
@@ -67,7 +65,7 @@ const FlashcardsScreen = () => {
     const initialize = async () => {
       const firstTimeUser = await isFirstTimeUser();
       if (firstTimeUser) {
-        _setFirstTimeUser(true)
+        _setFirstTimeUser(true);
         setTimeout(() => {
           setFrontCardHelperVisible(true);
         }, 1000);
@@ -110,10 +108,10 @@ const FlashcardsScreen = () => {
     setFrontCardHelperVisible(false);
   };
 
-  const frontWord = currentFlashcard?.front.word
-  const frontWordRomanized = currentFlashcard?.front.wordRomanized
-  const frontExampleSentence = currentFlashcard?.front.example
-  const frontExampleRomanized = currentFlashcard?.front.exampleRomanized
+  const frontWord = currentFlashcard?.front.word;
+  const frontWordRomanized = currentFlashcard?.front.wordRomanized;
+  const frontExampleSentence = currentFlashcard?.front.example;
+  const frontExampleRomanized = currentFlashcard?.front.exampleRomanized;
 
   const renderCardContent = () => {
     if (isFront) {
@@ -126,8 +124,8 @@ const FlashcardsScreen = () => {
           </Text>
           <Text style={tw`text-lg mb-4`}>
             {showRomanized && frontExampleRomanized ? 
-              frontExampleRomanized
-            : frontExampleSentence}
+              frontExampleRomanized : 
+              frontExampleSentence}
           </Text>
           <View style={tw`flex items-center mt-4`}>
             <TextToSpeechButton 
@@ -137,20 +135,20 @@ const FlashcardsScreen = () => {
               size={28}
             />
           </View>
-          {frontWordRomanized || frontExampleRomanized &&
+          {(frontWordRomanized || frontExampleRomanized) && (
             <RomanizeButton 
               show={!showRomanized} 
               onPress={() => setShowRomanized(!showRomanized)} 
               style={tw`absolute right-0 top-[-15px]`}
             />
-          }
+          )}
         </View>
       );
     } else {
       return (
         <>
           <Text style={tw`text-2xl mb-4 capitalize`}>{currentFlashcard?.back.word}</Text>
-          <Text style={tw`text-lg mb-4`}>{currentFlashcard?.back.example}</Text>
+          <Text style={tw`text-lg mb-6`}>{currentFlashcard?.back.example}</Text>
           <FlashcardEaseButtons
             cardNextIntervals={cardNextIntervals}
             handleNextFlashcard={handleNextFlashcard}
@@ -177,7 +175,7 @@ const FlashcardsScreen = () => {
         }
       >
         <Text style={tw`text-xl mb-4`}>You&apos;ve completed today&apos;s flashcards!</Text>
-        <Text style={tw`text-lg mb-4`}>Great job! Add some new words or review your readings to keep up the momentum.</Text>
+        <Text style={tw`text-lg mb-8`}>Great job! Add some new words or review your readings to keep up the momentum.</Text>
         <Button
           mode="contained"
           onPress={() => navigation.reset({
@@ -186,7 +184,7 @@ const FlashcardsScreen = () => {
           })}
           style={tw`bg-purple-600`}
         >
-          Go to Readings
+          <Text style={tw`text-white text-base font-medium`}>Go to Readings</Text>
         </Button>
       </ScrollView>
     );
@@ -209,7 +207,7 @@ const FlashcardsScreen = () => {
           })}
           style={tw`bg-purple-600`}
         >
-          Go to Readings
+          <Text style={tw`text-white`}>Go to Readings</Text>
         </Button>
       </ScrollView>
     );
