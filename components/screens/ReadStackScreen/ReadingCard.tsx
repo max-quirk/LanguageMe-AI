@@ -8,6 +8,7 @@ import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { deleteReading } from '../../../utils/readings';
 import { firebase } from '../../../config/firebase';
 import { ReadingsListScreenNavigationProp } from './ReadingsListScreen';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 type ReadingCardProps = {
   reading: Reading;
@@ -16,6 +17,7 @@ type ReadingCardProps = {
 
 const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onDelete }) => {
   const navigation = useNavigation<ReadingsListScreenNavigationProp>();
+  const { theme } = useTheme();
 
   const handleDelete = () => {
     const user = firebase.auth().currentUser;
@@ -47,10 +49,10 @@ const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onDelete }) => {
   return (
     <Swipeable renderRightActions={renderRightActions}>
       <TouchableOpacity onPress={() => navigation.navigate('Reading', { reading })}>
-        <Card style={[tw`mb-4 bg-white shadow-lg rounded-lg overflow-hidden`]}>
+        <Card style={tw`mb-4 shadow-lg rounded-lg overflow-hidden ${theme.classes.backgroundTertiary} border ${theme.classes.borderPrimary}`}>
           <Card.Content>
-            <Title style={tw`text-lg font-bold text-gray-900`}>{reading.description}</Title>
-            <Paragraph style={tw`text-gray-700`} numberOfLines={1} ellipsizeMode="tail">{reading.passage}</Paragraph>
+            <Title style={tw`text-lg font-bold ${theme.classes.textPrimary}`}>{reading.description}</Title>
+            <Paragraph style={tw`text-gray-700 ${theme.classes.textSecondary}`} numberOfLines={1} ellipsizeMode="tail">{reading.passage}</Paragraph>
           </Card.Content>
         </Card>
       </TouchableOpacity>

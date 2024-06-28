@@ -1,17 +1,19 @@
 import React, { useState, useContext } from 'react';
-import { View, ScrollView, Alert, TouchableOpacity } from 'react-native';
-import { Text, Menu, Provider, ActivityIndicator, Divider, IconButton } from 'react-native-paper';
+import { ScrollView, View } from 'react-native';
+import { Text, ActivityIndicator, Divider } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { firebase } from '../../../config/firebase';
 import Button from '../../Button';
-
-import languages from '../../../utils/languages';
 import tw from 'twrnc';
-import iso6391, { LanguageCode } from 'iso-639-1';
+import { LanguageCode } from 'iso-639-1';
 import { RootStackParamList } from '../../../types';
 import { LanguageContext } from '../../../contexts/LanguageContext';
-import { deleteAllFlashcards } from '../../../utils/flashcards';
-import { clearAndReload } from '../../../utils/storageUtils';
+import { useTheme } from '../../../contexts/ThemeContext';
+import BackgroundView from '../../BackgroundView';
+import LanguageSelector from '../../LanguageSelector';
+import MoreSettings from './MoreSettings';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -21,19 +23,12 @@ type Props = {
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const { saveLanguages, nativeLanguage, targetLanguage } = useContext(LanguageContext);
+  const { theme, toggleTheme } = useTheme();
   const [formNativeLanguage, setFormNativeLanguage] = useState<LanguageCode>(nativeLanguage);
   const [formTargetLanguage, setFormTargetLanguage] = useState<LanguageCode>(targetLanguage);
 
-  const [nativeVisible, setNativeVisible] = useState<boolean>(false);
-  const [targetVisible, setTargetVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
-  const [dangerZoneVisible, setDangerZoneVisible] = useState<boolean>(false);
-
-  const openNativeMenu = () => setNativeVisible(true);
-  const closeNativeMenu = () => setNativeVisible(false);
-  const openTargetMenu = () => setTargetVisible(true);
-  const closeTargetMenu = () => setTargetVisible(false);
   const user = firebase.auth().currentUser;
   if (!user) return null;
 
@@ -41,8 +36,8 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     setLoading(true);
     try {
       await firebase.firestore().collection('users').doc(user.uid).set({
-        nativeLanguage,
-        targetLanguage,
+        nativeLanguage: formNativeLanguage,
+        targetLanguage: formTargetLanguage,
       });
       saveLanguages(formNativeLanguage, formTargetLanguage);
       setSuccess(true);
@@ -57,109 +52,48 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await firebase.auth().signOut();
-      navigation.navigate('Login');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
-
-  const confirmDeleteAllFlashcards = () => {
-    Alert.alert(
-      'Confirm Deletion',
-      'Are you sure you want to delete all flashcards?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => deleteAllFlashcards(user.uid) },
-      ]
-    );
-  };
+  const themeClasses = theme.classes;
+  const languageSelectorClasses = tw`w-32`
 
   return (
-    <Provider>
-      <View style={tw`flex-1 justify-center p-5 bg-gray-100`}>
-        <Text style={tw`text-3xl text-center mb-8 font-bold text-gray-800`}>Settings</Text>
+    <BackgroundView style={tw`pt-40 ${themeClasses.backgroundPrimary}`}>
+      <ScrollView contentContainerStyle={tw`p-5`}>
+        <Text style={tw`${themeClasses.textPrimary} text-3xl text-center mb-8 font-bold`}>Settings</Text>
 
         <View style={tw`mb-6 flex flex-row items-center justify-between`}>
-          <Text style={tw`text-base mb-2 text-gray-600`}>Native Language</Text>
-          <Menu
-            visible={nativeVisible}
-            onDismiss={closeNativeMenu}
-            anchor={
-              <Button mode="outlined" onPress={openNativeMenu} style={tw`border-gray-300 text-gray-800`}>
-                {iso6391.getName(formNativeLanguage)}
-                <View style={tw`flex items-center justify-center`}>
-                  <IconButton 
-                    icon={targetVisible ? 'chevron-up' : 'chevron-down'} 
-                    size={20} 
-                    style={tw`m-0 pt-2 mr-[-18px]`} 
-                  />
-                </View>
-              </Button>
-            }
-          >
-            <ScrollView style={{ maxHeight: 300 }}>
-              {languages.map((lang) => (
-                <Menu.Item
-                  key={lang.code}
-                  onPress={() => {
-                    if (lang.code !== '') {
-                      setFormNativeLanguage(lang.code);
-                    }
-                    closeNativeMenu();
-                  }}
-                  title={lang.name}
-                />
-              ))}
-            </ScrollView>
-          </Menu>
+          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>Native Language</Text>
+          <LanguageSelector
+            selectedLanguage={formNativeLanguage}
+            onSelectLanguage={setFormNativeLanguage}
+            style={languageSelectorClasses}
+          />
         </View>
 
         <View style={tw`mb-6 flex flex-row items-center justify-between`}>
-          <Text style={tw`text-base mb-2 text-gray-600`}>Target Language</Text>
-          <Menu
-            visible={targetVisible}
-            onDismiss={closeTargetMenu}
-            anchor={
-              <Button 
-                mode="outlined" 
-                onPress={openTargetMenu} 
-                style={tw`border-gray-300 text-gray-800 flex flex-row justify-between items-center`}
-              >
-                {iso6391.getName(formTargetLanguage)}
-                <View style={tw`flex items-center justify-center`}>
-                  <IconButton 
-                    icon={targetVisible ? 'chevron-up' : 'chevron-down'} 
-                    size={20} 
-                    style={tw`m-0 pt-2 mr-[-18px]`} 
-                  />
-                </View>
-              </Button>
-            }
-          >
-            <ScrollView style={{ maxHeight: 300 }}>
-              {languages.map((lang) => (
-                <Menu.Item
-                  key={lang.code}
-                  onPress={() => {
-                    if (lang.code !== '') {
-                      setFormTargetLanguage(lang.code);
-                    }
-                    closeTargetMenu();
-                  }}
-                  title={lang.name}
-                />
-              ))}
-            </ScrollView>
-          </Menu>
+          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>Target Language</Text>
+          <LanguageSelector
+            selectedLanguage={formTargetLanguage}
+            onSelectLanguage={setFormTargetLanguage}
+            style={languageSelectorClasses}
+          />
+        </View>
+
+        <View style={tw`mb-6 flex flex-row items-center justify-between`}>
+          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>Theme</Text>
+          <TouchableOpacity style={tw`flex-row items-center rounded w-12 h-12`} onPress={toggleTheme}>
+            <Icon
+              name={theme.dark ? 'white-balance-sunny' : 'weather-night'}
+              color={theme.colors.textPrimary}
+              size={24}
+              onPress={toggleTheme}
+            />
+          </TouchableOpacity>
         </View>
 
         <Button
           mode="contained"
           onPress={handleSaveLanguages}
-          style={tw`bg-purple-600 mb-`}
+          style={tw`bg-purple-600 mb-4`}
           labelStyle={tw`text-white`}
           disabled={loading}
         >
@@ -168,40 +102,9 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
 
         <Divider style={tw`my-4`} />
 
-        <TouchableOpacity
-          onPress={() => setDangerZoneVisible(!dangerZoneVisible)}
-          style={tw`flex flex-row justify-between items-center h-11`}
-        >
-          <Text style={tw`font-bold`}>{dangerZoneVisible ? 'More' : 'More'}</Text>
-          <IconButton icon={dangerZoneVisible ? 'chevron-up' : 'chevron-down'} size={20} />
-        </TouchableOpacity>
-        {dangerZoneVisible && (
-          <View style={tw`mt-4`}>
-            <Button
-              mode="outlined"
-              onPress={confirmDeleteAllFlashcards}
-              style={tw`border-gray-300 text-gray-800`}
-            >
-              Delete All Flashcards
-            </Button>
-            <Button
-              mode="outlined"
-              onPress={clearAndReload}
-              style={tw`border-gray-300 text-gray-800 mt-4`}
-            >
-              Hard Refresh App
-            </Button>
-            <Button
-              mode="outlined"
-              onPress={handleLogout}
-              style={tw`border-gray-300 text-gray-800 mt-4`}
-            >
-              Logout
-            </Button>
-          </View>
-        )}
-      </View>
-    </Provider>
+        <MoreSettings navigation={navigation} />
+      </ScrollView>
+    </BackgroundView>
   );
 };
 

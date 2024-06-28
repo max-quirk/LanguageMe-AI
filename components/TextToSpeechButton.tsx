@@ -5,6 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import tw from 'twrnc';
 import SoundPlayer from 'react-native-sound-player';
 import { fetchSpeechUrl } from '../services/chatGpt';
+import { useTheme } from '../contexts/ThemeContext';
 
 type TextToSpeechButtonProps = {
   text: string;
@@ -17,6 +18,8 @@ const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({ text, type, id,
   const [audioFile, setAudioFile] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isFirstClick, setIsFirstClick] = useState<boolean>(true);
+
+  const { theme } = useTheme()
 
   useEffect(() => {
     // Reset states when the word changes
@@ -60,7 +63,7 @@ const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({ text, type, id,
       {loading ? (
         <ActivityIndicator size="small" style={tw`mr-3`} />
       ) : (
-        <MaterialCommunityIcons name="volume-high" size={size} color="black" />
+        <MaterialCommunityIcons name="volume-high" size={size} color={theme.colors.textPrimary} />
       )}
     </TouchableOpacity>
   );

@@ -9,6 +9,7 @@ import DefinitionModal from './DefinitionModal';
 import { cleanPunctuation } from '../../../utils/readings';
 import ReadingSpeakerSlider from '../../ReadingSpeakerSlider';
 import { useAudio } from '../../../contexts/AudioContext';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 type ReadingScreenRouteProp = RouteProp<RootStackParamList, 'Reading'>;
 
@@ -22,6 +23,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   const [selectedWord, setSelectedWord] = useState<string>('');
   const [helperVisible, setHelperVisible] = useState(false);
   const { pauseAudio } = useAudio();
+  const { theme } = useTheme();
 
   useEffect(() => {
     const checkFirstTimeUser = async () => {
@@ -44,7 +46,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
 
   const renderWord = (word: string, index: number) => (
     <TouchableOpacity key={`${word}-${index}`} onPress={() => handleWordPress(word)}>
-      <Text style={tw`text-xl leading-9`}>{word} </Text>
+      <Text style={tw`text-xl leading-9 ${theme.classes.textPrimary}`}>{word} </Text>
     </TouchableOpacity>
   );
 
@@ -55,9 +57,9 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   );
 
   return (
-    <View style={tw`flex-1 px-5`}>
+    <View style={tw`flex-1 ${theme.classes.backgroundPrimary} px-5`}>
       <ScrollView style={tw`flex-1 px-5 pt-20`}>
-        <Text style={tw`text-2xl mb-4`}>{reading.description}</Text>
+        <Text style={tw`text-2xl mb-4 ${theme.classes.textPrimary}`}>{reading.description}</Text>
         <View style={tw`mb-60`}>{reading.passage?.split('\n').map((line, index) => renderLine(line, index))}</View>
         <HelperPopup
           title="How to use"

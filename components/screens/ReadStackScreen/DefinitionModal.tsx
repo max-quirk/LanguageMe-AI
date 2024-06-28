@@ -9,6 +9,7 @@ import { cleanPunctuation } from '../../../utils/readings';
 import TextToSpeechButton from '../../TextToSpeechButton'; 
 import Button from '../../Button';
 import RomanizeButton from '../../RomanizeButton';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 type DefinitionModalProps = {
   visible: boolean;
@@ -24,6 +25,7 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
   const [romanized, setRomanized] = useState<string | null>(null);
   const [showRomanized, setShowRomanized] = useState(false);
   const [added, setAdded] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchTranslations = async () => {
@@ -82,12 +84,12 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
 
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={handleDismiss}>
+      <Dialog visible={visible} onDismiss={handleDismiss} style={tw`${theme.classes.backgroundSecondary}`}>
         <View style={tw`flex flex-row items-center pl-6`}>
           {targetLanguageRomanizable && (
             <RomanizeButton show={!showRomanized} onPress={() => setShowRomanized(!showRomanized)} />
           )}
-          <Dialog.Title style={tw`capitalize ${targetLanguageRomanizable ? 'ml-[-10px]': ''}`}>
+          <Dialog.Title style={tw`capitalize ${targetLanguageRomanizable ? 'ml-[-10px]': ''} ${theme.classes.textPrimary}`}>
             {showRomanized ?
               <>
                 {romanized ? romanized : <ActivityIndicator size="small" />}
@@ -101,7 +103,7 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
             <ActivityIndicator style={tw`py-10`} size="large" />
           ) : (
             <View>
-              <Paragraph style={tw`pl-4`}>
+              <Paragraph style={tw`pl-4 ${theme.classes.textPrimary}`}>
                 {translations.length > 0 ? (
                   <>
                     {translations.map((translation, index) => (

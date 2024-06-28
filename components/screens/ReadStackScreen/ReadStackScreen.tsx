@@ -5,12 +5,22 @@ import AddReadingScreen from "./AddReadingScreen";
 import ReadingScreen from "./ReadingScreen";
 import { RootStackParamList } from "types";
 import BackButton from '../../BackButton';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 export default function ReadStackScreen() {
   const ReadStack = createStackNavigator<RootStackParamList>();
+  const { theme } = useTheme();
 
   return (
-    <ReadStack.Navigator screenOptions={{ headerShown: true }}>
+    <ReadStack.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: theme.colors.backgroundPrimary, // Set the background color for the header
+        },
+        headerTintColor: theme.colors.textPrimary, // Set the text color for the header
+      }}
+    >
       <ReadStack.Screen name="ReadingsList" component={ReadingsListScreen} options={{ headerShown: false }} />
       <ReadStack.Screen 
         name="AddReading" 

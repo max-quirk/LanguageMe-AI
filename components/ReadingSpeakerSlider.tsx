@@ -8,6 +8,7 @@ import { fetchSpeechUrl } from '../services/chatGpt';
 import { Reading } from 'types';
 import { useAudio } from '../contexts/AudioContext';
 import TrackPlayer, { useProgress, usePlaybackState, State } from 'react-native-track-player';
+import { useTheme } from '../contexts/ThemeContext';
 
 type ReadingSpeakerSliderProps = {
   reading: Reading;
@@ -19,6 +20,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   const { playPauseAudio } = useAudio();
   const playbackState = usePlaybackState();
   const { position, duration } = useProgress(50);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchAudio = async () => {
@@ -40,7 +42,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
     fetchAudio();
 
     return () => {
-      TrackPlayer.stop();
+      TrackPlayer.reset();
       setAudioFile(null);
     };
   }, [reading.passage]);
@@ -62,29 +64,29 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   };
 
   return (
-    <View style={tw`absolute bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-300`}>
+    <View style={tw`absolute bottom-0 left-0 right-0 ${theme.classes.backgroundTertiary} p-4 border-t ${theme.classes.borderPrimary}`}>
       <Slider
         style={tw`w-full my-2`}
         minimumValue={0}
         maximumValue={1}
         value={duration ? position / duration : 0}
         onSlidingComplete={handleSliderChange}
-        minimumTrackTintColor="#7C3AED" // purple-500
-        thumbTintColor="#7C3AED" // purple-500
+        minimumTrackTintColor='#7C3AED'// purple-500
+        thumbTintColor='#7C3AED'
       />
       <View style={tw`flex-row justify-around items-center mb-2`}>
         <TouchableOpacity onPress={rewindAudio} disabled={loading}>
-          <MaterialCommunityIcons name="rewind-5" size={24} color="black" />
+          <MaterialCommunityIcons name="rewind-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => audioFile && playPauseAudio(audioFile)} disabled={loading}>
           {loading ? (
             <ActivityIndicator size="small" />
           ) : (
-            <MaterialCommunityIcons name={playbackState.state === State.Playing ? "pause" : "play"} size={24} color="black" />
+            <MaterialCommunityIcons name={playbackState.state === State.Playing ? "pause" : "play"} size={24} color={theme.colors.textPrimary} />
           )}
         </TouchableOpacity>
         <TouchableOpacity onPress={fastForwardAudio} disabled={loading}>
-          <MaterialCommunityIcons name="fast-forward-5" size={24} color="black" />
+          <MaterialCommunityIcons name="fast-forward-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
       </View>
     </View>

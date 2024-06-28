@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-
+import tw from 'twrnc';
 import LoginScreen from './components/screens/LoginScreen';
 import RegisterScreen from './components/screens/RegisterScreen';
 import LanguageSelectionScreen from './components/screens/LanguageSelectionScreen';
@@ -13,10 +13,11 @@ import ReadStackScreen from './components/screens/ReadStackScreen';
 import LearnStackScreen from './components/screens/LearnStackScreen';
 import SettingsStackScreen from './components/screens/SettingsStackScreen';
 
-import { PaperProvider } from 'react-native-paper';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AudioProvider } from './contexts/AudioContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import TrackPlayer from 'react-native-track-player';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 import BackButton from './components/BackButton';
 
@@ -24,6 +25,8 @@ const Tab = createBottomTabNavigator();
 const RootStack = createStackNavigator();
 
 function TabNavigator() {
+  const { theme } = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -40,14 +43,13 @@ function TabNavigator() {
             iconName = 'bars';
           }
 
-          return <Icon name={iconName} size={size} color={color} />;
+          return <Icon name={iconName} size={size} color={color} style={tw`mt-2`} />;
         },
         headerShown: false,
+        tabBarActiveTintColor: 'tomato', 
+        tabBarInactiveTintColor: theme.colors.textSecondary,
+        tabBarStyle: tw`${theme.classes.backgroundSecondary} h-24`,
       })}
-      tabBarOptions={{
-        activeTintColor: 'tomato',
-        inactiveTintColor: 'gray',
-      }}
     >
       <Tab.Screen name="Read" component={ReadStackScreen} />
       <Tab.Screen name="Flashcards" component={LearnStackScreen} />
@@ -56,7 +58,7 @@ function TabNavigator() {
   );
 }
 
-export default function App() {
+function App() {
   useEffect(() => {
     const setupPlayer = async () => {
       await TrackPlayer.setupPlayer();
@@ -79,30 +81,34 @@ export default function App() {
   }, []);
 
   return (
-    <LanguageProvider>
-      <AudioProvider>
-        <PaperProvider>
-          <NavigationContainer>
-            <RootStack.Navigator initialRouteName="Login">
-              <RootStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-              <RootStack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
-              <RootStack.Screen name="LanguageSelection" component={LanguageSelectionScreen} options={{ headerShown: false }} />
-              <RootStack.Screen
-                name="TargetLanguageSelection"
-                component={TargetLanguageSelectionScreen}
-                options={({ navigation }) => ({
-                  headerShown: true,
-                  title: '',
-                  headerLeft: () => (
-                    <BackButton onPress={() => navigation.goBack()} />
-                  ),
-                })}
-              />
-              <RootStack.Screen name="Main" component={TabNavigator} options={{ headerShown: false }} />
-            </RootStack.Navigator>
-          </NavigationContainer>
-        </PaperProvider>
-      </AudioProvider>
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AudioProvider>
+          <PaperProvider>
+            <NavigationContainer>
+              <RootStack.Navigator initialRouteName="Login">
+                <RootStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+                <RootStack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+                <RootStack.Screen name="LanguageSelection" component={LanguageSelectionScreen} options={{ headerShown: false }} />
+                <RootStack.Screen
+                  name="TargetLanguageSelection"
+                  component={TargetLanguageSelectionScreen}
+                  options={({ navigation }) => ({
+                    headerShown: true,
+                    title: '',
+                    headerLeft: () => (
+                      <BackButton onPress={() => navigation.goBack()} />
+                    ),
+                  })}
+                />
+                <RootStack.Screen name="Main" component={TabNavigator} options={{ headerShown: false }} />
+              </RootStack.Navigator>
+            </NavigationContainer>
+          </PaperProvider>
+        </AudioProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }
+
+export default App;

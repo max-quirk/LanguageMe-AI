@@ -12,6 +12,8 @@ import { isFirstTimeUser, setFirstTimeUser } from '../../../utils/storageUtils';
 import Button from '../../Button';
 import TextToSpeechButton from '../../TextToSpeechButton';
 import RomanizeButton from '../../RomanizeButton';
+import { useTheme } from '../../../contexts/ThemeContext';
+import BackgroundView from '../../BackgroundView';
 
 type FlashcardsScreenNavigationProp = NavigationProp<RootStackParamList>;
 
@@ -28,6 +30,7 @@ const FlashcardsScreen = () => {
   const [_firstTimeUser, _setFirstTimeUser] = useState(false);
 
   const navigation = useNavigation<FlashcardsScreenNavigationProp>();
+  const { theme } = useTheme();
 
   const cardNextIntervals = currentFlashcard ? getNextIntervals(currentFlashcard) : DEFAULT_INTERVALS;
 
@@ -117,12 +120,12 @@ const FlashcardsScreen = () => {
     if (isFront) {
       return (
         <View>
-          <Text style={tw`text-2xl mb-4 capitalize`}>
+          <Text style={[tw`text-2xl mb-4 capitalize ${theme.classes.textPrimary}`]}>
             {showRomanized && frontWordRomanized ? 
               frontWordRomanized : 
               frontWord}
           </Text>
-          <Text style={tw`text-lg mb-4`}>
+          <Text style={[tw`text-lg mb-4 ${theme.classes.textPrimary}`]}>
             {showRomanized && frontExampleRomanized ? 
               frontExampleRomanized : 
               frontExampleSentence}
@@ -147,8 +150,8 @@ const FlashcardsScreen = () => {
     } else {
       return (
         <>
-          <Text style={tw`text-2xl mb-4 capitalize`}>{currentFlashcard?.back.word}</Text>
-          <Text style={tw`text-lg mb-6`}>{currentFlashcard?.back.example}</Text>
+          <Text style={tw`text-2xl mb-4 capitalize ${theme.classes.textPrimary}`}>{currentFlashcard?.back.word}</Text>
+          <Text style={tw`text-lg mb-6 ${theme.classes.textPrimary}`}>{currentFlashcard?.back.example}</Text>
           <FlashcardEaseButtons
             cardNextIntervals={cardNextIntervals}
             handleNextFlashcard={handleNextFlashcard}
@@ -160,88 +163,96 @@ const FlashcardsScreen = () => {
 
   if (loading) {
     return (
-      <View style={tw`flex-1 justify-center items-center`}>
-        <ActivityIndicator size="large" />
-      </View>
+      <BackgroundView>
+        <View style={tw`flex-1 justify-center items-center`}>
+          <ActivityIndicator size="large" />
+        </View>
+      </BackgroundView>
     );
   }
 
   if (completed) {
     return (
-      <ScrollView
-        contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
-      >
-        <Text style={tw`text-xl mb-4`}>You&apos;ve completed today&apos;s flashcards!</Text>
-        <Text style={tw`text-lg mb-8`}>Great job! Add some new words or review your readings to keep up the momentum.</Text>
-        <Button
-          mode="contained"
-          onPress={() => navigation.reset({
-            index: 0,
-            routes: [{ name: 'Main', params: { screen: 'Read' } }],
-          })}
-          style={tw`bg-purple-600`}
+      <BackgroundView>
+        <ScrollView
+          contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
         >
-          <Text style={tw`text-white text-base font-medium`}>Go to Readings</Text>
-        </Button>
-      </ScrollView>
+          <Text style={tw`text-xl mb-4 ${theme.classes.textPrimary}`}>You&apos;ve completed today&apos;s flashcards!</Text>
+          <Text style={tw`text-lg mb-8 ${theme.classes.textPrimary}`}>Great job! Add some new words or review your readings to keep up the momentum.</Text>
+          <Button
+            mode="contained"
+            onPress={() => navigation.reset({
+              index: 0,
+              routes: [{ name: 'Main', params: { screen: 'Read' } }],
+            })}
+            style={tw`bg-purple-600`}
+          >
+            <Text style={tw`text-white text-base font-medium`}>Go to Readings</Text>
+          </Button>
+        </ScrollView>
+      </BackgroundView>
     );
   }
 
   if (flashcards.length === 0) {
     return (
+      <BackgroundView>
+        <ScrollView
+          contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+        >
+          <Text style={tw`text-xl mb-8 text-center px-4 ${theme.classes.textPrimary}`}>You haven&apos;t added any flashcards from your readings yet!</Text>
+          <Button
+            mode="contained"
+            onPress={() => navigation.reset({
+              index: 0,
+              routes: [{ name: 'Main', params: { screen: 'Read' } }],
+            })}
+            style={tw`bg-purple-600`}
+          >
+            <Text style={tw`text-white`}>Go to Readings</Text>
+          </Button>
+        </ScrollView>
+      </BackgroundView>
+    );
+  }
+
+  return (
+    <BackgroundView>
       <ScrollView
         contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
       >
-        <Text style={tw`text-xl mb-8 text-center px-4`}>You haven&apos;t added any flashcards from your readings yet!</Text>
-        <Button
-          mode="contained"
-          onPress={() => navigation.reset({
-            index: 0,
-            routes: [{ name: 'Main', params: { screen: 'Read' } }],
-          })}
-          style={tw`bg-purple-600`}
-        >
-          <Text style={tw`text-white`}>Go to Readings</Text>
-        </Button>
+        {currentFlashcard && (
+          <TouchableOpacity onPress={handleFlipCard}>
+            <PaperCard style={tw`mb-4 py-5 w-90 ${theme.classes.backgroundTertiary} border ${theme.classes.borderPrimary}`}>
+              <PaperCard.Content>
+                {renderCardContent()}
+              </PaperCard.Content>
+            </PaperCard>
+          </TouchableOpacity>
+        )}
+        <HelperPopup 
+          title="How to use"
+          text="Tap the flashcard to reveal the other side."
+          visible={frontCardHelperVisible}
+          onClose={() => setFrontCardHelperVisible(false)}
+        />
+        <HelperPopup 
+          title="Select difficulty"
+          text="Select how easy you found the card. Each button shows the approximate time it will take for you to see the card again."
+          visible={backCardHelperVisible}
+          onClose={() => setBackCardHelperVisible(false)}
+        />
       </ScrollView>
-    );
-  }
-
-  return (
-    <ScrollView
-      contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-      }
-    >
-      {currentFlashcard && (
-        <TouchableOpacity onPress={handleFlipCard}>
-          <PaperCard style={tw`mb-4 py-5 w-90`}>
-            <PaperCard.Content>
-              {renderCardContent()}
-            </PaperCard.Content>
-          </PaperCard>
-        </TouchableOpacity>
-      )}
-      <HelperPopup 
-        title="How to use"
-        text="Tap the flashcard to reveal the other side."
-        visible={frontCardHelperVisible}
-        onClose={() => setFrontCardHelperVisible(false)}
-      />
-      <HelperPopup 
-        title="Select difficulty"
-        text="Select how easy you found the card. Each button shows the approximate time it will take for you to see the card again."
-        visible={backCardHelperVisible}
-        onClose={() => setBackCardHelperVisible(false)}
-      />
-    </ScrollView>
+    </BackgroundView>
   );
 };
 

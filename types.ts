@@ -40,6 +40,8 @@ export type FlashCard = {
   reps: number,
   firstMarkedEasy?: Date, 
   lastMarkedEasy?: Date,
+  // firstAdded
+  // difficultyLastMarked
 }
 
 export type Reading = {

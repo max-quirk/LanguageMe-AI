@@ -12,6 +12,8 @@ import HelperPopup from '../../HelperPopup';
 import { isFirstTimeUser } from '../../../utils/storageUtils';
 import Button from '../../Button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useTheme } from '../../../contexts/ThemeContext';
+import BackgroundView from '../../BackgroundView';
 
 export type ReadingsListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reading', 'AddReading'>;
 
@@ -21,6 +23,7 @@ const ReadingsListScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [helperVisible, setHelperVisible] = useState(false);
   const navigation = useNavigation<ReadingsListScreenNavigationProp>();
+  const { theme } = useTheme();
 
   const fetchReadings = async () => {
     const user = firebase.auth().currentUser;
@@ -67,39 +70,41 @@ const ReadingsListScreen: React.FC = () => {
   };
 
   return (
-    <View style={tw`flex-1 p-5 mt-20 bg-gray-100`}>
-      <HelperPopup
-        title="Getting Started"
-        text="Welcome! Start by creating a reading passage on a topic you love. Tap on any word to view its definition and add it to your flashcards for easy review."
-        visible={helperVisible}
-        onClose={() => setHelperVisible(false)}
-      />
-      <Text style={tw`text-3xl mb-6 text-center font-bold text-gray-800`}>Readings</Text>
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate('AddReading')}
-        style={tw`mb-6 bg-purple-600 h-14`}
-        contentStyle={tw`h-14`}
-      >
-        <View style={tw`flex flex-row gap-2 pt-1 items-center`}>
-          <Icon name="plus" size={28} color="white"/>
-          <Text style={tw`text-lg text-white font-bold`}>Generate Reading</Text>
-        </View>
-      </Button>
-      {loading ? (
-        <ActivityIndicator size="small" />
-      ) : (
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
+    <BackgroundView>
+      <View style={tw`flex-1 p-5 mt-20 ${theme.classes.backgroundPrimary}`}>
+        <HelperPopup
+          title="Getting Started"
+          text="Welcome! Start by creating a reading passage on a topic you love. Tap on any word to view its definition and add it to your flashcards for easy review."
+          visible={helperVisible}
+          onClose={() => setHelperVisible(false)}
+        />
+        <Text style={tw`text-3xl mb-6 text-center font-bold ${theme.classes.textPrimary}`}>Readings</Text>
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate('AddReading')}
+          style={tw`mb-6 bg-purple-600 h-14`}
+          contentStyle={tw`h-14`}
         >
-          {readings.map(reading => (
-            <ReadingCard key={reading.id} reading={reading} onDelete={handleDelete} />
-          ))}
-        </ScrollView>
-      )}
-    </View>
+          <View style={tw`flex flex-row gap-2 pt-1 items-center`}>
+            <Icon name="plus" size={28} color="white"/>
+            <Text style={tw`text-lg text-white font-bold`}>Generate Reading</Text>
+          </View>
+        </Button>
+        {loading ? (
+          <ActivityIndicator size="small" />
+        ) : (
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+            }
+          >
+            {readings.map(reading => (
+              <ReadingCard key={reading.id} reading={reading} onDelete={handleDelete} />
+            ))}
+          </ScrollView>
+        )}
+      </View>
+    </BackgroundView>
   );
 };
 
