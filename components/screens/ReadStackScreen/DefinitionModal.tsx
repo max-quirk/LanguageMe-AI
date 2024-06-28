@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, ActivityIndicator, View } from 'react-native';
-import { Dialog, Paragraph, Portal } from 'react-native-paper';
+import { Text, View } from 'react-native';
+import { Dialog, Paragraph, Portal, ActivityIndicator } from 'react-native-paper';
 import tw from 'twrnc';
 import { LanguageContext } from '../../../contexts/LanguageContext';
-import { getPossibleTranslations } from '../../../services/chatGpt';
+import { getPossibleTranslations, romanizeText } from '../../../services/chatGpt';
 import { addFlashcard } from '../../../utils/flashcards';
 import { cleanPunctuation } from '../../../utils/readings';
 import TextToSpeechButton from '../../TextToSpeechButton'; 
 import Button from '../../Button';
-import { languageCodeToName } from 'utils/languages';
+import RomanizeButton from '../../RomanizeButton';
 
 type DefinitionModalProps = {
   visible: boolean;
@@ -17,16 +17,19 @@ type DefinitionModalProps = {
 };
 
 const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDismiss }) => {
-  const { nativeLanguage, targetLanguage } = useContext(LanguageContext);
+  const { nativeLanguage, targetLanguage, targetLanguageRomanizable } = useContext(LanguageContext);
   const [definitionLoading, setDefinitionLoading] = useState(false);
   const [addToFlashcardsLoading, setAddToFlashcardsLoading] = useState(false);
   const [translations, setTranslations] = useState<string[]>([]);
+  const [romanized, setRomanized] = useState<string | null>(null);
+  const [showRomanized, setShowRomanized] = useState(false);
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
     const fetchTranslations = async () => {
       setDefinitionLoading(true);
       setTranslations([]);
+      setRomanized(null);
       try {
         const translationsList = await getPossibleTranslations({ 
           word: cleanPunctuation(word), 
@@ -38,8 +41,13 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
           .map(item => cleanPunctuation(item))
           .filter(item => item !== '') ?? [];
         setTranslations(translationsArray);
+
+        if (targetLanguageRomanizable) {
+          const romanizedText = await romanizeText({ text: word, language: targetLanguage});
+          setRomanized(romanizedText);
+        }
       } catch (error) {
-        console.error('Error fetching translations:', error);
+        console.error('Error fetching translations or romanized text:', error);
       }
       setDefinitionLoading(false);
     };
@@ -52,7 +60,12 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
   const handleAddToFlashcards = async () => {
     setAddToFlashcardsLoading(true);
     try {
-      await addFlashcard({ word, wordLanguage: targetLanguage, translateTo: nativeLanguage });
+      await addFlashcard({ 
+        word, 
+        romanizedWord: romanized,
+        wordLanguage: targetLanguage, 
+        translateTo: nativeLanguage,
+      });
       setAdded(true);
     } catch (error) {
       console.error('Error adding flashcard:', error);
@@ -62,6 +75,7 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
 
   const handleDismiss = () => {
     setAdded(false);
+    setShowRomanized(false);
     setAddToFlashcardsLoading(false);
     onDismiss();
   };
@@ -69,10 +83,19 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
   return (
     <Portal>
       <Dialog visible={visible} onDismiss={handleDismiss}>
-        <Dialog.Title style={tw`capitalize`}>
-          {word}
+        <View style={tw`flex flex-row items-center pl-6`}>
+          {targetLanguageRomanizable && (
+            <RomanizeButton show={!showRomanized} onPress={() => setShowRomanized(!showRomanized)} />
+          )}
+          <Dialog.Title style={tw`capitalize ${targetLanguageRomanizable ? 'ml-[-10px]': ''}`}>
+            {showRomanized ?
+              <>
+                {romanized ? romanized : <ActivityIndicator size="small" />}
+              </>
+            : word}
+          </Dialog.Title>
           <TextToSpeechButton text={word} id={word} type={'word'} />
-        </Dialog.Title>
+        </View>
         <Dialog.Content>
           {definitionLoading ? (
             <ActivityIndicator style={tw`py-10`} size="large" />
@@ -99,11 +122,11 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
           <Button
             mode="contained"
             onPress={handleAddToFlashcards}
-            style={tw`w-[160px]`}
+            style={tw`${added ? 'w-[160px] bg-grey-500' : 'w-[160px] bg-purple-600'}`}
             disabled={added || addToFlashcardsLoading}
           >
             {addToFlashcardsLoading ? (
-              <ActivityIndicator style={tw`p-0 pt-1`} size={18} />
+              <ActivityIndicator style={tw`p-0 pt-1`} size={18} color='white' />
             ) : added ? (
               'Added'
             ) : (

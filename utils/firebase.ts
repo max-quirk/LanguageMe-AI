@@ -1,3 +1,4 @@
+import { LanguageCode } from 'iso-639-1';
 import { firebase } from '../config/firebase';
 
 interface UserDoc {
@@ -20,12 +21,20 @@ export const getUserDoc = async (userId: string): Promise<UserDoc | null> => {
   }
 };
 
-export const getUserLanguageFromFirebase = async (userId: string): Promise<{ nativeLanguage: string; targetLanguage: string } | null> => {
+export const getUserLanguageFromFirebase = async (
+  userId: string
+): Promise<{ 
+  nativeLanguage: LanguageCode; 
+  targetLanguage: LanguageCode 
+} | null> => {
   try {
     const userDoc = await getUserDoc(userId);
     if (userDoc) {
-      const { nativeLanguage = '', targetLanguage = '' } = userDoc;
-      return { nativeLanguage, targetLanguage };
+      const { nativeLanguage, targetLanguage } = userDoc;
+      return { 
+        nativeLanguage: nativeLanguage as LanguageCode, 
+        targetLanguage: targetLanguage as LanguageCode
+      };
     } else {
       return null;
     }

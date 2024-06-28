@@ -1,4 +1,5 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
+import { LanguageCode } from "iso-639-1";
 
 export type MainTabParamList = {
   Home: undefined;
@@ -11,7 +12,7 @@ export type RootStackParamList = {
   Main: NavigatorScreenParams<MainTabParamList>; 
   Register: undefined;
   LanguageSelection: undefined;
-  TargetLanguageSelection: { nativeLanguage: string };
+  TargetLanguageSelection: { nativeLanguage: LanguageCode };
   ReadingsList: undefined;
   AddReading: undefined;
   Reading: {
@@ -25,7 +26,9 @@ export type FlashCard = {
   id: string,
   front: {
     word: string,
+    wordRomanized: string,
     example: string,
+    exampleRomanized: string,
   },
   back: {
     word: string,

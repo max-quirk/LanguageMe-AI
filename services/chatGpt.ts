@@ -40,7 +40,7 @@ export const generateReadingPassage = async ({
       model: "gpt-3.5-turbo",
       messages: [{ 
         role: "user", 
-        content: `Generate a ${wordCount}-word passage about "${description}" in the language with code '${targetLanguage}' with each word separated by a space. ${difficultyPrompt} For example, in Chinese (zh), "当 我们 谈到 撒旦 时， 我们 常常 ..."` }],
+        content: `Generate a ${wordCount}-word passage about "${description}" in the language with code '${targetLanguage}' with each word separated by a space. ${difficultyPrompt} For example, in Chinese, words should be spaced like "当 我们 谈到 撒旦 时， 我们 常常 ..."` }],
       temperature: 0.7,
       n: 1
     });
@@ -140,6 +140,35 @@ export const getPossibleTranslations = async ({
     return response.choices[0].message.content;
   } catch (error) {
     console.error('Error getting translations:', error);
+    throw error;
+  }
+};
+
+// e.g. converts 你好 to nǐhaǒ
+export const romanizeText = async ({
+  text, 
+  language
+}: {
+  text: string,
+  language: LanguageCode,
+}) => {
+  const languageName = languageCodeToName(language)
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { 
+          role: "user", 
+          content: `Romanize the following ${languageName} text with appropriate tones if necessary: "${text}". e.g. 你好 -> nǐhaǒ. No quotes.` 
+        }
+      ],
+      temperature: 0.7,
+      n: 1
+    });
+
+    return response.choices[0].message.content;
+  } catch (error) {
+    console.error('Error romanizing text:', error);
     throw error;
   }
 };

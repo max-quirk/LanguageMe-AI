@@ -1,40 +1,31 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, ScrollView } from 'react-native';
-import { Text, Menu, Provider } from 'react-native-paper';
+import { View } from 'react-native';
+import { Provider, Text } from 'react-native-paper';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { firebase } from '../../config/firebase';
-import Button from '../Button';
-
-import languages from '../../utils/languages';
 import tw from 'twrnc';
-import iso6391 from 'iso-639-1';
 import { RootStackParamList } from '../../types';
 import { LanguageContext } from '../../contexts/LanguageContext';
-
-type TargetLanguageSelectionScreenNavigationProp = StackNavigationProp<RootStackParamList, 'TargetLanguageSelection'>;
-type TargetLanguageSelectionScreenRouteProp = RouteProp<RootStackParamList, 'TargetLanguageSelection'>;
+import Button from '../Button';
+import LanguageSelector from '../LanguageSelector';
+import { LanguageCode } from 'iso-639-1';
 
 type Props = {
-  navigation: TargetLanguageSelectionScreenNavigationProp;
-  route: TargetLanguageSelectionScreenRouteProp;
+  navigation: StackNavigationProp<RootStackParamList, 'TargetLanguageSelection'>;
+  route: RouteProp<RootStackParamList, 'TargetLanguageSelection'>;
 };
 
 const TargetLanguageSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
   const { nativeLanguage } = route.params;
   const { saveLanguages } = useContext(LanguageContext);
-  const [targetLanguage, setTargetLanguage] = useState<string>('es');
-  const [visible, setVisible] = useState<boolean>(false);
-  
-  const openMenu = () => setVisible(true);
+  const [targetLanguage, setTargetLanguage] = useState<LanguageCode>('es');
 
-  const closeMenu = () => setVisible(false);
   useEffect(() => {
     const checkAuthStatus = async () => {
       const user = firebase.auth().currentUser;
       if (!user) {
-        // Redirect to login screen if not authenticated
-        navigation.navigate('Login'); 
+        navigation.navigate('Login'); // Redirect to login screen if not authenticated
       }
     };
 
@@ -49,7 +40,6 @@ const TargetLanguageSelectionScreen: React.FC<Props> = ({ navigation, route }) =
           nativeLanguage,
           targetLanguage,
         });
-        console.log('saved targetLanguage: ', targetLanguage)
         saveLanguages(nativeLanguage, targetLanguage);
         navigation.navigate('Main', { screen: 'Home' });
       } else {
@@ -62,26 +52,12 @@ const TargetLanguageSelectionScreen: React.FC<Props> = ({ navigation, route }) =
 
   return (
     <Provider>
-      <View style={tw`flex-1 justify-center p-5`}>
+      <View style={tw`flex-1 justify-center px-5 mt-[-100px]`}>
         <Text style={tw`text-2xl text-center mb-4`}>Select Your Target Language</Text>
-        <Menu
-          visible={visible}
-          onDismiss={closeMenu}
-          anchor={<Button onPress={openMenu}>{iso6391.getName(targetLanguage)}</Button>}
-        >
-          <ScrollView style={{ maxHeight: 300 }}>
-            {languages.map((lang) => (
-              <Menu.Item
-                key={lang.code}
-                onPress={() => {
-                  setTargetLanguage(lang.code);
-                  closeMenu();
-                }}
-                title={lang.name}
-              />
-            ))}
-          </ScrollView>
-        </Menu>
+        <LanguageSelector
+          selectedLanguage={targetLanguage}
+          onSelectLanguage={setTargetLanguage}
+        />
         <Button
           mode="contained"
           onPress={handleFinish}

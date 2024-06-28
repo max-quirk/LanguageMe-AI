@@ -13,6 +13,11 @@ const chatGptSupportedLanguages = new Set([
   'Tamil', 'Telugu', 'Thai', 'Turkish', 'Ukrainian', 'Urdu', 'Vietnamese'
 ]);
 
+export const romanizableLangauges = new Set([
+  'zh', 'ja', 'th', 'ko',
+  //'Chinese', 'Japanese', 'Thai', 'Korean'
+])
+
 const languages = ISO6391.getAllNames().map((name) => ({
   name,
   code: ISO6391.getCode(name),

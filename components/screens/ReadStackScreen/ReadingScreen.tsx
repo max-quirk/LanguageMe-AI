@@ -44,7 +44,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
 
   const renderWord = (word: string, index: number) => (
     <TouchableOpacity key={`${word}-${index}`} onPress={() => handleWordPress(word)}>
-      <Text style={tw`text-lg`}>{word} </Text>
+      <Text style={tw`text-xl leading-9`}>{word} </Text>
     </TouchableOpacity>
   );
 

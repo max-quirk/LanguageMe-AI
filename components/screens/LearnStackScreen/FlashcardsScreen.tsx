@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
 import { Text, Card as PaperCard, ActivityIndicator } from 'react-native-paper';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -11,6 +11,8 @@ import HelperPopup from '../../HelperPopup';
 import { isFirstTimeUser, setFirstTimeUser } from '../../../utils/storageUtils';
 import Button from '../../Button';
 import TextToSpeechButton from '../../TextToSpeechButton';
+import { LanguageContext } from '../../../contexts/LanguageContext';
+import RomanizeButton from '../../RomanizeButton';
 
 type FlashcardsScreenNavigationProp = NavigationProp<RootStackParamList>;
 
@@ -23,7 +25,9 @@ const FlashcardsScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [frontCardHelperVisible, setFrontCardHelperVisible] = useState(false);
   const [backCardHelperVisible, setBackCardHelperVisible] = useState(false);
+  const [showRomanized, setShowRomanized] = useState(false);
   const [_firstTimeUser, _setFirstTimeUser] = useState(false);
+
   const navigation = useNavigation<FlashcardsScreenNavigationProp>();
 
   const cardNextIntervals = currentFlashcard ? getNextIntervals(currentFlashcard) : DEFAULT_INTERVALS;
@@ -107,20 +111,40 @@ const FlashcardsScreen = () => {
   };
 
   const frontWord = currentFlashcard?.front.word
+  const frontWordRomanized = currentFlashcard?.front.wordRomanized
   const frontExampleSentence = currentFlashcard?.front.example
-  
+  const frontExampleRomanized = currentFlashcard?.front.exampleRomanized
+
   const renderCardContent = () => {
     if (isFront) {
       return (
-        <>
-          <Text style={tw`text-2xl mb-4 capitalize`}>{currentFlashcard?.front.word}</Text>
-          <Text style={tw`text-lg mb-4`}>{currentFlashcard?.front.example}</Text>
-          <TextToSpeechButton 
-            type='flashcard' 
-            text={`${frontWord}. ${frontExampleSentence}`} 
-            id={currentFlashcard?.id ?? `flashcard_${frontWord}`} 
-          />
-        </>
+        <View>
+          <Text style={tw`text-2xl mb-4 capitalize`}>
+            {showRomanized && frontWordRomanized ? 
+              frontWordRomanized : 
+              frontWord}
+          </Text>
+          <Text style={tw`text-lg mb-4`}>
+            {showRomanized && frontExampleRomanized ? 
+              frontExampleRomanized
+            : frontExampleSentence}
+          </Text>
+          <View style={tw`flex items-center mt-4`}>
+            <TextToSpeechButton 
+              type='flashcard' 
+              text={`${frontWord}. ${frontExampleSentence}`} 
+              id={currentFlashcard?.id ?? `flashcard_${frontWord}`} 
+              size={28}
+            />
+          </View>
+          {frontWordRomanized || frontExampleRomanized &&
+            <RomanizeButton 
+              show={!showRomanized} 
+              onPress={() => setShowRomanized(!showRomanized)} 
+              style={tw`absolute right-0 top-[-15px]`}
+            />
+          }
+        </View>
       );
     } else {
       return (

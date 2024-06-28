@@ -7,7 +7,7 @@ import Button from '../../Button';
 
 import languages from '../../../utils/languages';
 import tw from 'twrnc';
-import iso6391 from 'iso-639-1';
+import iso6391, { LanguageCode } from 'iso-639-1';
 import { RootStackParamList } from '../../../types';
 import { LanguageContext } from '../../../contexts/LanguageContext';
 import { deleteAllFlashcards } from '../../../utils/flashcards';
@@ -21,8 +21,8 @@ type Props = {
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const { saveLanguages, nativeLanguage, targetLanguage } = useContext(LanguageContext);
-  const [formNativeLanguage, setFormNativeLanguage] = useState<string>(nativeLanguage);
-  const [formTargetLanguage, setFormTargetLanguage] = useState<string>(targetLanguage);
+  const [formNativeLanguage, setFormNativeLanguage] = useState<LanguageCode>(nativeLanguage);
+  const [formTargetLanguage, setFormTargetLanguage] = useState<LanguageCode>(targetLanguage);
 
   const [nativeVisible, setNativeVisible] = useState<boolean>(false);
   const [targetVisible, setTargetVisible] = useState<boolean>(false);
@@ -105,7 +105,9 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
                 <Menu.Item
                   key={lang.code}
                   onPress={() => {
-                    setFormNativeLanguage(lang.code);
+                    if (lang.code !== '') {
+                      setFormNativeLanguage(lang.code);
+                    }
                     closeNativeMenu();
                   }}
                   title={lang.name}
@@ -142,7 +144,9 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
                 <Menu.Item
                   key={lang.code}
                   onPress={() => {
-                    setFormTargetLanguage(lang.code);
+                    if (lang.code !== '') {
+                      setFormTargetLanguage(lang.code);
+                    }
                     closeTargetMenu();
                   }}
                   title={lang.name}

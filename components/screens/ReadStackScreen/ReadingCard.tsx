@@ -47,7 +47,7 @@ const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onDelete }) => {
   return (
     <Swipeable renderRightActions={renderRightActions}>
       <TouchableOpacity onPress={() => navigation.navigate('Reading', { reading })}>
-        <Card style={tw`mb-4 bg-white shadow-lg rounded-lg`}>
+        <Card style={[tw`mb-4 bg-white shadow-lg rounded-lg overflow-hidden`]}>
           <Card.Content>
             <Title style={tw`text-lg font-bold text-gray-900`}>{reading.description}</Title>
             <Paragraph style={tw`text-gray-700`} numberOfLines={1} ellipsizeMode="tail">{reading.passage}</Paragraph>

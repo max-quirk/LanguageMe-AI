@@ -20,7 +20,7 @@ type FirebaseAuthError = {
 };
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
-  const [email, setEmail] = useState<string>('Max.q.807+german@gmail.com');
+  const [email, setEmail] = useState<string>('max.q.807+good@gmail.com');
   const [password, setPassword] = useState<string>('bball4life1');
   const [error, setError] = useState<string | null>(null);
   const { saveLanguages } = useContext(LanguageContext);

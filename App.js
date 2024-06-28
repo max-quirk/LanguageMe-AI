@@ -18,6 +18,8 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { AudioProvider } from './contexts/AudioContext';
 import TrackPlayer from 'react-native-track-player';
 
+import BackButton from './components/BackButton';
+
 const Tab = createBottomTabNavigator();
 const RootStack = createStackNavigator();
 
@@ -75,6 +77,7 @@ export default function App() {
 
     setupPlayer();
   }, []);
+
   return (
     <LanguageProvider>
       <AudioProvider>
@@ -84,7 +87,17 @@ export default function App() {
               <RootStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
               <RootStack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
               <RootStack.Screen name="LanguageSelection" component={LanguageSelectionScreen} options={{ headerShown: false }} />
-              <RootStack.Screen name="TargetLanguageSelection" component={TargetLanguageSelectionScreen} options={{ headerShown: false }} />
+              <RootStack.Screen
+                name="TargetLanguageSelection"
+                component={TargetLanguageSelectionScreen}
+                options={({ navigation }) => ({
+                  headerShown: true,
+                  title: '',
+                  headerLeft: () => (
+                    <BackButton onPress={() => navigation.goBack()} />
+                  ),
+                })}
+              />
               <RootStack.Screen name="Main" component={TabNavigator} options={{ headerShown: false }} />
             </RootStack.Navigator>
           </NavigationContainer>

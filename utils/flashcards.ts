@@ -1,11 +1,12 @@
 import { DAY_IN_MS } from "../constants/time";
 import { FlashCard } from "types";
-import { generateExampleSentences } from "../services/chatGpt";
+import { generateExampleSentences, romanizeText } from "../services/chatGpt";
 import { firebase } from "@react-native-firebase/auth";
 import { getUserDoc, recordProgress } from "./firebase";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import { stripQuotes } from "./readings";
 import { LanguageCode } from "iso-639-1";
+import { romanizableLangauges } from "./languages";
 
 const BATCH_SIZE = 500;
 
@@ -109,10 +110,12 @@ export function getNextCard(cards: FlashCard[]): FlashCard | null {
 
 export const addFlashcard = async ({
   word,
+  romanizedWord,
   wordLanguage,
   translateTo,
 }: {
   word: string,
+  romanizedWord: string | null,
   wordLanguage: LanguageCode,
   translateTo: LanguageCode,
 }) => {
@@ -135,10 +138,21 @@ export const addFlashcard = async ({
       translateTo
     });
 
+    const romanizable = romanizableLangauges.has(wordLanguage)
+    let _romanizedWord = romanizedWord
+    let _exampleSentenceRomanized;
+
+    if (romanizable && exampleSentence) {
+      _exampleSentenceRomanized = await romanizeText({ text: exampleSentence, language: wordLanguage })
+      _romanizedWord = await romanizeText({ text: word, language: wordLanguage })
+    }
+
     const newFlashcard = {
       front: {
         word,
+        wordRomanized: _romanizedWord,
         example: stripQuotes(exampleSentence ?? ''),
+        exampleRomanized: stripQuotes(_exampleSentenceRomanized ?? '')
       },
       back: {
         word: translation,

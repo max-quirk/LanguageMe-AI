@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import tw from 'twrnc';
 import Slider from '@react-native-community/slider';
@@ -17,7 +18,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   const [loading, setLoading] = useState<boolean>(false);
   const { playPauseAudio } = useAudio();
   const playbackState = usePlaybackState();
-  const { position, duration } = useProgress(100);
+  const { position, duration } = useProgress(50);
 
   useEffect(() => {
     const fetchAudio = async () => {
@@ -77,7 +78,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
         </TouchableOpacity>
         <TouchableOpacity onPress={() => audioFile && playPauseAudio(audioFile)} disabled={loading}>
           {loading ? (
-            <ActivityIndicator size="small" color="#0000ff" />
+            <ActivityIndicator size="small" />
           ) : (
             <MaterialCommunityIcons name={playbackState.state === State.Playing ? "pause" : "play"} size={24} color="black" />
           )}

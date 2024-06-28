@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { firebase } from '../config/firebase';
 import { getUserLanguageFromFirebase } from '../utils/firebase';
 import { LanguageCode } from 'iso-639-1';
+import { romanizableLangauges } from '../utils/languages';
 
 const DEFAULT_LANGUAGE = 'en'
 
@@ -10,12 +11,14 @@ interface LanguageContextType {
   nativeLanguage: LanguageCode;
   targetLanguage: LanguageCode;
   saveLanguages: (nativeLanguage: LanguageCode, targetLanguage: LanguageCode) => Promise<void>;
+  targetLanguageRomanizable: boolean
 }
 
 export const LanguageContext = createContext<LanguageContextType>({
   nativeLanguage: DEFAULT_LANGUAGE,
   targetLanguage: DEFAULT_LANGUAGE,
   saveLanguages: async () => {},
+  targetLanguageRomanizable: false,
 });
 
 interface LanguageProviderProps {
@@ -77,8 +80,16 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     }
   };
 
+  const targetLanguageRomanizable = romanizableLangauges.has(targetLanguage)
+
   return (
-    <LanguageContext.Provider value={{ nativeLanguage, targetLanguage, saveLanguages }}>
+    <LanguageContext.Provider 
+      value={{ 
+        nativeLanguage, 
+        targetLanguage, 
+        saveLanguages,
+        targetLanguageRomanizable
+      }}>
       {children}
     </LanguageContext.Provider>
   );
