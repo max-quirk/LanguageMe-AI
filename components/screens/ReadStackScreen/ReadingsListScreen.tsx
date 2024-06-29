@@ -71,7 +71,7 @@ const ReadingsListScreen: React.FC = () => {
 
   return (
     <BackgroundView>
-      <View style={tw`flex-1 p-5 mt-20 ${theme.classes.backgroundPrimary}`}>
+      <View style={tw`flex-1 px-5 mt-20 ${theme.classes.backgroundPrimary}`}>
         <HelperPopup
           title="Getting Started"
           text="Welcome! Start by creating a reading passage on a topic you love. Tap on any word to view its definition and add it to your flashcards for easy review."

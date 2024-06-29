@@ -6,12 +6,10 @@ import Button from '../../Button';
 import { useTheme } from '../../../contexts/ThemeContext';
 
 type FlashcardEaseButtonsProps = {
-  cardNextIntervals: Record<Ease, number>;
   handleNextFlashcard: (ease: Ease) => void;
 };
 
 const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({
-  cardNextIntervals,
   handleNextFlashcard,
 }) => {
   const { theme, isDarkTheme } = useTheme();
@@ -21,7 +19,7 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({
   };
 
   const buttonBaseStyle = tw`h-12`;
-  const buttonContentStyle = tw`h-12 pt-3`;
+  const buttonContentStyle = tw`h-12 pt-[13px]`;
   const buttonLabelStyle = tw`w-full h-full`;
 
   return (

@@ -8,6 +8,7 @@ import tw from 'twrnc';
 import { RootStackParamList } from '../../types';
 import Button from '../Button';
 import ThemedTextInput from '../ThemedTextInput';
+import { useTheme } from '../../contexts/ThemeContext';
 
 type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
 type RegisterScreenRouteProp = RouteProp<RootStackParamList, 'Register'>;
@@ -22,6 +23,7 @@ type FirebaseAuthError = {
 };
 
 const RegisterScreen: React.FC<Props> = ({ navigation }) => {
+  const { theme } = useTheme();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -41,11 +43,11 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={tw`flex-1 justify-center p-5`}>
+    <View style={tw`flex-1 justify-center p-5 ${theme.classes.backgroundPrimary}`}>
       <View style={tw`flex items-center`}>
         <Image source={require('../../assets/images/logo-full.png')} style={tw`w-70 h-70 mb-6`} />
       </View>
-      <Text style={tw`text-xl mb-4`}>Register</Text>
+      <Text style={tw`text-xl mb-4 ${theme.classes.textPrimary}`}>Register</Text>
       {error && <Text style={tw`text-red-500 mb-4`}>{error}</Text>}
       <ThemedTextInput
         label="Email"
@@ -63,7 +65,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
       <Button
         mode="contained"
         onPress={handleRegister}
-        style={tw`mt-4 bg-purple-600`}
+        style={tw`mt-4 ${loading ? 'bg-grey-500' : 'bg-purple-600'}`}
         disabled={loading}
       >
         {loading ? <ActivityIndicator color="white" /> : 'Register'}
@@ -71,7 +73,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
       <Button
         mode="text"
         onPress={() => navigation.navigate('Login')}
-        style={tw`mt-2`}
+        style={tw`mt-2 ${theme.classes.textPrimary}`}
       >
         Already have an account? Login
       </Button>

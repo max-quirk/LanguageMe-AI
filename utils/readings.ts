@@ -31,8 +31,14 @@ export const cleanLeadingHyphens = (str: string) => {
 };
 
 // Finds spaces and other punctuation between words to split. 
-export const splitTextIntoWords = (text: string) => {
-  return text.match(/[\p{L}0-9]+|[\p{P}\p{S}]+/gu) || [];
+export const extractPunctuation = (word: string) => {
+  const punctuationBeforeMatch = word.match(/^[,.\u3002\uff0c！？，。、،？]+/);
+  const punctuationAfterMatch = word.match(/[,.\u3002\uff0c！？，。、،？]+$/);
+  const punctuationBefore = punctuationBeforeMatch ? punctuationBeforeMatch[0] : '';
+  const punctuationAfter = punctuationAfterMatch ? punctuationAfterMatch[0] : '';
+  const coreWord = word.replace(/^[,.\u3002\uff0c！？，。、،？]+/, '').replace(/[,.\u3002\uff0c！？，。、،？]+$/, '');
+  
+  return { punctuationBefore, punctuationAfter, coreWord };
 };
 
 export const stripQuotes = (str: string) => {

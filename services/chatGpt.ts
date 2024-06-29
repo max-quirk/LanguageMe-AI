@@ -1,7 +1,7 @@
 import { LanguageCode } from 'iso-639-1';
 import OpenAI from 'openai';
 import RNFS from 'react-native-fs';
-import { languageCodeToName } from '../utils/languages';
+import { languageCodeToName, romanizableLangauges } from '../utils/languages';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -25,6 +25,7 @@ export const generateReadingPassage = async ({
   wordCount: string;
  }) => {
   let difficultyPrompt = ''
+  const targetLanguageName = languageCodeToName(targetLanguage)
 
   switch (difficulty) {
     case 'easy':
@@ -37,10 +38,10 @@ export const generateReadingPassage = async ({
   
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       messages: [{ 
         role: "user", 
-        content: `Generate a ${wordCount}-word passage about "${description}" in the language with code '${targetLanguage}' with each word separated by a space. ${difficultyPrompt} For example, in Chinese, words should be spaced like "当 我们 谈到 撒旦 时， 我们 常常 ..."` }],
+        content: `Generate a ${wordCount}-word passage about "${description}" in ${targetLanguageName} with each word separated by a space. For example, in Chinese and other character-based languages, words should be spaced like "当 我们 谈到 撒旦 时， 我们 常常 ...". ${difficultyPrompt}. Only respond with the passage, no extra text.` }],
       temperature: 0.7,
       n: 1
     });
@@ -76,24 +77,27 @@ export const generateExampleSentences = async ({
     });
 
     const exampleSentence = exampleSentenceResponse.choices[0].message.content;
-
+    let dontRomanizeClause;
+    if (romanizableLangauges.has(translateTo)) {
+      dontRomanizeClause = `Only return original ${translateToName}, no roman characters.`
+    }
     // Translate the example sentence
     const translatedExampleSentenceResponse = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
-        { role: "user", content: `Translate the following sentence into ${translateToName}: "${exampleSentence}". No quotation marks.` }
+        { role: "user", content: `Translate the following sentence into ${translateToName}: "${exampleSentence}". No quotation marks. ${dontRomanizeClause}` }
       ],
       temperature: 0.7,
       n: 1
     });
 
     const translatedExampleSentence = translatedExampleSentenceResponse.choices[0].message.content;
-
+    
     // Translate the word
     const translationResponse = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
-        { role: "user", content: `Translate the ${wordLanguageName} word "${word}" into ${translateToName}. Just respond with the word.` }
+        { role: "user", content: `Translate the ${wordLanguageName} word "${word}" into ${translateToName}. Just respond with the word. ${dontRomanizeClause}` }
       ],
       temperature: 0.7,
       n: 1
@@ -124,6 +128,10 @@ export const getPossibleTranslations = async ({
 }) => {
   const wordLanguageName = languageCodeToName(wordLanguage)
   const translateToName = languageCodeToName(translateTo)
+  let dontRomanizeClause;
+  if (romanizableLangauges.has(translateTo)) {
+    dontRomanizeClause = `Only return original ${translateToName}, no roman characters.`
+  }
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
@@ -131,7 +139,7 @@ export const getPossibleTranslations = async ({
         { 
           role: "user", 
           content: 
-            `List all possible translations for the ${wordLanguageName} word "${word}" in ${translateToName} as a bullet-point list.` }
+            `List all possible unique translations for the ${wordLanguageName} word "${word}" in ${translateToName} as a bullet-point list. ${dontRomanizeClause}` }
       ],
       temperature: 0.7,
       n: 1

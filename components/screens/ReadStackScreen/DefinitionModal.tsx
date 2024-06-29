@@ -56,6 +56,7 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
     };
 
     if (visible) {
+      setAdded(false);
       fetchTranslations();
     }
   }, [visible, word, nativeLanguage]);
@@ -69,7 +70,7 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
         wordLanguage: targetLanguage,
         translateTo: nativeLanguage,
       });
-      setAdded(true);
+      setAdded(true)
     } catch (error) {
       console.error('Error adding flashcard:', error);
     }

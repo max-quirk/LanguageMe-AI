@@ -5,7 +5,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { firebase } from '../../../config/firebase';
 import tw from 'twrnc';
 import { FlashCard, RootStackParamList } from 'types';
-import { DEFAULT_INTERVALS, Ease, getNextCard, getNextIntervals, adjustCard } from '../../../utils/flashcards';
+import { Ease, getNextCard, adjustCard } from '../../../utils/flashcards';
 import FlashcardEaseButtons from './FlashcardEaseButtons';
 import HelperPopup from '../../HelperPopup';
 import { isFirstTimeUser, setFirstTimeUser } from '../../../utils/storageUtils';
@@ -31,8 +31,6 @@ const FlashcardsScreen = () => {
 
   const navigation = useNavigation<FlashcardsScreenNavigationProp>();
   const { theme } = useTheme();
-
-  const cardNextIntervals = currentFlashcard ? getNextIntervals(currentFlashcard) : DEFAULT_INTERVALS;
 
   const fetchFlashcards = async () => {
     const user = firebase.auth().currentUser;
@@ -95,6 +93,7 @@ const FlashcardsScreen = () => {
       setCurrentFlashcard(nextCard);
       setCompleted(!nextCard);
       setIsFront(true);
+      setShowRomanized(false);
     }
   };
 
@@ -153,7 +152,6 @@ const FlashcardsScreen = () => {
           <Text style={tw`text-2xl mb-4 capitalize ${theme.classes.textPrimary}`}>{currentFlashcard?.back.word}</Text>
           <Text style={tw`text-lg mb-6 ${theme.classes.textPrimary}`}>{currentFlashcard?.back.example}</Text>
           <FlashcardEaseButtons
-            cardNextIntervals={cardNextIntervals}
             handleNextFlashcard={handleNextFlashcard}
           />
         </>

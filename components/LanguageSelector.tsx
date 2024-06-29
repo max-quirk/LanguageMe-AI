@@ -38,7 +38,7 @@ const LanguageSelector: React.FC<Props> = ({
             onPress={openMenu} 
             style={tw`${themeClasses.backgroundTertiary} ${themeClasses.borderPrimary}`}
           >
-            <View style={tw`border-gray-300 text-gray-800 flex flex-row justify-center items-center pt-1 ${centerText ? 'relative' : ''}`}>
+            <View style={tw`border-gray-300 text-gray-800 flex flex-row justify-center items-center pt-[5px] ${centerText ? 'relative' : ''}`}>
               <Text style={tw`${themeClasses.textSecondary}`}>{iso6391.getName(selectedLanguage)}</Text>
               <View style={tw`flex items-center justify-center ${centerText ? 'absolute left-12 bottom-[-6px]' : ''}`}>
                 <IconButton 

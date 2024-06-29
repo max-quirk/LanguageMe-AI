@@ -25,6 +25,7 @@ const languages = ISO6391.getAllNames().map((name) => ({
   .sort((a, b) => a.name.localeCompare(b.name));
 
 export const languageCodeToName = (code: LanguageCode) => {
+  if (code == 'zh') return 'Chinese (simplified)'
   return iso6391.getName(code);
 };
 
