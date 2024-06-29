@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Image } from 'react-native';
-import { TextInput, Text } from 'react-native-paper';
+import { TextInput, Text, ActivityIndicator } from 'react-native-paper';
 import tw from 'twrnc';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -23,9 +23,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('max.q.807+good@gmail.com');
   const [password, setPassword] = useState<string>('bball4life1');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const { saveLanguages } = useContext(LanguageContext);
 
   const handleLogin = async () => {
+    setLoading(true);
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password);
       const user = firebase.auth().currentUser;
@@ -49,6 +51,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         setError(firebaseError.message);
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -77,8 +80,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         mode="contained"
         onPress={handleLogin}
         style={tw`mt-4 bg-purple-600`}
+        disabled={loading}
       >
-        Login
+        {loading ? <ActivityIndicator color="white" /> : 'Login'}
       </Button>
       <Button
         mode="text"

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Image } from 'react-native';
-import { TextInput, Text } from 'react-native-paper';
+import { TextInput, Text, ActivityIndicator } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { firebase } from '../../config/firebase';
@@ -24,8 +24,10 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleRegister = async () => {
+    setLoading(true);
     try {
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       navigation.navigate('LanguageSelection'); 
@@ -34,6 +36,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
       setError(firebaseError.message);
       console.error('Error registering:', error);
     }
+    setLoading(false);
   };
 
   return (
@@ -62,8 +65,9 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         mode="contained"
         onPress={handleRegister}
         style={tw`mt-4 bg-purple-600`}
+        disabled={loading}
       >
-        Register
+        {loading ? <ActivityIndicator color="white" /> : 'Register'}
       </Button>
       <Button
         mode="text"
