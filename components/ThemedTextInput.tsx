@@ -18,7 +18,6 @@ const ThemedTextInput: React.FC<TextInputProps> = (props) => {
           onSurfaceVariant: theme.colors.textSecondary,
         } 
       }}
-      activeOutlineColor={theme.colors.purplePrimary}
     />
   );
 };

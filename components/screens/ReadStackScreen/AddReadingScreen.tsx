@@ -83,18 +83,21 @@ const AddReadingScreen: React.FC = () => {
           value="easy" 
           style={tw`border rounded-t-[4px] ${theme.classes.borderPrimary} ${getBackgroundClass('easy')}`} 
           labelStyle={tw`text-sm ${theme.classes.textPrimary}`} 
+          theme={{ colors: { primary: theme.colors.purplePrimary } }} 
         />
         <RadioButton.Item 
           label="Intermediate" 
           value="medium" 
           style={tw`border border-t-0 ${theme.classes.borderPrimary} ${getBackgroundClass('medium')}`} 
           labelStyle={tw`text-sm ${theme.classes.textPrimary}`} 
+          theme={{ colors: { primary: theme.colors.purplePrimary } }} 
         />
         <RadioButton.Item 
           label="Advanced" 
           value="hard" 
           style={tw`border border-t-0 ${theme.classes.borderPrimary} ${getBackgroundClass('hard')}`} 
           labelStyle={tw`text-sm ${theme.classes.textPrimary}`} 
+          theme={{ colors: { primary: theme.colors.purplePrimary } }} 
         />
       </RadioButton.Group>
       <ThemedTextInput

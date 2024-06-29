@@ -247,7 +247,7 @@ const FlashcardsScreen = () => {
         />
         <HelperPopup 
           title="Select difficulty"
-          text="Select how easy you found the card. Each button shows the approximate time it will take for you to see the card again."
+          text="Select how easy you found the card. The difficulty you select will determine how frequently you will see the card."
           visible={backCardHelperVisible}
           onClose={() => setBackCardHelperVisible(false)}
         />

@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { View, Image } from 'react-native';
-import { TextInput, Text, ActivityIndicator } from 'react-native-paper';
+import { Text, ActivityIndicator } from 'react-native-paper';
 import tw from 'twrnc';
 import { LanguageContext } from '../../contexts/LanguageContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
 import { firebase } from '../../config/firebase';
 import Button from '../Button';
+import ThemedTextInput from '../ThemedTextInput';
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -61,19 +62,17 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       </View>
       <Text style={tw`text-xl mb-4`}>Login</Text>
       {error && <Text style={tw`text-red-500 mb-4`}>{error}</Text>}
-      <TextInput
+      <ThemedTextInput
         label="Email"
         value={email}
         onChangeText={setEmail}
-        style={tw`mb-4`}
         autoCapitalize="none"
       />
-      <TextInput
+      <ThemedTextInput
         label="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={tw`mb-4`}
         autoCapitalize="none"
       />
       <Button

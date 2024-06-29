@@ -1,10 +1,9 @@
 import React from 'react';
-import { Text } from 'react-native-paper';
+import { Text, View } from 'react-native';
 import tw from 'twrnc';
 import { Ease } from '../../../utils/flashcards';
-import { formatInterval } from '../../../utils/time';
-import { View } from 'react-native';
 import Button from '../../Button';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 type FlashcardEaseButtonsProps = {
   cardNextIntervals: Record<Ease, number>;
@@ -15,32 +14,62 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({
   cardNextIntervals,
   handleNextFlashcard,
 }) => {
+  const { theme, isDarkTheme } = useTheme();
+
+  const getButtonColor = (baseClass: string, darkClass: string) => {
+    return isDarkTheme ? darkClass : baseClass;
+  };
+
+  const buttonBaseStyle = tw`h-12`;
+  const buttonContentStyle = tw`h-12 pt-3`;
+  const buttonLabelStyle = tw`w-full h-full`;
+
   return (
-    <View style={tw`flex flex-row`}>
-      <Button mode="contained" style={tw`flex-basis-1/4 bg-red-400 h-13 pb-1 rounded-l-lg rounded-r-none`} onPress={() => handleNextFlashcard(Ease.Again)}>
-        <View style={tw`items-center`}>
-          <Text style={tw`text-center`}>Again</Text>
-          <Text style={tw`text-center`}>({formatInterval(cardNextIntervals[Ease.Again])})</Text>
-        </View>
-      </Button>
-      <Button mode="contained" style={tw`flex-basis-1/4 bg-yellow-400 h-13 pb-1 rounded-none`} onPress={() => handleNextFlashcard(Ease.Hard)}>
-        <View style={tw`items-center`}>
-          <Text style={tw`text-center`}>Hard</Text>
-          <Text style={tw`text-center`}>({formatInterval(cardNextIntervals[Ease.Hard])})</Text>
-        </View>
-      </Button>
-      <Button mode="contained" style={tw`flex-basis-1/4 bg-blue-300 h-13 pb-1 rounded-none`} onPress={() => handleNextFlashcard(Ease.Good)}>
-        <View style={tw`items-center`}>
-          <Text style={tw`text-center`}>Mod</Text>
-          <Text style={tw`text-center`}>({formatInterval(cardNextIntervals[Ease.Good])})</Text>
-        </View>
-      </Button>
-      <Button mode="contained" style={tw`flex-basis-1/4 bg-green-400 h-13 pb-1 rounded-l-none rounded-r-lg`} onPress={() => handleNextFlashcard(Ease.Easy)}>
-        <View style={tw`items-center`}>
-          <Text style={tw`text-center`}>Easy</Text>
-          <Text style={tw`text-center`}>({formatInterval(cardNextIntervals[Ease.Easy])})</Text>
-        </View>
-      </Button>
+    <View style={tw`flex-row justify-between p-0 m-0`}>
+      <View style={tw`flex-1 p-0 m-0`}>
+        <Button
+          mode="contained"
+          style={[buttonBaseStyle, tw`rounded-l-lg rounded-r-none ${getButtonColor('bg-red-400', 'bg-red-700')}`]}
+          contentStyle={buttonContentStyle}
+          labelStyle={buttonLabelStyle}
+          onPress={() => handleNextFlashcard(Ease.Again)}
+        >
+          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>Forgot</Text>
+        </Button>
+      </View>
+      <View style={tw`flex-1 p-0 m-0`}>
+        <Button
+          mode="contained"
+          style={[buttonBaseStyle, tw`rounded-none ${getButtonColor('bg-yellow-400', 'bg-yellow-700')}`]}
+          contentStyle={buttonContentStyle}
+          labelStyle={buttonLabelStyle}
+          onPress={() => handleNextFlashcard(Ease.Hard)}
+        >
+          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>Hard</Text>
+        </Button>
+      </View>
+      <View style={tw`flex-1 p-0 m-0`}>
+        <Button
+          mode="contained"
+          style={[buttonBaseStyle, tw`rounded-none ${getButtonColor('bg-blue-300', 'bg-blue-700')}`]}
+          contentStyle={buttonContentStyle}
+          labelStyle={buttonLabelStyle}
+          onPress={() => handleNextFlashcard(Ease.Good)}
+        >
+          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>Ok</Text>
+        </Button>
+      </View>
+      <View style={tw`flex-1 p-0 m-0`}>
+        <Button
+          mode="contained"
+          style={[buttonBaseStyle, tw`rounded-l-none rounded-r-lg ${getButtonColor('bg-green-400', 'bg-green-700')}`]}
+          contentStyle={buttonContentStyle}
+          labelStyle={buttonLabelStyle}
+          onPress={() => handleNextFlashcard(Ease.Easy)}
+        >
+          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>Easy</Text>
+        </Button>
+      </View>
     </View>
   );
 };

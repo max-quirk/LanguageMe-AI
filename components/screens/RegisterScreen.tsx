@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Image } from 'react-native';
-import { TextInput, Text, ActivityIndicator } from 'react-native-paper';
+import { Text, ActivityIndicator } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { firebase } from '../../config/firebase';
 import tw from 'twrnc';
 import { RootStackParamList } from '../../types';
 import Button from '../Button';
+import ThemedTextInput from '../ThemedTextInput';
 
 type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
 type RegisterScreenRouteProp = RouteProp<RootStackParamList, 'Register'>;
@@ -46,19 +47,17 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
       </View>
       <Text style={tw`text-xl mb-4`}>Register</Text>
       {error && <Text style={tw`text-red-500 mb-4`}>{error}</Text>}
-      <TextInput
+      <ThemedTextInput
         label="Email"
         value={email}
         onChangeText={setEmail}
-        style={tw`mb-4`}
         autoCapitalize="none"
       />
-      <TextInput
+      <ThemedTextInput
         label="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={tw`mb-4`}
         autoCapitalize="none"
       />
       <Button
