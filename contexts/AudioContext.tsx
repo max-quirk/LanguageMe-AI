@@ -5,6 +5,7 @@ type AudioContextType = {
   playing: boolean;
   playPauseAudio: (audioFile: string) => void;
   pauseAudio: () => void;
+  resumeAudio: () => void;
 };
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -23,10 +24,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       } else {
         await TrackPlayer.reset();
         await TrackPlayer.add({
-          id: 'trackId',
           url: audioFile,
-          title: 'Audio',
-          artist: 'Artist',
         });
         await TrackPlayer.play();
         setCurrentFile(audioFile);
@@ -42,6 +40,13 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   };
 
+  const resumeAudio = async () => {
+    if (!playing) {
+      await TrackPlayer.play();
+      setPlaying(true);
+    }
+  }
+
   useEffect(() => {
     return () => {
       TrackPlayer.stop();
@@ -49,9 +54,8 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setCurrentFile(null);
     };
   }, []);
-
   return (
-    <AudioContext.Provider value={{ playing, playPauseAudio, pauseAudio }}>
+    <AudioContext.Provider value={{ playing, playPauseAudio, pauseAudio, resumeAudio }}>
       {children}
     </AudioContext.Provider>
   );

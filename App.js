@@ -20,6 +20,7 @@ import TrackPlayer from 'react-native-track-player';
 import { Provider as PaperProvider } from 'react-native-paper';
 
 import BackButton from './components/BackButton';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Tab = createBottomTabNavigator();
 const RootStack = createStackNavigator();
@@ -82,6 +83,7 @@ function App() {
 
   return (
     <ThemeProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}> 
       <LanguageProvider>
         <AudioProvider>
           <PaperProvider>
@@ -107,6 +109,7 @@ function App() {
           </PaperProvider>
         </AudioProvider>
       </LanguageProvider>
+      </GestureHandlerRootView>
     </ThemeProvider>
   );
 }

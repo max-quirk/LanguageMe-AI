@@ -10,21 +10,21 @@ interface ButtonProps extends PaperButtonProps {
   labelStyle?: TextStyle | TextStyle[];
 }
 
-const Button: React.FC<ButtonProps> = ({ style, contentStyle, labelStyle, ...props }) => {
-  const { theme } = useTheme();
+const Button: React.FC<ButtonProps> = ({ style, contentStyle, labelStyle, disabled, ...props }) => {
+  const { theme, isDarkTheme } = useTheme();
   let buttonTypeStyle;
   let buttonTypeContentStyle;
   let buttonTypeLabelStyle;
 
   switch (props.mode) {
     case 'contained':
-      buttonTypeStyle = tw`bg-purple-600`;
+      buttonTypeStyle = disabled ? tw`bg-gray-400` : tw`bg-purple-600`;
       buttonTypeContentStyle = tw`text-white`;
       buttonTypeLabelStyle = tw`text-white`;
       break;
     case 'outlined':
       buttonTypeStyle = tw`${theme.classes.backgroundTertiary} ${theme.classes.borderPrimary}`;
-      buttonTypeLabelStyle = tw`text-purple-600`;
+      buttonTypeLabelStyle = isDarkTheme ? tw`text-purple-300` : tw`text-purple-600`;
       break;
     default:
       buttonTypeStyle = '';
@@ -36,6 +36,7 @@ const Button: React.FC<ButtonProps> = ({ style, contentStyle, labelStyle, ...pro
   return (
     <PaperButton
       {...props}
+      disabled={disabled}
       style={[tw`h-11 justify-center`, buttonTypeStyle, style]}
       contentStyle={[tw`h-11`, buttonTypeContentStyle, contentStyle]}
       labelStyle={[buttonTypeLabelStyle, labelStyle]}

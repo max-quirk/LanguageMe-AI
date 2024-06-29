@@ -1,9 +1,10 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import tw from 'twrnc';
-import { Portal, Dialog } from 'react-native-paper';
+import { Portal } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import Button from './Button';
+import Modal from './Modal'; 
 
 type HelperPopupProps = {
   title: string;
@@ -15,20 +16,20 @@ type HelperPopupProps = {
 const HelperPopup: React.FC<HelperPopupProps> = ({ title, text, visible, onClose }) => {
   return (
     <Portal>
-      <Dialog visible={visible} onDismiss={onClose}>
+      <Modal visible={visible} onDismiss={onClose}>
         <View style={tw`flex flex-row items-center pl-6`}>
           <Icon name="magic-wand" size={25} />
-          <Dialog.Title style={tw`capitalize ml-5`}>{title}</Dialog.Title>
+          <Text style={tw`capitalize ml-5 text-xl font-bold`}>{title}</Text>
         </View>
-        <Dialog.Content>
+        <View style={tw`p-6`}>
           <Text style={tw`text-base`}>{text}</Text>
-        </Dialog.Content>
-        <Dialog.Actions>
+        </View>
+        <View style={tw`flex-row justify-end p-4`}>
           <Button mode="contained" onPress={onClose} style={tw`bg-purple-600 w-[100px]`}>
             Got it
           </Button>
-        </Dialog.Actions>
-      </Dialog>
+        </View>
+      </Modal>
     </Portal>
   );
 };

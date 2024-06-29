@@ -6,10 +6,11 @@ import { RootStackParamList } from '../../../types';
 import HelperPopup from '../../HelperPopup';
 import { isFirstTimeUser } from '../../../utils/storageUtils';
 import DefinitionModal from './DefinitionModal';
-import { cleanPunctuation } from '../../../utils/readings';
+import { cleanPunctuation, splitTextIntoWords } from '../../../utils/readings';
 import ReadingSpeakerSlider from '../../ReadingSpeakerSlider';
 import { useAudio } from '../../../contexts/AudioContext';
 import { useTheme } from '../../../contexts/ThemeContext';
+import { useProgress } from 'react-native-track-player';
 
 type ReadingScreenRouteProp = RouteProp<RootStackParamList, 'Reading'>;
 
@@ -19,11 +20,13 @@ type Props = {
 
 const ReadingScreen: React.FC<Props> = ({ route }) => {
   const { reading } = route.params;
-  const [visible, setVisible] = useState(false);
+  const [definitionModalVisible, setDefinitionModalVisible] = useState(false);
   const [selectedWord, setSelectedWord] = useState<string>('');
   const [helperVisible, setHelperVisible] = useState(false);
-  const { pauseAudio } = useAudio();
+  const [pausedToOpenDefintion, setPausedToOpenDefinition] = useState(false);
+  const { pauseAudio, resumeAudio, playing } = useAudio();
   const { theme } = useTheme();
+  const { position } = useProgress(100);
 
   useEffect(() => {
     const checkFirstTimeUser = async () => {
@@ -40,8 +43,11 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   const handleWordPress = (word: string) => {
     const cleanedWord = cleanPunctuation(word);
     setSelectedWord(cleanedWord);
-    setVisible(true);
-    pauseAudio();
+    setDefinitionModalVisible(true);
+    if (playing) {
+      pauseAudio();
+      setPausedToOpenDefinition(true)
+    }
   };
 
   const renderWord = (word: string, index: number) => (
@@ -52,9 +58,17 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
 
   const renderLine = (line: string, lineIndex: number) => (
     <View key={lineIndex} style={tw`flex-row flex-wrap`}>
-      {line.split(' ').map((word, wordIndex) => renderWord(word, wordIndex))}
+      {splitTextIntoWords(line).map((word, wordIndex) => renderWord(word, wordIndex))}
     </View>
   );
+
+  const handleDefinitionModalClose = () => {
+    setDefinitionModalVisible(false)
+    if (position > 0 && pausedToOpenDefintion) {
+      resumeAudio()
+      setPausedToOpenDefinition(false)
+    }
+  }
 
   return (
     <View style={tw`flex-1 ${theme.classes.backgroundPrimary} px-5`}>
@@ -68,9 +82,9 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
           onClose={() => setHelperVisible(false)}
         />
         <DefinitionModal
-          visible={visible}
+          visible={definitionModalVisible}
           word={cleanPunctuation(selectedWord)}
-          onDismiss={() => setVisible(false)}
+          onDismiss={handleDefinitionModalClose}
         />
       </ScrollView>
       <ReadingSpeakerSlider reading={reading} />
