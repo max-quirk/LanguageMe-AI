@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DefaultTheme, MD3DarkTheme as DarkTheme, Provider as PaperProvider } from 'react-native-paper';
 
 const themes = {
@@ -51,8 +52,20 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(undefine
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
-  const toggleTheme = () => {
-    setIsDarkTheme(!isDarkTheme);
+  useEffect(() => {
+    const loadTheme = async () => {
+      const storedTheme = await AsyncStorage.getItem('theme');
+      if (storedTheme !== null) {
+        setIsDarkTheme(storedTheme === 'dark');
+      }
+    };
+    loadTheme();
+  }, []);
+
+  const toggleTheme = async () => {
+    const newTheme = !isDarkTheme;
+    setIsDarkTheme(newTheme);
+    await AsyncStorage.setItem('theme', newTheme ? 'dark' : 'light');
   };
 
   const theme = isDarkTheme ? themes.dark : themes.light;

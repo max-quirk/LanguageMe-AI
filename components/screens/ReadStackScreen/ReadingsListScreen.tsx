@@ -95,7 +95,12 @@ const ReadingsListScreen: React.FC = () => {
         ) : (
           <ScrollView
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+              <RefreshControl 
+                refreshing={refreshing} 
+                onRefresh={handleRefresh} 
+                tintColor={theme.colors.purplePrimary} 
+                colors={[theme.colors.purplePrimary]} // Need for Android
+              />
             }
           >
             {readings.map(reading => (

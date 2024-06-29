@@ -23,20 +23,29 @@ const AddReadingScreen: React.FC = () => {
   const [difficulty, setDifficulty] = useState<string>('medium');
   const [wordCount, setWordCount] = useState<string>('100');
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+
+  const MAX_WORD_COUNT = 1000;
 
   const handleAddReading = async () => {
+    const wordCountNum = parseInt(wordCount, 10);
+    if (wordCountNum > MAX_WORD_COUNT) {
+      setError(`Word count cannot exceed ${MAX_WORD_COUNT} words.`);
+      return;
+    }
+    setError('');
     setLoading(true);
     try {
       const user = firebase.auth().currentUser;
       if (!user) {
         throw new Error('No user is authenticated');
       }
-      const passage = await generateReadingPassage({ targetLanguage, description, difficulty, wordCount });
+      const passage = await generateReadingPassage({ targetLanguage, description, difficulty, wordCount: wordCountNum });
 
       const readingRef = await firebase.firestore().collection('users').doc(user.uid).collection('readings').add({
         description,
         difficulty,
-        wordCount,
+        wordCount: wordCountNum,
         passage,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
@@ -45,7 +54,7 @@ const AddReadingScreen: React.FC = () => {
         id: readingRef.id,
         description,
         difficulty,
-        wordCount,
+        wordCount: wordCountNum,
         passage,
         createdAt: new Date(),
       };
@@ -107,6 +116,7 @@ const AddReadingScreen: React.FC = () => {
         keyboardType="numeric"
         style={tw`mt-6`}
       />
+      {error ? <Text style={tw`text-red-600 mt-2`}>{error}</Text> : null}
       <Button
         mode="contained"
         onPress={handleAddReading}
