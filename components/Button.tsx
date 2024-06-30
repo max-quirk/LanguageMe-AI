@@ -27,9 +27,7 @@ const Button: React.FC<ButtonProps> = ({ style, contentStyle, labelStyle, disabl
       buttonTypeLabelStyle = isDarkTheme ? tw`text-purple-300` : tw`text-purple-600`;
       break;
     default:
-      buttonTypeStyle = '';
-      buttonTypeContentStyle = '';
-      buttonTypeLabelStyle = '';
+      buttonTypeLabelStyle = isDarkTheme ? tw`text-purple-300` : tw`text-purple-600`;
       break;
   }
 

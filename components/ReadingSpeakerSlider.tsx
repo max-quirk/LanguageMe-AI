@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
+import { ActivityIndicator, Menu, IconButton } from 'react-native-paper';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import tw from 'twrnc';
 import Slider from '@react-native-community/slider';
@@ -18,10 +19,14 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   const [audioFile, setAudioFile] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [trackEnded, setTrackEnded] = useState<boolean>(false);
+  const [speedControlVisible, setSpeedControlVisible] = useState<boolean>(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const { playPauseAudio } = useAudio();
   const playbackState = usePlaybackState();
   const { position, duration } = useProgress(50);
   const { theme } = useTheme();
+
+  const isPlaying = playbackState.state === State.Playing 
 
   useEffect(() => {
     const fetchAudio = async () => {
@@ -80,6 +85,31 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
     }
   };
 
+  const handleRestart = async () => {
+    if (audioFile) {
+      await TrackPlayer.seekTo(0);
+      if (isPlaying) {
+        await TrackPlayer.play();
+      }
+    }
+  };
+
+  const handleSpeedChange = async (speed: number) => {
+    setPlaybackSpeed(speed);
+    await TrackPlayer.setRate(speed);
+    setSpeedControlVisible(false);
+  };
+
+  const renderSpeedOption = ({ item }: { item: number }) => (
+    <Menu.Item
+      onPress={() => handleSpeedChange(item)}
+      title={`${item.toFixed(1)}x`}
+      style={tw`${item === playbackSpeed ? 'font-bold' : ''}`}
+    />
+  );
+
+  const speedOptions = Array.from({ length: 11 }, (_, i) => 0.5 + i * 0.1);
+
   return (
     <View style={tw`absolute bottom-0 left-0 right-0 ${theme.classes.backgroundTertiary} p-4 border-t ${theme.classes.borderPrimary}`}>
       <Slider
@@ -92,6 +122,9 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
         thumbTintColor={theme.colors.purplePrimary}
       />
       <View style={tw`flex-row justify-around items-center mb-2`}>
+        <TouchableOpacity onPress={handleRestart} disabled={loading}>
+          <Fontisto name="step-backwrad" size={12} color={theme.colors.textPrimary} />
+        </TouchableOpacity>
         <TouchableOpacity onPress={rewindAudio} disabled={loading}>
           <MaterialCommunityIcons name="rewind-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
@@ -100,7 +133,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
             <ActivityIndicator size="small" />
           ) : (
             <MaterialCommunityIcons 
-              name={trackEnded ? "restart" : playbackState.state === State.Playing ? "pause" : "play"} 
+              name={trackEnded ? "restart" : isPlaying ? "pause" : "play"} 
               size={24} 
               color={theme.colors.textPrimary} 
             />
@@ -109,6 +142,25 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
         <TouchableOpacity onPress={fastForwardAudio} disabled={loading}>
           <MaterialCommunityIcons name="fast-forward-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
+        <Menu
+          visible={speedControlVisible}
+          onDismiss={() => setSpeedControlVisible(false)}
+          anchor={
+            <TouchableOpacity onPress={() => setSpeedControlVisible(true)}>
+              <Text style={tw`text-xl ${theme.classes.textPrimary}`}>{playbackSpeed.toFixed(1)}x</Text>
+            </TouchableOpacity>
+          }
+        >
+          <ScrollView style={{ maxHeight: 200 }}>
+            {speedOptions.map((option) => (
+              <Menu.Item
+                key={option.toFixed(1)}
+                onPress={() => handleSpeedChange(option)}
+                title={`${option.toFixed(1)}x`}
+              />
+            ))}
+          </ScrollView>
+        </Menu>
       </View>
     </View>
   );

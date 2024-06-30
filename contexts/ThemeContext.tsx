@@ -10,7 +10,8 @@ const themes = {
       textPrimary: '#1c1b1f',
       textSecondary: '#4b5563',
       backgroundPrimary: '#f8f4f4',
-      purplePrimary: '#7C3AED' // purple-500
+      purplePrimary: '#7C3AED', // purple-500
+      tomato: '#ff644c',
     },
     classes: {
       backgroundPrimary: 'bg-[#f8f4f4]',
@@ -26,16 +27,17 @@ const themes = {
     colors: {
       ...DarkTheme.colors,
       textPrimary: '#e0e1e0',
-      textSecondary: '#8e8d8d',
+      textSecondary: '#a1abb9',
       backgroundPrimary: '#181414',
-      purplePrimary: '#c084fc' // purple-400
+      purplePrimary: '#c084fc', // purple-400
+      tomato: '#ff644c',
     },
     classes: {
       backgroundPrimary: 'bg-[#181414]',
       backgroundSecondary: 'bg-[#16141d]',
       backgroundTertiary: 'bg-[#332c3f]',
       textPrimary: 'text-[#e0e1e0]',
-      textSecondary: 'text-[#8e8d8d]',
+      textSecondary: 'text-[#a1abb9]',
       borderPrimary: 'border-gray-600'
     }
   },
