@@ -83,7 +83,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         style={tw`mt-4 ${loading ? 'bg-grey-500' : 'bg-purple-600'}`}
         disabled={loading}
       >
-        {loading ? <ActivityIndicator color="white" /> : 'Login'}
+        {loading ? <ActivityIndicator color="white" style={tw`pt-[3px]`} /> : 'Login'}
       </Button>
       <Button
         mode="text"

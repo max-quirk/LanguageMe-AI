@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Image } from 'react-native';
 import { Text, ActivityIndicator } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
 import { firebase } from '../../config/firebase';
 import tw from 'twrnc';
 import { RootStackParamList } from '../../types';
@@ -11,11 +10,9 @@ import ThemedTextInput from '../ThemedTextInput';
 import { useTheme } from '../../contexts/ThemeContext';
 
 type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
-type RegisterScreenRouteProp = RouteProp<RootStackParamList, 'Register'>;
 
 type Props = {
   navigation: RegisterScreenNavigationProp;
-  route: RegisterScreenRouteProp;
 };
 
 type FirebaseAuthError = {
@@ -68,7 +65,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
         style={tw`mt-4 ${loading ? 'bg-grey-500' : 'bg-purple-600'}`}
         disabled={loading}
       >
-        {loading ? <ActivityIndicator color="white" /> : 'Register'}
+        {loading ? <ActivityIndicator color="white" style={tw`pt-[3px]`} /> : 'Register'}
       </Button>
       <Button
         mode="text"
