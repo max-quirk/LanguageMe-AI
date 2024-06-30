@@ -38,6 +38,7 @@ function TabNavigator() {
     >
       <Tab.Screen name="Read" component={ReadStackScreen} />
       <Tab.Screen name="Flashcards" component={LearnStackScreen} />
+      <Tab.Screen name="History" component={ReadStackScreen} />
       <Tab.Screen name="Settings" component={SettingsStackScreen} />
     </Tab.Navigator>
   );

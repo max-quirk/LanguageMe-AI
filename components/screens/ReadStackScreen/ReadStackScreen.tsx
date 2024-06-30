@@ -16,9 +16,9 @@ export default function ReadStackScreen() {
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: theme.colors.backgroundPrimary, // Set the background color for the header
+          backgroundColor: theme.colors.backgroundPrimary, 
         },
-        headerTintColor: theme.colors.textPrimary, // Set the text color for the header
+        headerTintColor: theme.colors.textPrimary,
       }}
     >
       <ReadStack.Screen name="ReadingsList" component={ReadingsListScreen} options={{ headerShown: false }} />

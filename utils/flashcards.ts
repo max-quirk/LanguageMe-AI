@@ -80,6 +80,7 @@ export async function adjustCard(card: FlashCard, ease: Ease): Promise<{ card: F
   }
   card.due = new Date(now.getTime() + card.interval);
   card.reps += 1;
+  card.lastEase = ease;
 
   await editFlashcardOnFirebase(card);
 
@@ -159,8 +160,10 @@ export const addFlashcard = async ({
         example: stripQuotes(translatedExampleSentence ?? ''),
       },
       due: new Date(Date.now()),
+      created: new Date(Date.now()),
       interval: 1,
       factor: 2500,
+      lastEase: null,
       reps: 0,
     };
     const flashcardsCollectionRef = firebase.firestore().collection('users').doc(user.uid).collection('flashcards');
@@ -195,3 +198,22 @@ export const deleteAllFlashcards = async (userId: string) => {
     console.error('Error deleting flashcards: ', error);
   }
 };
+
+const fetchAllFlashcards = async (userId: string): Promise<FlashCard[]> => {
+  const flashcardsSnapshot = await firebase.firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('flashcards')
+    .get();
+  const cards: FlashCard[] = flashcardsSnapshot.docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data,
+      due: data.due.toDate()
+    } as FlashCard;
+  });
+  return cards;
+};
+
+export default fetchAllFlashcards;

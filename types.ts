@@ -1,5 +1,6 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { LanguageCode } from "iso-639-1";
+import { Ease } from "utils/flashcards";
 
 export type MainTabParamList = {
   Home: undefined;
@@ -35,13 +36,13 @@ export type FlashCard = {
     example: string
   },
   due: Date,
+  created: Date,
   interval: number,
   factor: number,
   reps: number,
   firstMarkedEasy?: Date, 
   lastMarkedEasy?: Date,
-  // firstAdded
-  // difficultyLastMarked
+  lastEase: Ease
 }
 
 export type Reading = {
