@@ -4,19 +4,14 @@ import tw from 'twrnc';
 import { Ease } from '../../../utils/flashcards';
 import Button from '../../Button';
 import { useTheme } from '../../../contexts/ThemeContext';
+import { getEaseColor } from '../../../utils/colors';
 
 type FlashcardEaseButtonsProps = {
   handleNextFlashcard: (ease: Ease) => void;
 };
 
-const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({
-  handleNextFlashcard,
-}) => {
+const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({ handleNextFlashcard }) => {
   const { theme, isDarkTheme } = useTheme();
-
-  const getButtonColor = (baseClass: string, darkClass: string) => {
-    return isDarkTheme ? darkClass : baseClass;
-  };
 
   const buttonBaseStyle = tw`h-12`;
   const buttonContentStyle = tw`h-12 pt-[13px]`;
@@ -27,7 +22,7 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({
       <View style={tw`flex-1 p-0 m-0`}>
         <Button
           mode="contained"
-          style={[buttonBaseStyle, tw`rounded-l-lg rounded-r-none ${getButtonColor('bg-red-400', 'bg-red-700')}`]}
+          style={[buttonBaseStyle, tw`rounded-l-lg rounded-r-none ${getEaseColor(Ease.Again, isDarkTheme)}`]}
           contentStyle={buttonContentStyle}
           labelStyle={buttonLabelStyle}
           onPress={() => handleNextFlashcard(Ease.Again)}
@@ -38,7 +33,7 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({
       <View style={tw`flex-1 p-0 m-0`}>
         <Button
           mode="contained"
-          style={[buttonBaseStyle, tw`rounded-none ${getButtonColor('bg-yellow-400', 'bg-yellow-700')}`]}
+          style={[buttonBaseStyle, tw`rounded-none ${getEaseColor(Ease.Hard, isDarkTheme)}`]}
           contentStyle={buttonContentStyle}
           labelStyle={buttonLabelStyle}
           onPress={() => handleNextFlashcard(Ease.Hard)}
@@ -49,7 +44,7 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({
       <View style={tw`flex-1 p-0 m-0`}>
         <Button
           mode="contained"
-          style={[buttonBaseStyle, tw`rounded-none ${getButtonColor('bg-blue-300', 'bg-blue-700')}`]}
+          style={[buttonBaseStyle, tw`rounded-none ${getEaseColor(Ease.Good, isDarkTheme)}`]}
           contentStyle={buttonContentStyle}
           labelStyle={buttonLabelStyle}
           onPress={() => handleNextFlashcard(Ease.Good)}
@@ -60,7 +55,7 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({
       <View style={tw`flex-1 p-0 m-0`}>
         <Button
           mode="contained"
-          style={[buttonBaseStyle, tw`rounded-l-none rounded-r-lg ${getButtonColor('bg-green-400', 'bg-green-700')}`]}
+          style={[buttonBaseStyle, tw`rounded-l-none rounded-r-lg ${getEaseColor(Ease.Easy, isDarkTheme)}`]}
           contentStyle={buttonContentStyle}
           labelStyle={buttonLabelStyle}
           onPress={() => handleNextFlashcard(Ease.Easy)}

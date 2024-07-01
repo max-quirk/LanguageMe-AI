@@ -68,9 +68,9 @@ export const generateExampleSentences = async ({
   try {
     // Generate the example sentence
     const exampleSentenceResponse = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       messages: [
-        { role: "user", content: `Generate one short and very simple ~10-word sentence in ${wordLanguageName} to demonstrate the definition of the word "${word}". Try to make all other words easier (in terms of language learning) than "${word}". Respond with a ${wordLanguageName} sentence only.` }
+        { role: "user", content: `Generate one short and very simple ~10-word sentence in ${wordLanguageName} that includes and demonstrates the definition of the word "${word}". Try to make all other words easier (in terms of language learning) than "${word}". Respond with a ${wordLanguageName} sentence only.` }
       ],
       temperature: 0.7,
       n: 1
@@ -167,7 +167,7 @@ export const romanizeText = async ({
       messages: [
         { 
           role: "user", 
-          content: `Romanize the following ${languageName} text with appropriate tones if necessary: "${text}". e.g. 你好 -> nǐhaǒ. No quotes.` 
+          content: `Romanize the following ${languageName} text with appropriate tones if necessary: "${text}". e.g. 你好 -> nǐhǎo. No quotes.` 
         }
       ],
       temperature: 0.7,

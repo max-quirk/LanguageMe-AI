@@ -1,13 +1,13 @@
 import React from 'react';
 import { TouchableOpacity, Alert, Text } from 'react-native';
-import { Card, Paragraph, Title } from 'react-native-paper';
+import { Reading } from '../../../types';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
-import { Reading } from '../../../types';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { deleteReading } from '../../../utils/readings';
 import { firebase } from '../../../config/firebase';
 import { ReadingsListScreenNavigationProp } from './ReadingsListScreen';
+import ThemedCard from '../../ThemedCard';
 import { useTheme } from '../../../contexts/ThemeContext';
 
 type ReadingCardProps = {
@@ -47,16 +47,12 @@ const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onDelete }) => {
   );
 
   return (
-    <Swipeable renderRightActions={renderRightActions}>
-      <TouchableOpacity onPress={() => navigation.navigate('Reading', { reading })}>
-        <Card style={tw`mb-4 shadow-lg rounded-lg overflow-hidden ${theme.classes.backgroundTertiary} border ${theme.classes.borderPrimary}`}>
-          <Card.Content>
-            <Title style={tw`text-lg font-bold ${theme.classes.textPrimary}`}>{reading.description}</Title>
-            <Paragraph style={tw`text-gray-700 ${theme.classes.textSecondary}`} numberOfLines={1} ellipsizeMode="tail">{reading.passage}</Paragraph>
-          </Card.Content>
-        </Card>
-      </TouchableOpacity>
-    </Swipeable>
+    <ThemedCard
+      onPress={() => navigation.navigate('Reading', { reading })}
+      renderRightActions={renderRightActions}
+      title={reading.description}
+      description={reading.passage}
+    />
   );
 };
 

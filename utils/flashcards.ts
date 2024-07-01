@@ -142,7 +142,6 @@ export const addFlashcard = async ({
     const romanizable = romanizableLangauges.has(wordLanguage)
     let _romanizedWord = romanizedWord
     let _exampleSentenceRomanized;
-
     if (romanizable && exampleSentence) {
       _exampleSentenceRomanized = await romanizeText({ text: exampleSentence, language: wordLanguage })
       _romanizedWord = await romanizeText({ text: word, language: wordLanguage })
@@ -210,10 +209,41 @@ const fetchAllFlashcards = async (userId: string): Promise<FlashCard[]> => {
     return {
       id: doc.id,
       ...data,
-      due: data.due.toDate()
+      due: data.due.toDate(),
+      created: data.created.toDate()
     } as FlashCard;
   });
   return cards;
+};
+
+export const fetchFlashcardsPaginated = async (lastDoc?: FirebaseFirestoreTypes.QueryDocumentSnapshot, pageSize=20) => {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    let query = firebase.firestore()
+      .collection('users')
+      .doc(user.uid)
+      .collection('flashcards')
+      .orderBy('created', 'desc')
+      .limit(pageSize);
+
+    if (lastDoc) {
+      query = query.startAfter(lastDoc);
+    }
+
+    const snapshot = await query.get();
+
+    const newFlashcards: FlashCard[] = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        due: data.due.toDate(),
+        created: data.created.toDate()
+      } as FlashCard;
+    });
+    return { newFlashcards, lastDoc: snapshot.docs[snapshot.docs.length - 1] };
+  }
+  return { newFlashcards: [], lastDoc: undefined };
 };
 
 export default fetchAllFlashcards;

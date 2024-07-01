@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, ViewStyle } from 'react-native';
 import { Paragraph, ActivityIndicator, Dialog } from 'react-native-paper';
 import tw from 'twrnc';
 import TextToSpeechButton from './TextToSpeechButton';
@@ -11,9 +11,10 @@ import { cleanLeadingHyphens, cleanPunctuation } from '../utils/readings';
 
 type WordAndTranslationsProps = {
   word: string;
+  style?: ViewStyle | ViewStyle[]
 };
 
-const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({ word }) => {
+const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({ word, style }) => {
   const { nativeLanguage, targetLanguage, targetLanguageRomanizable } = useContext(LanguageContext);
   const [definitionLoading, setDefinitionLoading] = useState(false);
   const [translations, setTranslations] = useState<string[]>([]);
@@ -52,8 +53,8 @@ const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({ word }) => {
   }, [word, nativeLanguage, targetLanguage, targetLanguageRomanizable]);
 
   return (
-    <>
-      <View style={tw`flex flex-row items-center pl-6 pr-2`}>
+    <View style={style}>
+      <View style={tw`flex flex-row items-center`}>
         {targetLanguageRomanizable && (
           <RomanizeButton show={!showRomanized} onPress={() => setShowRomanized(!showRomanized)} />
         )}
@@ -64,7 +65,7 @@ const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({ word }) => {
         </Dialog.Title>
         <TextToSpeechButton text={word} id={word} type={'word'} />
       </View>
-      <Dialog.Content>
+      <Dialog.Content style={tw`pb-0`}>
         {definitionLoading ? (
           <ActivityIndicator style={tw`py-10`} size="large" />
         ) : (
@@ -84,7 +85,7 @@ const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({ word }) => {
           </View>
         )}
       </Dialog.Content>
-    </>
+    </View>
   );
 };
 

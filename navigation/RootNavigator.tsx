@@ -7,8 +7,9 @@ import LanguageSelectionScreen from '../components/screens/LanguageSelectionScre
 import TargetLanguageSelectionScreen from '../components/screens/TargetLanguageSelectionScreen';
 import TabNavigator from './TabNavigator';
 import BackButton from '../components/BackButton';
+import { RootStackParamList } from '../types';
 
-const RootStack = createStackNavigator();
+const RootStack = createStackNavigator<RootStackParamList>();
 
 const RootNavigator = () => (
   <NavigationContainer>

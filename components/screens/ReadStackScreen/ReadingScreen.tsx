@@ -104,7 +104,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       }, 500);
     }
     setTimeout(() => {
-      setHighlightedWordIndices(null);
+      setHighlightedWordIndices(null)
     }, 500);
   };
 

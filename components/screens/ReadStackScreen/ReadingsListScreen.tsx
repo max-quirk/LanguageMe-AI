@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, RefreshControl } from 'react-native';
+import { View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import { firebase } from '../../../config/firebase';
 import tw from 'twrnc';
 import { Reading, RootStackParamList } from '../../../types';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import ReadingCard from './ReadingCard';
@@ -14,6 +14,8 @@ import Button from '../../Button';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from '../../../contexts/ThemeContext';
 import BackgroundView from '../../BackgroundView';
+import { ScreenTitle } from '../../ScreenTitle';
+import RefreshableScrollView from '../../RefreshableScrollView';
 
 export type ReadingsListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reading', 'AddReading'>;
 
@@ -60,6 +62,12 @@ const ReadingsListScreen: React.FC = () => {
     initialize();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchReadings();
+    }, [])
+  );
+
   const handleRefresh = () => {
     setRefreshing(true);
     fetchReadings();
@@ -78,7 +86,7 @@ const ReadingsListScreen: React.FC = () => {
           visible={helperVisible}
           onClose={() => setHelperVisible(false)}
         />
-        <Text style={tw`text-3xl mb-6 text-center font-bold ${theme.classes.textPrimary}`}>Readings</Text>
+        <ScreenTitle title='Readings' />
         <Button
           mode="contained"
           onPress={() => navigation.navigate('AddReading')}
@@ -93,20 +101,14 @@ const ReadingsListScreen: React.FC = () => {
         {loading ? (
           <ActivityIndicator size="small" />
         ) : (
-          <ScrollView
-            refreshControl={
-              <RefreshControl 
-                refreshing={refreshing} 
-                onRefresh={handleRefresh} 
-                tintColor={theme.colors.purplePrimary} 
-                colors={[theme.colors.purplePrimary]} // Need for Android
-              />
-            }
+          <RefreshableScrollView
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
           >
             {readings.map(reading => (
               <ReadingCard key={reading.id} reading={reading} onDelete={handleDelete} />
             ))}
-          </ScrollView>
+          </RefreshableScrollView>
         )}
       </View>
     </BackgroundView>

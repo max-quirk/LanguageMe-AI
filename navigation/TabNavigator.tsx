@@ -6,6 +6,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import ReadStackScreen from '../components/screens/ReadStackScreen';
 import LearnStackScreen from '../components/screens/LearnStackScreen';
 import SettingsStackScreen from '../components/screens/SettingsStackScreen';
+import HistoryStackScreen from '../components/screens/HistoryStackScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +23,7 @@ function TabNavigator() {
             iconName = 'book-open';
           } else if (route.name === 'Flashcards') {
             iconName = 'clone';
-          } else if (route.name === 'History') {
+          } else if (route.name === 'My Words') {
             iconName = 'history';
           } else if (route.name === 'Settings') {
             iconName = 'bars';
@@ -38,7 +39,7 @@ function TabNavigator() {
     >
       <Tab.Screen name="Read" component={ReadStackScreen} />
       <Tab.Screen name="Flashcards" component={LearnStackScreen} />
-      <Tab.Screen name="History" component={ReadStackScreen} />
+      <Tab.Screen name="My Words" component={HistoryStackScreen} />
       <Tab.Screen name="Settings" component={SettingsStackScreen} />
     </Tab.Navigator>
   );

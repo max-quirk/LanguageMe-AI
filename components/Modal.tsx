@@ -16,7 +16,7 @@ const Modal: React.FC<ModalProps> = ({ visible, onDismiss, children }) => {
   return (
     <Portal>
       {visible && <View style={tw`absolute inset-0 bg-black bg-opacity-50`} />}
-      <Dialog visible={visible} onDismiss={onDismiss} style={tw`${theme.classes.backgroundTertiary} relative pt-8`}>
+      <Dialog visible={visible} onDismiss={onDismiss} style={tw`${theme.classes.backgroundTertiary} relative pt-8 pl-6 pr-6 pb-6`}>
         <View style={tw`absolute right-0 top-[-20px] z-100`}>
           <IconButton
             icon="close"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { Text, Card as PaperCard, ActivityIndicator } from 'react-native-paper';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { firebase } from '../../../config/firebase';
 import tw from 'twrnc';
 import { FlashCard, RootStackParamList } from 'types';
@@ -14,6 +14,7 @@ import TextToSpeechButton from '../../TextToSpeechButton';
 import RomanizeButton from '../../RomanizeButton';
 import { useTheme } from '../../../contexts/ThemeContext';
 import BackgroundView from '../../BackgroundView';
+import RefreshableScrollView from '../../RefreshableScrollView';
 
 type FlashcardsScreenNavigationProp = NavigationProp<RootStackParamList>;
 
@@ -35,13 +36,19 @@ const FlashcardsScreen = () => {
     const user = firebase.auth().currentUser;
     if (user) {
       const cards = await fetchAllFlashcards(user.uid);
-
+      setFlashcards(cards);
       const nextCard = getNextCard(cards);
       setCurrentFlashcard(nextCard);
     }
     setLoading(false);
     setRefreshing(false);
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setupFlashcards();
+    }, [])
+  );
 
   useEffect(() => {
     const initialize = async () => {
@@ -65,12 +72,8 @@ const FlashcardsScreen = () => {
   const handleNextFlashcard = async (ease: Ease) => {
     if (currentFlashcard) {
       const { card } = await adjustCard(currentFlashcard, ease); // Adjust card and save to Firebase
-      const updatedFlashcards = flashcards.map(fc => fc.id === card.id ? card : fc);
-      const now = new Date();
-      const startOfTomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-      const filteredFlashcards = updatedFlashcards.filter(fc => fc.due < startOfTomorrow); // Filter out due tomorrow or later
-      setFlashcards(filteredFlashcards);
-      const nextCard = getNextCard(filteredFlashcards.length > 1 ? filteredFlashcards.filter(fc => fc.id !== card.id) : filteredFlashcards);
+      const _cards = flashcards.length > 1 ? flashcards.filter(f => f.id != card.id) : flashcards // Filter current card unless it is the only card
+      const nextCard = getNextCard(_cards);
       setCurrentFlashcard(nextCard);
       setIsFront(true);
       setShowRomanized(false);
@@ -152,11 +155,10 @@ const FlashcardsScreen = () => {
   if (flashcards.length === 0) {
     return (
       <BackgroundView>
-        <ScrollView
+        <RefreshableScrollView
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
           contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
         >
           <Text style={tw`text-xl mb-8 text-center px-4 ${theme.classes.textPrimary}`}>You haven&apos;t added any flashcards from your readings yet!</Text>
           <Button
@@ -169,18 +171,17 @@ const FlashcardsScreen = () => {
           >
             <Text style={tw`text-white`}>Go to Readings</Text>
           </Button>
-        </ScrollView>
+        </RefreshableScrollView>
       </BackgroundView>
     );
   }
 
   return (
     <BackgroundView>
-      <ScrollView
+      <RefreshableScrollView
+        refreshing={refreshing}
+        onRefresh={handleRefresh}
         contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }
       >
         {currentFlashcard && (
           <TouchableOpacity onPress={handleFlipCard}>
@@ -199,11 +200,11 @@ const FlashcardsScreen = () => {
         />
         <HelperPopup 
           title="Select difficulty"
-          text="Select how easy you found the card. The difficulty you select will determine how frequently you will see the card."
+          text="Select how easy you found the card. The difficulty you select determines how frequently you will see the card."
           visible={backCardHelperVisible}
           onClose={() => setBackCardHelperVisible(false)}
         />
-      </ScrollView>
+      </RefreshableScrollView>
     </BackgroundView>
   );
 };
