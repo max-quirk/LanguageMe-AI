@@ -6,6 +6,8 @@ type AudioContextType = {
   playPauseAudio: (audioFile: string) => void;
   pauseAudio: () => void;
   resumeAudio: () => void;
+  currentFile: string | null;
+  setCurrentFile: React.Dispatch<React.SetStateAction<string | null>>
 };
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -55,7 +57,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     };
   }, []);
   return (
-    <AudioContext.Provider value={{ playing, playPauseAudio, pauseAudio, resumeAudio }}>
+    <AudioContext.Provider value={{ playing, playPauseAudio, pauseAudio, resumeAudio, currentFile, setCurrentFile }}>
       {children}
     </AudioContext.Provider>
   );

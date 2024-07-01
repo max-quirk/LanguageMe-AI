@@ -7,7 +7,7 @@ import { firebase } from '../../../config/firebase';
 import tw from 'twrnc';
 import { generateReadingPassage } from '../../../services/chatGpt';
 import { LanguageContext } from '../../../contexts/LanguageContext';
-import { RootStackParamList } from '../../../types'; 
+import { Reading, RootStackParamList } from '../../../types'; 
 import Button from '../../Button';
 import { useTheme } from '../../../contexts/ThemeContext';
 import ThemedTextInput from '../../ThemedTextInput';
@@ -57,7 +57,8 @@ const AddReadingScreen: React.FC = () => {
         wordCount: wordCountNum,
         passage,
         createdAt: new Date(),
-      };
+        wordTimestamps: null,
+      } as Reading;
 
       navigation.navigate('Reading', { reading });
     } catch (error) {

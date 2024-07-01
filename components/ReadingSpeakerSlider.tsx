@@ -16,13 +16,13 @@ type ReadingSpeakerSliderProps = {
 };
 
 const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) => {
-  const [audioFile, setAudioFile] = useState<string | null>(null);
+  // const [audioFile, setAudioFile] = useState<string | null>(null);
   const [showLoadingIcon, setShowLoadingIcon] = useState<boolean>(false);
   const [fetchingAudio, setFetchingAudio] = useState<boolean>(false);
   const [trackEnded, setTrackEnded] = useState<boolean>(false);
   const [speedControlVisible, setSpeedControlVisible] = useState<boolean>(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
-  const { playPauseAudio } = useAudio();
+  const { playPauseAudio, currentFile, setCurrentFile } = useAudio();
   const playbackState = usePlaybackState();
   const { position, duration } = useProgress(50);
   const { theme } = useTheme();
@@ -34,7 +34,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
       setFetchingAudio(true);
       const filePath = await fetchSpeechUrl({ text: reading.passage as string, type: 'reading', id: reading.id });
       if (filePath) {
-        setAudioFile(filePath);
+        setCurrentFile(filePath);
         await TrackPlayer.reset();
         await TrackPlayer.add({
           id: reading.id,
@@ -51,7 +51,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
 
     return () => {
       TrackPlayer.reset();
-      setAudioFile(null);
+      setCurrentFile(null);
     };
   }, [reading.passage]);
 
@@ -70,22 +70,22 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   };
 
   const handleSliderChange = async (value: number) => {
-    if (audioFile) {
+    if (currentFile) {
       await TrackPlayer.seekTo(value * duration);
     }
   };
 
   const handlePlayPause = async () => {
-    if (!audioFile) {
+    if (!currentFile) {
       setShowLoadingIcon(true);
     }
-    if (audioFile) {
+    if (currentFile) {
       if (trackEnded) {
         await TrackPlayer.seekTo(0);
         await TrackPlayer.play();
         setTrackEnded(false);
       } else {
-        playPauseAudio(audioFile);
+        playPauseAudio(currentFile);
       }
     }
   };
@@ -98,13 +98,13 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   };
 
   useEffect(() => {
-    if (audioFile && showLoadingIcon) {
+    if (currentFile && showLoadingIcon) {
       handleAudioReady();
     }
-  }, [audioFile, showLoadingIcon]);
+  }, [currentFile, showLoadingIcon]);
 
   const handleRestart = async () => {
-    if (audioFile) {
+    if (currentFile) {
       await TrackPlayer.seekTo(0);
       if (isPlaying) {
         await TrackPlayer.play();

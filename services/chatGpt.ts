@@ -1,17 +1,7 @@
 import { LanguageCode } from 'iso-639-1';
-import OpenAI from 'openai';
 import RNFS from 'react-native-fs';
 import { languageCodeToName, romanizableLangauges } from '../utils/languages';
-
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    organization: process.env.OPENAI_ORGANISATION_ID,
-    project: process.env.OPENAI_PROJECT_ID,
-});
-
-// Force correct openAi url with no trailing slash 
-openai.baseURL = 'https://api.openai.com/v1';
-openai.buildURL = (path) => `${openai.baseURL}${path}`;
+import openai from './openai';
 
 export const generateReadingPassage = async ({
   targetLanguage,
@@ -22,7 +12,7 @@ export const generateReadingPassage = async ({
   targetLanguage: LanguageCode;
   description: string;
   difficulty: string;
-  wordCount: string;
+  wordCount: number;
  }) => {
   let difficultyPrompt = ''
   const targetLanguageName = languageCodeToName(targetLanguage)
