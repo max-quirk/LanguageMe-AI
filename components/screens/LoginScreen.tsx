@@ -23,7 +23,7 @@ type FirebaseAuthError = {
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
-  const [email, setEmail] = useState<string>('max.q.807+good@gmail.com');
+  const [email, setEmail] = useState<string>('max.q.807+english@gmail.com');
   const [password, setPassword] = useState<string>('bball4life1');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

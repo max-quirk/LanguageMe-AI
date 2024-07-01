@@ -246,4 +246,19 @@ export const fetchFlashcardsPaginated = async (lastDoc?: FirebaseFirestoreTypes.
   return { newFlashcards: [], lastDoc: undefined };
 };
 
+export const deleteFlashcard = async (flashcardId: string) => {
+  try {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      throw new Error('No user is authenticated');
+    }
+    const flashcardsCollectionRef = firebase.firestore().collection('users').doc(user.uid).collection('flashcards');
+    await flashcardsCollectionRef.doc(flashcardId).delete();
+    console.log(`Flashcard with ID ${flashcardId} deleted successfully.`);
+  } catch (error) {
+    console.error('Error deleting flashcard:', error);
+    throw error;
+  }
+};
+
 export default fetchAllFlashcards;

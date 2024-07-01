@@ -27,7 +27,7 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
       <WordAndTranslations word={word} />
       <Divider style={tw`my-4`} />
       <Collapse label="Example">
-        <View style={tw`mt-0 flex-row items-center pr-10`}>
+        <View style={tw`mt-0 flex-row items-center pb-2`}>
           {_exampleRomanized && (
             <RomanizeButton show={!showRomanized} onPress={() => setShowRomanized(!showRomanized)} />
           )}

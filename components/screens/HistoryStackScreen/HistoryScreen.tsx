@@ -6,7 +6,7 @@ import { FlashCard } from '../../../types';
 import WordModal from './WordModal';
 import { useTheme } from '../../../contexts/ThemeContext';
 import BackgroundView from '../../BackgroundView';
-import { fetchFlashcardsPaginated } from '../../../utils/flashcards';
+import { deleteFlashcard, fetchFlashcardsPaginated } from '../../../utils/flashcards';
 import { ScreenTitle } from '../../ScreenTitle';
 import RefreshableScrollView from '../../RefreshableScrollView';
 import WordRow from './WordRow';
@@ -145,6 +145,11 @@ const HistoryScreen = () => {
     );
   }
 
+  const handleDeleteFlashcard = async (id: string) => {
+    await deleteFlashcard(id);
+    setFlashcards(prevFlashcards => prevFlashcards.filter(card => card.id !== id));
+  };
+
   return (
     <BackgroundView style={tw`pt-25`}>
       <RefreshableScrollView
@@ -168,6 +173,7 @@ const HistoryScreen = () => {
               {sortedGroupedFlashcards[date].map((card, idx) => (
                 <WordRow
                   key={card.id}
+                  onDelete={handleDeleteFlashcard}
                   card={card}
                   showTranslations={showTranslations}
                   onPress={() => {

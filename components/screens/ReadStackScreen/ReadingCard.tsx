@@ -3,12 +3,10 @@ import { TouchableOpacity, Alert, Text } from 'react-native';
 import { Reading } from '../../../types';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { deleteReading } from '../../../utils/readings';
 import { firebase } from '../../../config/firebase';
 import { ReadingsListScreenNavigationProp } from './ReadingsListScreen';
 import ThemedCard from '../../ThemedCard';
-import { useTheme } from '../../../contexts/ThemeContext';
 
 type ReadingCardProps = {
   reading: Reading;
@@ -17,7 +15,6 @@ type ReadingCardProps = {
 
 const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onDelete }) => {
   const navigation = useNavigation<ReadingsListScreenNavigationProp>();
-  const { theme } = useTheme();
 
   const handleDelete = () => {
     const user = firebase.auth().currentUser;
@@ -30,7 +27,7 @@ const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onDelete }) => {
 
   const renderRightActions = () => (
     <TouchableOpacity
-      style={tw`bg-red-500 justify-center p-4 mb-4 rounded-r-lg overflow-hidden`}
+      style={tw`bg-red-600 justify-center p-4 mb-4 rounded-lg overflow-hidden`}
       onPress={() => {
         Alert.alert(
           'Confirm Deletion',

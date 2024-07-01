@@ -41,11 +41,10 @@ export const generateReadingPassage = async ({
       model: "gpt-4o",
       messages: [{ 
         role: "user", 
-        content: `Generate a ${wordCount}-word passage about "${description}" in ${targetLanguageName} with each word separated by a space. For example, in Chinese and other character-based languages, words should be spaced like "当 我们 谈到 撒旦 时， 我们 常常 ...". ${difficultyPrompt}. Only respond with the passage, no extra text.` }],
+        content: `Generate a ${wordCount}-word passage about "${description}" in ${targetLanguageName} with each word separated by a space. Ensure there is a ' ' between each word, even if separated by puncuation like '。，'. For example, in Chinese and other character-based languages, words should be spaced like "当 我们 谈到 撒旦 时， 我们 常常". ${difficultyPrompt}. Only respond with the passage, no extra text.` }],
       temperature: 0.7,
       n: 1
     });
-    console.log('response: ', response)
 
     return response.choices[0].message.content;
   } catch (error) {

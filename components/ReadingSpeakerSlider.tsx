@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
-import { ActivityIndicator, Menu, IconButton } from 'react-native-paper';
+import { ActivityIndicator, Menu } from 'react-native-paper';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import tw from 'twrnc';
@@ -17,7 +17,8 @@ type ReadingSpeakerSliderProps = {
 
 const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) => {
   const [audioFile, setAudioFile] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [showLoadingIcon, setShowLoadingIcon] = useState<boolean>(false);
+  const [fetchingAudio, setFetchingAudio] = useState<boolean>(false);
   const [trackEnded, setTrackEnded] = useState<boolean>(false);
   const [speedControlVisible, setSpeedControlVisible] = useState<boolean>(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
@@ -26,11 +27,11 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   const { position, duration } = useProgress(50);
   const { theme } = useTheme();
 
-  const isPlaying = playbackState.state === State.Playing 
+  const isPlaying = playbackState.state === State.Playing;
 
   useEffect(() => {
     const fetchAudio = async () => {
-      setLoading(true);
+      setFetchingAudio(true);
       const filePath = await fetchSpeechUrl({ text: reading.passage as string, type: 'reading', id: reading.id });
       if (filePath) {
         setAudioFile(filePath);
@@ -41,7 +42,8 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
           title: 'Reading Passage',
           artist: 'Unknown',
         });
-        setLoading(false);
+        setFetchingAudio(false);
+        setShowLoadingIcon(false);
       }
     };
 
@@ -74,6 +76,9 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   };
 
   const handlePlayPause = async () => {
+    if (!audioFile) {
+      setShowLoadingIcon(true);
+    }
     if (audioFile) {
       if (trackEnded) {
         await TrackPlayer.seekTo(0);
@@ -84,6 +89,19 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
       }
     }
   };
+
+  const handleAudioReady = async () => {
+    if (showLoadingIcon) {
+      await TrackPlayer.play();
+      setShowLoadingIcon(false);
+    }
+  };
+
+  useEffect(() => {
+    if (audioFile && showLoadingIcon) {
+      handleAudioReady();
+    }
+  }, [audioFile, showLoadingIcon]);
 
   const handleRestart = async () => {
     if (audioFile) {
@@ -100,14 +118,6 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
     setSpeedControlVisible(false);
   };
 
-  const renderSpeedOption = ({ item }: { item: number }) => (
-    <Menu.Item
-      onPress={() => handleSpeedChange(item)}
-      title={`${item.toFixed(1)}x`}
-      style={tw`${item === playbackSpeed ? 'font-bold' : ''}`}
-    />
-  );
-
   const speedOptions = Array.from({ length: 11 }, (_, i) => 0.5 + i * 0.1);
 
   return (
@@ -122,14 +132,14 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
         thumbTintColor={theme.colors.purplePrimary}
       />
       <View style={tw`flex-row justify-around items-center mb-2`}>
-        <TouchableOpacity onPress={handleRestart} disabled={loading}>
+        <TouchableOpacity onPress={handleRestart} disabled={fetchingAudio}>
           <Fontisto name="step-backwrad" size={12} color={theme.colors.textPrimary} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={rewindAudio} disabled={loading}>
+        <TouchableOpacity onPress={rewindAudio} disabled={fetchingAudio}>
           <MaterialCommunityIcons name="rewind-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handlePlayPause} disabled={loading}>
-          {loading ? (
+        <TouchableOpacity onPress={handlePlayPause}>
+          {showLoadingIcon ? (
             <ActivityIndicator size="small" />
           ) : (
             <MaterialCommunityIcons 
@@ -139,7 +149,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
             />
           )}
         </TouchableOpacity>
-        <TouchableOpacity onPress={fastForwardAudio} disabled={loading}>
+        <TouchableOpacity onPress={fastForwardAudio} disabled={fetchingAudio}>
           <MaterialCommunityIcons name="fast-forward-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
         <Menu

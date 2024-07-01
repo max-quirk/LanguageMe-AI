@@ -10,7 +10,7 @@ import { cleanPunctuation, extractPunctuation } from '../../../utils/readings';
 import ReadingSpeakerSlider from '../../ReadingSpeakerSlider';
 import { useAudio } from '../../../contexts/AudioContext';
 import { useTheme } from '../../../contexts/ThemeContext';
-import { useProgress } from 'react-native-track-player';
+import TrackPlayer, { useProgress } from 'react-native-track-player';
 
 type ReadingScreenRouteProp = RouteProp<RootStackParamList, 'Reading'>;
 
@@ -62,7 +62,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       setPausedToOpenDefinition(true);
     }
   };
-
+  console.log('passage: ', reading.passage)
   const renderWord = (word: string, paragraphIndex: number, wordIndex: number) => {
     const { punctuationBefore, punctuationAfter, coreWord } = extractPunctuation(word);
     const isHighlighted = highlightedWordIndices?.paragraphIndex === paragraphIndex && highlightedWordIndices?.wordIndex === wordIndex;
@@ -98,6 +98,9 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   const handleDefinitionModalClose = () => {
     setDefinitionModalVisible(false);
     if (position > 0 && pausedToOpenDefintion) {
+      // rewind track 1s
+      const newPosition = Math.max(position - 1, 0); 
+      TrackPlayer.seekTo(newPosition)
       setTimeout(() => {
         resumeAudio();
         setPausedToOpenDefinition(false);
@@ -107,7 +110,6 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       setHighlightedWordIndices(null)
     }, 500);
   };
-
   return (
     <View style={tw`flex-1 ${theme.classes.backgroundPrimary} px-5`}>
       <ScrollView style={tw`flex-1 px-5 pt-20`}>
