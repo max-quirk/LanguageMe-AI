@@ -21,12 +21,13 @@ function TabNavigator() {
 
           if (route.name === 'Read') {
             iconName = 'book-open';
+            <Icon name={'book-open'} size={size} color={color} style={tw`mt-2`} />;
           } else if (route.name === 'Flashcards') {
-            iconName = 'clone';
+            iconName = 'brain';
           } else if (route.name === 'My Words') {
-            iconName = 'history';
+            iconName = 'list-ul';
           } else if (route.name === 'Settings') {
-            iconName = 'bars';
+            iconName = 'cog';
           }
 
           return <Icon name={iconName} size={size} color={color} style={tw`mt-2`} />;
