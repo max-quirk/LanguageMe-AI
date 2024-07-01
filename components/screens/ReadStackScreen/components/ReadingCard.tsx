@@ -1,12 +1,12 @@
 import React from 'react';
 import { TouchableOpacity, Alert, Text } from 'react-native';
-import { Reading } from '../../../types';
+import { Reading } from '../../../../types';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
-import { deleteReading } from '../../../utils/readings';
-import { firebase } from '../../../config/firebase';
-import { ReadingsListScreenNavigationProp } from './ReadingsListScreen';
-import ThemedCard from '../../ThemedCard';
+import { deleteReading } from '../../../../utils/readings';
+import { firebase } from '../../../../config/firebase';
+import { ReadingsListScreenNavigationProp } from './../ReadingsListScreen';
+import ThemedCard from '../../../ThemedCard';
 
 type ReadingCardProps = {
   reading: Reading;

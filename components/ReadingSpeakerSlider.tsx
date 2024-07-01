@@ -16,13 +16,12 @@ type ReadingSpeakerSliderProps = {
 };
 
 const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) => {
-  // const [audioFile, setAudioFile] = useState<string | null>(null);
   const [showLoadingIcon, setShowLoadingIcon] = useState<boolean>(false);
   const [fetchingAudio, setFetchingAudio] = useState<boolean>(false);
   const [trackEnded, setTrackEnded] = useState<boolean>(false);
   const [speedControlVisible, setSpeedControlVisible] = useState<boolean>(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
-  const { playPauseAudio, currentFile, setCurrentFile } = useAudio();
+  const { playPauseAudio, currentFile, setCurrentFile, currentFileWordTimestamps } = useAudio();
   const playbackState = usePlaybackState();
   const { position, duration } = useProgress(50);
   const { theme } = useTheme();
@@ -76,10 +75,9 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   };
 
   const handlePlayPause = async () => {
-    if (!currentFile) {
+    if (!currentFile || !currentFileWordTimestamps) {
       setShowLoadingIcon(true);
-    }
-    if (currentFile) {
+    } else {
       if (trackEnded) {
         await TrackPlayer.seekTo(0);
         await TrackPlayer.play();
@@ -98,10 +96,10 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   };
 
   useEffect(() => {
-    if (currentFile && showLoadingIcon) {
+    if (currentFile && currentFileWordTimestamps && showLoadingIcon) {
       handleAudioReady();
     }
-  }, [currentFile, showLoadingIcon]);
+  }, [currentFile, currentFileWordTimestamps, showLoadingIcon]);
 
   const handleRestart = async () => {
     if (currentFile) {

@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { ActivityIndicator, Dialog } from 'react-native-paper';
 import tw from 'twrnc';
-import { addFlashcard } from '../../../utils/flashcards';
-import Button from '../../Button';
-import Modal from '../../Modal';
-import WordAndTranslations from '../../WordAndTranslations';
-import { LanguageContext } from '../../../contexts/LanguageContext';
+import { addFlashcard } from '../../../../utils/flashcards';
+import Button from '../../../Button';
+import Modal from '../../../Modal';
+import WordAndTranslations from '../../../WordAndTranslations';
+import { LanguageContext } from '../../../../contexts/LanguageContext';
 
 type DefinitionModalProps = {
   visible: boolean;

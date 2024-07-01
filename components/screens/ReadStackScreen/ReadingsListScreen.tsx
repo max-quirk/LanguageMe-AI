@@ -7,7 +7,7 @@ import { Reading, RootStackParamList } from '../../../types';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import ReadingCard from './ReadingCard';
+import ReadingCard from './components/ReadingCard';
 import HelperPopup from '../../HelperPopup';
 import { isFirstTimeUser } from '../../../utils/storageUtils';
 import Button from '../../Button';
