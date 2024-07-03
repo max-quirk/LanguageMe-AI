@@ -39,7 +39,8 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
     playing, 
     currentFile: audioFile,
     currentFileWordTimestamps: wordTimestamps,
-    setCurrentFileWordTimestamps: setWordTimestamps
+    setCurrentFileWordTimestamps: setWordTimestamps,
+    wordTimeStampsFailed
   } = useAudio();
   const { position } = useProgress(READING_PING_TIME_MS);
 
@@ -61,14 +62,17 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     const fetchTranscription = async () => {
-      if (audioFile && reading.passage) { //&& !wordTimestamps
+      // if wordTimeStamps have failed before, don't try again
+      if (audioFile && reading.passage && !wordTimestamps && !wordTimeStampsFailed) {
         try {
           const readingWithWordTimeStamps = await getWordTimeStamps({
             audioUrl: audioFile, 
             languageCode: targetLanguage,
             passage: reading.passage,
           });
-          await updateFirebaseReadingWordTimestamps(reading.id, readingWithWordTimeStamps);
+          if (readingWithWordTimeStamps){
+            await updateFirebaseReadingWordTimestamps(reading.id, readingWithWordTimeStamps);
+          }
           setWordTimestamps(readingWithWordTimeStamps);
         } catch (error) {
           console.error('Error fetching transcription:', error);

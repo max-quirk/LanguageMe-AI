@@ -25,7 +25,7 @@ export const getWordTimeStamps = async ({
   audioUrl: string, 
   languageCode: LanguageCode,
   passage: string,
-}): Promise<ReadingWithWordTimeStamps> => {
+}): Promise<ReadingWithWordTimeStamps | null> => {
   try {
     // Fetch the audio file from the URL
     const response = await fetch(audioUrl);
@@ -81,27 +81,23 @@ export const getWordTimeStamps = async ({
             passage
           }))
         } catch (innerError) {
-          console.error('Error processing file for transcription:', innerError);
-          // RUN THROUGH GPT HERE
           reject(innerError);
         }
       };
     });
   } catch (error) {
-    console.error('Error during transcription:', error);
-    throw error;
+    console.info('Processing timestamps failed:', error);
+    return null
   }
 };
 
-export function processWordTimeStamps({
+function processWordTimeStamps({
   wordTimeStamps,
   passage,
 }: {
   wordTimeStamps: WordSegment[]
   passage: string
 }): ReadingWithWordTimeStamps {
-  console.log('wordTimeStamps: ', wordTimeStamps)
-  console.log('passage: ', passage)
   const paragraphs = passage.split('\n').map(paragraph => paragraph.trim()).filter(paragraph => paragraph !== '');
   const result: ReadingWithWordTimeStamps = { paragraphs: [] };
   let timeStampsIndex = 0;
@@ -179,8 +175,6 @@ export function processWordTimeStamps({
 // Filter out elements whose word is just punctuation
 export function filterWordTimeStamps(wordTimeStamps: WordSegment[]) {
   const punctuationRegex = /^[.,;:!?。，；！？]+$/;
-  
   const filteredWordTimeStamps = wordTimeStamps.filter(segment => !punctuationRegex.test(segment.word));
-
   return filteredWordTimeStamps;
 }

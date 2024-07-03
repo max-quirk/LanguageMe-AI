@@ -18,10 +18,16 @@ type ReadingSpeakerSliderProps = {
 const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) => {
   const [showLoadingIcon, setShowLoadingIcon] = useState<boolean>(false);
   const [fetchingAudio, setFetchingAudio] = useState<boolean>(false);
-  const [trackEnded, setTrackEnded] = useState<boolean>(false);
   const [speedControlVisible, setSpeedControlVisible] = useState<boolean>(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
-  const { playPauseAudio, currentFile, setCurrentFile, currentFileWordTimestamps } = useAudio();
+  const { 
+    playPauseAudio, 
+    currentFile, 
+    setCurrentFile, 
+    currentFileWordTimestamps,
+    trackEnded,
+    setTrackEnded
+   } = useAudio();
   const playbackState = usePlaybackState();
   const { position, duration } = useProgress(50);
   const { theme } = useTheme();
@@ -38,8 +44,6 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
         await TrackPlayer.add({
           id: reading.id,
           url: filePath,
-          title: 'Reading Passage',
-          artist: 'Unknown',
         });
         setFetchingAudio(false);
         setShowLoadingIcon(false);
@@ -54,6 +58,21 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
       setCurrentFile(null);
     };
   }, [reading.passage]);
+
+  useEffect(() => {
+    const getCurrentSpeed = async () => {
+      const speed = await TrackPlayer.getRate();
+      setPlaybackSpeed(speed);
+    };
+
+    getCurrentSpeed();
+
+    const speedInterval = setInterval(() => {
+      getCurrentSpeed();
+    }, 1000);
+
+    return () => clearInterval(speedInterval);
+  }, []);
 
   useTrackPlayerEvents([Event.PlaybackQueueEnded], () => {
     setTrackEnded(true);
@@ -72,6 +91,9 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   const handleSliderChange = async (value: number) => {
     if (currentFile) {
       await TrackPlayer.seekTo(value * duration);
+      if (value < 1) {
+        setTrackEnded(false);
+      }
     }
   };
 
