@@ -23,7 +23,7 @@ type FirebaseAuthError = {
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
-  const [email, setEmail] = useState<string>('max.q.807+english@gmail.com');
+  const [email, setEmail] = useState<string>('max.q.807+good@gmail.com');
   const [password, setPassword] = useState<string>('bball4life1');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -46,7 +46,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       }
     } catch (error) {
       const firebaseError = error as FirebaseAuthError;
-      console.log('firebaseError: ', firebaseError.code)
+      console.error('firebaseError: ', firebaseError.code)
 
       if (firebaseError.code === 'auth/invalid-credential') {
         setError('Email or password not found. Please try again.');

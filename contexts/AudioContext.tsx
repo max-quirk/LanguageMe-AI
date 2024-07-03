@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import TrackPlayer from 'react-native-track-player';
-import { WordSegment } from 'services/whisper';
+import { ReadingWithWordTimeStamps, WordSegment } from 'services/whisper';
 
 type AudioContextType = {
   playing: boolean;
@@ -9,8 +9,8 @@ type AudioContextType = {
   resumeAudio: () => void;
   currentFile: string | null;
   setCurrentFile: React.Dispatch<React.SetStateAction<string | null>>
-  currentFileWordTimestamps: WordSegment[] | null
-  setCurrentFileWordTimestamps: React.Dispatch<React.SetStateAction<WordSegment[] | null>>
+  currentFileWordTimestamps: ReadingWithWordTimeStamps | null
+  setCurrentFileWordTimestamps: React.Dispatch<React.SetStateAction<ReadingWithWordTimeStamps | null>>
 };
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -18,7 +18,7 @@ const AudioContext = createContext<AudioContextType | undefined>(undefined);
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [playing, setPlaying] = useState<boolean>(false);
   const [currentFile, setCurrentFile] = useState<string | null>(null);
-  const [currentFileWordTimestamps, setCurrentFileWordTimestamps] = useState<WordSegment[] | null>(null);
+  const [currentFileWordTimestamps, setCurrentFileWordTimestamps] = useState<ReadingWithWordTimeStamps | null>(null);
 
   const playPauseAudio = async (audioFile: string) => {
     if (playing) {
@@ -56,6 +56,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   useEffect(() => {
     return () => {
       TrackPlayer.stop();
+      TrackPlayer.reset();
       setPlaying(false);
       setCurrentFile(null);
     };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Switch } from 'react-native';
+import { View } from 'react-native';
 import { Menu, IconButton } from 'react-native-paper';
 import tw from 'twrnc';
 import { useTheme } from '../../../contexts/ThemeContext';
@@ -24,6 +24,26 @@ const WordListSettings: React.FC<WordListSettingsProps> = ({
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
+  // Pre-rendered Menu items
+  const menuItems = (
+    <>
+      <Menu.Item
+        onPress={() => {
+          setShowTranslations(!showTranslations);
+          closeMenu();
+        }}
+        title={showTranslations ? 'Hide translations' : 'Show translations'}
+      />
+      <Menu.Item
+        onPress={() => {
+          setReverseOrder(!reverseOrder);
+          closeMenu();
+        }}
+        title={reverseOrder ? 'Order added latest-earliest' : 'Order added earliest-latest'}
+      />
+    </>
+  );
+
   return (
     <View style={tw`flex-row justify-end items-center mb-0 absolute right-0 top-[-6px]`}>
       <Menu
@@ -31,20 +51,7 @@ const WordListSettings: React.FC<WordListSettingsProps> = ({
         onDismiss={closeMenu}
         anchor={<IconButton icon={() => <Entypo name="dots-three-vertical" size={20} color={theme.colors.textPrimary} />} onPress={openMenu} />}
       >
-        <Menu.Item
-          onPress={() => {
-            setShowTranslations(!showTranslations);
-            closeMenu();
-          }}
-          title={showTranslations ? 'Hide translations' : 'Show translations'}
-        />
-        <Menu.Item
-          onPress={() => {
-            setReverseOrder(!reverseOrder);
-            closeMenu();
-          }}
-          title={reverseOrder ? 'Order added latest-earliest' : 'Order added earliest-latest'}
-        />
+        {menuItems}
       </Menu>
     </View>
   );

@@ -16,6 +16,7 @@ import { useTheme } from '../../../contexts/ThemeContext';
 import BackgroundView from '../../BackgroundView';
 import { ScreenTitle } from '../../ScreenTitle';
 import RefreshableScrollView from '../../RefreshableScrollView';
+import { processGeneratedReading } from '../../../utils/readings';
 
 export type ReadingsListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reading', 'AddReading'>;
 
@@ -77,7 +78,6 @@ const ReadingsListScreen: React.FC = () => {
   const handleDelete = (id: string) => {
     setReadings(prevReadings => prevReadings.filter(reading => reading.id !== id));
   };
-
   return (
     <BackgroundView>
       <View style={tw`flex-1 px-5 mt-20 ${theme.classes.backgroundPrimary}`}>
@@ -100,15 +100,16 @@ const ReadingsListScreen: React.FC = () => {
           </View>
         </Button>
         {loading ? (
-          <ActivityIndicator size="small" />
+          <ActivityIndicator size="small" style={tw`mt-10`} />
         ) : (
           <RefreshableScrollView
             refreshing={refreshing}
             onRefresh={handleRefresh}
           >
-            {readings.map(reading => (
-              <ReadingCard key={reading.id} reading={reading} onDelete={handleDelete} />
-            ))}
+            {readings.map(reading => {
+              reading.passage = processGeneratedReading(reading.passage ?? '')
+              return <ReadingCard key={reading.id} reading={reading} onDelete={handleDelete} />
+            })}
           </RefreshableScrollView>
         )}
       </View>

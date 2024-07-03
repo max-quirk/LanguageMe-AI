@@ -1,18 +1,31 @@
 import RNFS from 'react-native-fs';
 import { FFmpegKit } from 'ffmpeg-kit-react-native';
+import { LanguageCode } from 'iso-639-1';
+import { cleanPunctuation, filterBlankWords } from '../utils/readings';
 
 export interface WordSegment {
   start: number;
   end: number;
-  text: string;
+  word: string;
 }
 
-interface TranscriptionResponse {
-  text: string;
-  segments?: Array<{ start: number; end: number; text: string }>;
-}
+export type ParagraphWithWordTimeStamps = {
+  words: WordSegment[];
+};
 
-export const getWordTimeStamps = async (audioUrl: string): Promise<WordSegment[]> => {
+export type ReadingWithWordTimeStamps = {
+  paragraphs: ParagraphWithWordTimeStamps[];
+};
+
+export const getWordTimeStamps = async ({
+  audioUrl,
+  languageCode,
+  passage
+}: {
+  audioUrl: string, 
+  languageCode: LanguageCode,
+  passage: string,
+}): Promise<ReadingWithWordTimeStamps> => {
   try {
     // Fetch the audio file from the URL
     const response = await fetch(audioUrl);
@@ -43,7 +56,11 @@ export const getWordTimeStamps = async (audioUrl: string): Promise<WordSegment[]
             type: 'audio/wav',
           });
           formData.append('model', 'whisper-1'); 
-          formData.append('response_format', "verbose_json");
+          formData.append('language', languageCode)
+          formData.append('prompt', passage)
+          formData.append('response_format', 'verbose_json');
+          formData.append('timestamp_granularities[]', 'word');  
+
 
           // Make the transcription request
           const transcriptionResponse = await fetch('https://api.openai.com/v1/audio/transcriptions', {
@@ -54,32 +71,18 @@ export const getWordTimeStamps = async (audioUrl: string): Promise<WordSegment[]
             },
             body: formData,
           });
+            
+          const data = await transcriptionResponse.json();
 
-          const data: TranscriptionResponse = await transcriptionResponse.json();
+          const filteredWords = data.words.filter((segment: WordSegment) => filterBlankWords(segment.word))
 
-          if (data.segments && Array.isArray(data.segments)) {
-            // Process segments to get word-level timestamps
-            const wordSegments: WordSegment[] = [];
-            data.segments.forEach(segment => {
-              const words = segment.text.split(' ').filter(word => word.trim() !== '');
-              const segmentDuration = segment.end - segment.start;
-              const wordDuration = segmentDuration / words.length;
-
-              words.forEach((word, index) => {
-                wordSegments.push({
-                  text: word,
-                  start: segment.start + index * wordDuration,
-                  end: segment.start + (index + 1) * wordDuration,
-                });
-              });
-            });
-
-            resolve(wordSegments);
-          } else {
-            reject(new Error('Invalid transcription response format'));
-          }
+          resolve(processWordTimeStamps({
+            wordTimeStamps: filteredWords,
+            passage
+          }))
         } catch (innerError) {
           console.error('Error processing file for transcription:', innerError);
+          // RUN THROUGH GPT HERE
           reject(innerError);
         }
       };
@@ -89,3 +92,95 @@ export const getWordTimeStamps = async (audioUrl: string): Promise<WordSegment[]
     throw error;
   }
 };
+
+export function processWordTimeStamps({
+  wordTimeStamps,
+  passage,
+}: {
+  wordTimeStamps: WordSegment[]
+  passage: string
+}): ReadingWithWordTimeStamps {
+  console.log('wordTimeStamps: ', wordTimeStamps)
+  console.log('passage: ', passage)
+  const paragraphs = passage.split('\n').map(paragraph => paragraph.trim()).filter(paragraph => paragraph !== '');
+  const result: ReadingWithWordTimeStamps = { paragraphs: [] };
+  let timeStampsIndex = 0;
+
+  paragraphs.forEach(paragraph => {
+    const words = paragraph.split(' ').filter(filterBlankWords)
+    const paragraphWords: WordSegment[] = [];
+
+    for (let paragraphIndex = 0; paragraphIndex < words.length; paragraphIndex++) {
+      if (paragraphWords.length > paragraphIndex) {
+        continue
+      }
+      const _word = words[paragraphIndex]
+      const word = cleanPunctuation(_word).toLowerCase()
+      const timeStamp = wordTimeStamps[timeStampsIndex];
+
+      const timeStampWord = cleanPunctuation(timeStamp.word.toLowerCase())
+
+      if (timeStampWord === word) {
+        paragraphWords.push({
+          word: timeStampWord,
+          start: timeStamp.start,
+          end: timeStamp.end,
+        });
+        timeStampsIndex++
+ 
+      } else if (timeStamp.word.length < word.length) {
+        let buildTimeStampWord = timeStampWord
+        let buildTimeStampIndex = timeStampsIndex + 1
+        let end = timeStamp.end;
+        while (buildTimeStampWord !== word && buildTimeStampIndex < wordTimeStamps.length) {
+          const nextTimeStampWord = cleanPunctuation(wordTimeStamps[buildTimeStampIndex].word.toLowerCase())
+          buildTimeStampWord += nextTimeStampWord;
+          end = wordTimeStamps[buildTimeStampIndex].end;
+          buildTimeStampIndex++;
+        }
+          paragraphWords.push({
+            word: buildTimeStampWord,
+            start: timeStamp.start,
+            end,
+          });
+          timeStampsIndex = buildTimeStampIndex
+
+      } else if (timeStamp.word.length > word.length) {
+        let buildPassageWord = word
+        let buildPassageWordIndex = paragraphIndex + 1
+        while (buildPassageWord !== timeStamp.word && buildPassageWordIndex < words.length) {
+          buildPassageWord += words[buildPassageWordIndex].toLowerCase();
+          buildPassageWordIndex++;
+        }
+        const wordsInsideTimeStampWord = buildPassageWordIndex - paragraphIndex
+        let t = timeStamp.start
+        const timeStampLength = timeStamp.end - t
+        for (let i = 0; i < wordsInsideTimeStampWord; i++) {
+          const _word = words[i]
+          const _wordApproxTimeLength = (_word.length / timeStampWord.length) * timeStampLength
+          const _wordEnd = t + _wordApproxTimeLength
+          paragraphWords.push({
+            word: _word,
+            start: t,
+            end: _wordEnd
+          });
+          t = _wordEnd
+        }
+        timeStampsIndex++
+      }
+    }
+
+    result.paragraphs.push({ words: paragraphWords });
+  });
+
+  return result;
+}
+
+// Filter out elements whose word is just punctuation
+export function filterWordTimeStamps(wordTimeStamps: WordSegment[]) {
+  const punctuationRegex = /^[.,;:!?。，；！？]+$/;
+  
+  const filteredWordTimeStamps = wordTimeStamps.filter(segment => !punctuationRegex.test(segment.word));
+
+  return filteredWordTimeStamps;
+}

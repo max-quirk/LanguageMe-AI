@@ -192,7 +192,7 @@ export const deleteAllFlashcards = async (userId: string) => {
       snapshot = await flashcardsRef.limit(BATCH_SIZE).get();
     }
 
-    console.log('All flashcards deleted successfully.');
+    console.info('All flashcards deleted successfully.');
   } catch (error) {
     console.error('Error deleting flashcards: ', error);
   }
@@ -254,7 +254,7 @@ export const deleteFlashcard = async (flashcardId: string) => {
     }
     const flashcardsCollectionRef = firebase.firestore().collection('users').doc(user.uid).collection('flashcards');
     await flashcardsCollectionRef.doc(flashcardId).delete();
-    console.log(`Flashcard with ID ${flashcardId} deleted successfully.`);
+    console.info(`Flashcard with ID ${flashcardId} deleted successfully.`);
   } catch (error) {
     console.error('Error deleting flashcard:', error);
     throw error;

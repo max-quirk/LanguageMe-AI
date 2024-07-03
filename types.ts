@@ -1,6 +1,6 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { LanguageCode } from "iso-639-1";
-import { WordSegment } from "services/whisper";
+import { ReadingWithWordTimeStamps, WordSegment } from "services/whisper";
 import { Ease } from "utils/flashcards";
 
 export type MainTabParamList = {
@@ -53,5 +53,5 @@ export type Reading = {
   wordCount: number;
   passage: string | null;
   createdAt: Date;
-  wordTimestamps: WordSegment[] | null
+  wordTimestamps: ReadingWithWordTimeStamps | null
 };

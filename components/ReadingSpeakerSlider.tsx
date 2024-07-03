@@ -49,6 +49,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
     fetchAudio();
 
     return () => {
+      TrackPlayer.stop();
       TrackPlayer.reset();
       setCurrentFile(null);
     };
