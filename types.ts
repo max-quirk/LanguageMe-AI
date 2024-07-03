@@ -54,4 +54,5 @@ export type Reading = {
   passage: string | null;
   createdAt: Date;
   wordTimestamps: ReadingWithWordTimeStamps | null
+  timeStampsFailed?: boolean
 };

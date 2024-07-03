@@ -40,7 +40,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
     currentFile: audioFile,
     currentFileWordTimestamps: wordTimestamps,
     setCurrentFileWordTimestamps: setWordTimestamps,
-    wordTimeStampsFailed
+    setWordTimeStampsFailed
   } = useAudio();
   const { position } = useProgress(READING_PING_TIME_MS);
 
@@ -48,6 +48,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     setWordTimestamps(reading.wordTimestamps);
+    setWordTimeStampsFailed(Boolean(reading.wordTimestamps))
 
     const checkFirstTimeUser = async () => {
       const firstTime = await isFirstTimeUser();
@@ -62,25 +63,26 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     const fetchTranscription = async () => {
-      // if wordTimeStamps have failed before, don't try again
-      if (audioFile && reading.passage && !wordTimestamps && !wordTimeStampsFailed) {
+      if (audioFile && reading.passage) {
         try {
           const readingWithWordTimeStamps = await getWordTimeStamps({
             audioUrl: audioFile, 
             languageCode: targetLanguage,
             passage: reading.passage,
-          });
-          if (readingWithWordTimeStamps){
-            await updateFirebaseReadingWordTimestamps(reading.id, readingWithWordTimeStamps);
-          }
+          })
+          await updateFirebaseReadingWordTimestamps(reading.id, readingWithWordTimeStamps);
           setWordTimestamps(readingWithWordTimeStamps);
         } catch (error) {
-          console.error('Error fetching transcription:', error);
+          await updateFirebaseReadingWordTimestamps(reading.id, null);
+          setWordTimeStampsFailed(true)
+          console.info('Error fetching transcription:', error);
         }
       }
     };
-
-    fetchTranscription();
+    // if wordTimeStamps have failed before, don't try again
+    if (!wordTimestamps && !reading.timeStampsFailed) {
+      fetchTranscription();
+    }
   }, [audioFile]);
 
   useEffect(() => {
@@ -92,17 +94,6 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       return () => clearInterval(interval);
     }
   }, [position, wordTimestamps]);
-
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        // When screen is unfocused, pause the audio
-        if (playing) {
-          pauseAudio();
-        }
-      };
-    }, [playing, pauseAudio])
-  );
 
   const handleWordPress = (word: string) => {
     const cleanedWord = cleanPunctuation(word);
@@ -144,6 +135,18 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       }
     }
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        // When screen is unfocused, pause the audio
+        if (playing) {
+          pauseAudio();
+        }
+      };
+    }, [playing, pauseAudio])
+  );
+
   return (
     <View style={tw`flex-1 ${theme.classes.backgroundPrimary} px-5`}>
       <ScrollView style={tw`flex-1 px-5 pt-20`}>

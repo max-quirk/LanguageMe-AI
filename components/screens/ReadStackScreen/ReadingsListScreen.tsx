@@ -45,6 +45,7 @@ const ReadingsListScreen: React.FC = () => {
         passage: doc.data().passage,
         createdAt: doc.data().createdAt.toDate(),
         wordTimestamps: doc.data().wordTimestamps,
+        timeStampsFailed: doc.data().timeStampsFailed,
       } as Reading)));
     }
     setLoading(false);

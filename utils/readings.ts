@@ -46,14 +46,18 @@ export const stripQuotes = (str: string) => {
   return str.replace(/["']/g, '');
 }
 
-export const updateFirebaseReadingWordTimestamps = async (readingId: string, timeStamps: ReadingWithWordTimeStamps) => {
+export const updateFirebaseReadingWordTimestamps = async (readingId: string, timeStamps: ReadingWithWordTimeStamps | null) => {
   try {
     const user = firebase.auth().currentUser;
     if (!user) {
       throw new Error('No user is authenticated');
     }
     const readingRef = firebase.firestore().collection('users').doc(user.uid).collection('readings').doc(readingId);
-    await readingRef.update({ wordTimestamps: timeStamps });
+    if (timeStamps !== null) {
+      await readingRef.update({ wordTimestamps: timeStamps });
+    } else {
+      await readingRef.update({ timeStampsFailed: true });
+    }
   } catch (error) {
     console.error('Error updating reading with segments:', error);
     throw error;

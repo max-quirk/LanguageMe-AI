@@ -26,14 +26,17 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
     setCurrentFile, 
     currentFileWordTimestamps,
     trackEnded,
-    setTrackEnded
+    setTrackEnded,
+    wordTimeStampsFailed: wordTimeStampsFailedState
    } = useAudio();
   const playbackState = usePlaybackState();
   const { position, duration } = useProgress(50);
   const { theme } = useTheme();
 
   const isPlaying = playbackState.state === State.Playing;
-
+  
+  const timeStampsFailed = Boolean(wordTimeStampsFailedState || reading.timeStampsFailed)
+  const timestampsLoading = !timeStampsFailed && !currentFileWordTimestamps
   useEffect(() => {
     const fetchAudio = async () => {
       setFetchingAudio(true);
@@ -46,14 +49,15 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
           url: filePath,
         });
         setFetchingAudio(false);
-        setShowLoadingIcon(false);
       }
     };
+    setTrackEnded(false); 
 
     fetchAudio();
 
     return () => {
       TrackPlayer.stop();
+      setTrackEnded(false); 
       TrackPlayer.reset();
       setCurrentFile(null);
     };
@@ -81,6 +85,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   const rewindAudio = async () => {
     const newPosition = Math.max(position - 5, 0);
     await TrackPlayer.seekTo(newPosition);
+    setTrackEnded(false);
   };
 
   const fastForwardAudio = async () => {
@@ -98,7 +103,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   };
 
   const handlePlayPause = async () => {
-    if (!currentFile || !currentFileWordTimestamps) {
+    if (!currentFile || timestampsLoading) {
       setShowLoadingIcon(true);
     } else {
       if (trackEnded) {
@@ -119,10 +124,10 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   };
 
   useEffect(() => {
-    if (currentFile && currentFileWordTimestamps && showLoadingIcon) {
+    if (currentFile && !timestampsLoading && showLoadingIcon) {
       handleAudioReady();
     }
-  }, [currentFile, currentFileWordTimestamps, showLoadingIcon]);
+  }, [currentFile, timestampsLoading, showLoadingIcon]);
 
   const handleRestart = async () => {
     if (currentFile) {

@@ -12,14 +12,14 @@ type Props = {
 };
 
 const ParagraphComponent: React.FC<Props> = ({ paragraph, paragraphIndex, handleWordPress, highlightedWordIndices }) => {
-  const { trackEnded } = useAudio()
+  const { trackEnded, wordTimeStampsFailed } = useAudio()
   return (
     <View key={paragraphIndex} style={tw`flex-row flex-wrap mb-4`}>
       {paragraph.split(' ').map((word, wordIndex) => {
-        const isHighlighted = trackEnded || Boolean(highlightedWordIndices &&
+        const trackIsAheadOfWord = trackEnded || Boolean(highlightedWordIndices &&
           (highlightedWordIndices.paragraphIndex > paragraphIndex ||
           (highlightedWordIndices.paragraphIndex === paragraphIndex && highlightedWordIndices.wordIndex >= wordIndex)));
-        
+        const isHighlighted = !wordTimeStampsFailed && trackIsAheadOfWord 
         return (
           <WordComponent
             key={`${word}-${paragraphIndex}-${wordIndex}`}
