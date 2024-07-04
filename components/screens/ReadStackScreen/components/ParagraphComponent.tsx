@@ -19,7 +19,7 @@ const ParagraphComponent: React.FC<Props> = ({ paragraph, paragraphIndex, handle
         const trackIsAheadOfWord = trackEnded || Boolean(highlightedWordIndices &&
           (highlightedWordIndices.paragraphIndex > paragraphIndex ||
           (highlightedWordIndices.paragraphIndex === paragraphIndex && highlightedWordIndices.wordIndex >= wordIndex)));
-        const isHighlighted = !wordTimeStampsFailed && trackIsAheadOfWord 
+        const isHighlighted = trackIsAheadOfWord && !wordTimeStampsFailed 
         return (
           <WordComponent
             key={`${word}-${paragraphIndex}-${wordIndex}`}
