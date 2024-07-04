@@ -42,10 +42,20 @@ export type FlashCard = {
   interval: number,
   factor: number,
   reps: number,
-  firstMarkedEasy?: Date, 
-  lastMarkedEasy?: Date,
   lastEase: Ease
 }
+
+export type LightWeightFlashCard = {
+  id: string,
+  front: {
+    word: string,
+    wordRomanized: string,
+  },
+  back: {
+    word: string,
+  },
+  created: Date,
+};
 
 export type Reading = {
   id: string;

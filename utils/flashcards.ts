@@ -1,5 +1,5 @@
 import { DAY_IN_MS } from "../constants/time";
-import { FlashCard } from "types";
+import { FlashCard, LightWeightFlashCard } from "types";
 import { generateExampleSentences, romanizeText } from "../services/chatGpt";
 import { firebase } from "@react-native-firebase/auth";
 import { getUserDoc, recordProgress } from "./firebase";
@@ -68,13 +68,6 @@ export async function adjustCard(card: FlashCard, ease: Ease): Promise<{ card: F
         break;
       case Ease.Easy:
         card.factor = Math.min(MAX_FACTOR, card.factor + FACTOR_INCREASE_EASY);
-        if (!card.firstMarkedEasy) {
-          card.firstMarkedEasy = now; 
-          recordProgress({ userId: user?.uid, type: 'learnt' });
-        } else {
-          card.lastMarkedEasy = now;  
-          recordProgress({ userId: user?.uid, type: 'revised' });
-        }
         break;
     }
   }
@@ -232,18 +225,52 @@ export const fetchFlashcardsPaginated = async (lastDoc?: FirebaseFirestoreTypes.
 
     const snapshot = await query.get();
 
-    const newFlashcards: FlashCard[] = snapshot.docs.map(doc => {
+    const newFlashcards: LightWeightFlashCard[] = snapshot.docs.map(doc => {
       const data = doc.data();
       return {
         id: doc.id,
-        ...data,
-        due: data.due.toDate(),
+        front: {
+          word: data.front.word,
+          wordRomanized: data.front.wordRomanized,
+        }, 
+        back: {
+          word: data.back.word,
+        },
         created: data.created.toDate()
-      } as FlashCard;
+      } as LightWeightFlashCard;
     });
     return { newFlashcards, lastDoc: snapshot.docs[snapshot.docs.length - 1] };
   }
   return { newFlashcards: [], lastDoc: undefined };
+};
+
+
+export const fetchFullFlashcard = async (id: string): Promise<FlashCard | null> => {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    const doc = await firebase.firestore()
+      .collection('users')
+      .doc(user.uid)
+      .collection('flashcards')
+      .doc(id)
+      .get();
+
+    if (doc.exists) {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        front: data?.front,
+        back: data?.back,
+        due: data?.due.toDate(),
+        created: data?.created.toDate(),
+        interval: data?.interval,
+        factor: data?.factor,
+        reps: data?.reps,
+        lastEase: data?.lastEase,
+      };
+    }
+  }
+  return null;
 };
 
 export const deleteFlashcard = async (flashcardId: string) => {

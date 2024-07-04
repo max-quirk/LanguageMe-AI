@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, ActivityIndicator, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import tw from 'twrnc';
-import { FlashCard } from '../../../types';
+import { LightWeightFlashCard } from '../../../types';
 import WordModal from './WordModal';
 import { useTheme } from '../../../contexts/ThemeContext';
 import BackgroundView from '../../BackgroundView';
@@ -20,11 +20,11 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 type HistoryScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
 
 const HistoryScreen = () => {
-  const [flashcards, setFlashcards] = useState<FlashCard[]>([]);
+  const [flashcards, setFlashcards] = useState<LightWeightFlashCard[]>([]);
   const [lastDoc, setLastDoc] = useState<FirebaseFirestoreTypes.QueryDocumentSnapshot | undefined>(undefined);
   const [loadedCardIds, setLoadedCardIds] = useState<Set<string>>(new Set());
   const [showTranslations, setShowTranslations] = useState(false);
-  const [selectedCard, setSelectedCard] = useState<FlashCard | null>(null);
+  const [selectedCard, setSelectedCard] = useState<LightWeightFlashCard | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [reverseOrder, setReverseOrder] = useState(false);
@@ -83,7 +83,7 @@ const HistoryScreen = () => {
         acc[date].push(card);
       }
       return acc;
-    }, {} as { [key: string]: FlashCard[] });
+    }, {} as { [key: string]: LightWeightFlashCard[] });
   }, [flashcards]);
 
   const sortedDates = useMemo(() => {

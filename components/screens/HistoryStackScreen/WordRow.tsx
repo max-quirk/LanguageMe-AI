@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ViewStyle, Alert } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import tw from 'twrnc';
-import { FlashCard } from '../../../types';
+import { LightWeightFlashCard } from '../../../types';
 import RomanizeButton from '../../RomanizeButton';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import { Dialog, Portal, Button } from 'react-native-paper';
 
 type WordRowProps = {
-  card: FlashCard;
+  card: LightWeightFlashCard;
   showTranslations: boolean;
   onPress: () => void;
   isFirst: boolean;
@@ -83,14 +83,14 @@ const WordRow: React.FC<WordRowProps> = ({
           <View
             style={[
               tw`flex-row items-center justify-between w-full pl-4 pr-3`,
-              card.front.wordRomanized ? '' : tw`py-2`,
+              card.front.wordRomanized ? {} : tw`py-2`,
             ]}
           >
             <View style={tw`flex-row items-center`}>
               {card.front.wordRomanized && (
                 <RomanizeButton show={!showRomanized} onPress={() => setShowRomanized(!showRomanized)} />
               )}
-              <Text style={[tw`${theme.classes.textPrimary} text-lg`, showRomanized ? '' : tw`capitalize`]}>
+              <Text style={[tw`${theme.classes.textPrimary} text-lg`, showRomanized ? {} : tw`capitalize`]}>
                 {showRomanized ? card.front.wordRomanized : card.front.word}
               </Text>
               {showTranslations && (
