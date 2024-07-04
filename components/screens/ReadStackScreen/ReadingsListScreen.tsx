@@ -1,55 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
-import { ActivityIndicator, Text } from 'react-native-paper';
-import { firebase } from '../../../config/firebase';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, NativeSyntheticEvent, ActivityIndicator as NativeActivityIndicator, NativeScrollEvent } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
 import tw from 'twrnc';
-import { Reading, RootStackParamList } from '../../../types';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import ReadingCard from './components/ReadingCard';
-import HelperPopup from '../../HelperPopup';
-import { isFirstTimeUser } from '../../../utils/storageUtils';
-import Button from '../../Button';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { RootStackParamList } from '../../../types';
 import { useTheme } from '../../../contexts/ThemeContext';
 import BackgroundView from '../../BackgroundView';
 import { ScreenTitle } from '../../ScreenTitle';
 import RefreshableScrollView from '../../RefreshableScrollView';
-import { processGeneratedReading } from '../../../utils/readings';
+import Button from '../../Button';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ReadingSkeleton, getReadingsPaginated } from '../../../utils/readings';
+import ReadingCard from './components/ReadingCard';
+import HelperPopup from '../../HelperPopup';
+import { isFirstTimeUser } from '../../../utils/storageUtils';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 export type ReadingsListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reading', 'AddReading'>;
 
 const ReadingsListScreen: React.FC = () => {
-  const [readings, setReadings] = useState<Reading[]>([]);
+  const [readings, setReadings] = useState<ReadingSkeleton[]>([]);
+  const [lastDoc, setLastDoc] = useState<FirebaseFirestoreTypes.QueryDocumentSnapshot | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [helperVisible, setHelperVisible] = useState(false);
   const navigation = useNavigation<ReadingsListScreenNavigationProp>();
   const { theme } = useTheme();
 
-  const fetchReadings = async () => {
-    const user = firebase.auth().currentUser;
-    if (user) {
-      const readingsSnapshot = await firebase.firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('readings')
-        .orderBy('createdAt', 'desc')
-        .get();
-      setReadings(readingsSnapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
-        id: doc.id,
-        description: doc.data().description,
-        difficulty: doc.data().difficulty,
-        wordCount: doc.data().wordCount,
-        passage: doc.data().passage,
-        createdAt: doc.data().createdAt.toDate(),
-        wordTimestamps: doc.data().wordTimestamps,
-        timeStampsFailed: doc.data().timeStampsFailed,
-      } as Reading)));
-    }
+  const fetchInitialReadings = async () => {
+    setLoading(true);
+    const { readings: newReadings, lastDoc: newLastDoc } = await getReadingsPaginated();
+    setReadings(newReadings);
+    setLastDoc(newLastDoc);
     setLoading(false);
     setRefreshing(false);
+  };
+
+  const fetchMoreReadings = async () => {
+    if (loadingMore || !lastDoc) return;
+    setLoadingMore(true);
+    const { readings: newReadings, lastDoc: newLastDoc } = await getReadingsPaginated(lastDoc);
+    setReadings(prevReadings => [...prevReadings, ...newReadings]);
+    setLastDoc(newLastDoc);
+    setLoadingMore(false);
   };
 
   useEffect(() => {
@@ -60,25 +55,30 @@ const ReadingsListScreen: React.FC = () => {
           setHelperVisible(true);
         }, 1000);
       }
-      fetchReadings();
+      fetchInitialReadings();
     };
     initialize();
   }, []);
 
   useFocusEffect(
-    React.useCallback(() => {
-      fetchReadings();
+    useCallback(() => {
+      fetchInitialReadings();
     }, [])
   );
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchReadings();
+    fetchInitialReadings();
   };
 
-  const handleDelete = (id: string) => {
-    setReadings(prevReadings => prevReadings.filter(reading => reading.id !== id));
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const paddingToBottom = 20;
+    if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+      fetchMoreReadings();
+    }
   };
+
   return (
     <BackgroundView>
       <View style={tw`flex-1 px-5 mt-20 ${theme.classes.backgroundPrimary}`}>
@@ -101,16 +101,26 @@ const ReadingsListScreen: React.FC = () => {
           </View>
         </Button>
         {loading ? (
-          <ActivityIndicator size="small" style={tw`mt-10`} />
+          <NativeActivityIndicator size="large" style={tw`mt-10`} color={theme.colors.purplePrimary} />
         ) : (
           <RefreshableScrollView
             refreshing={refreshing}
             onRefresh={handleRefresh}
+            onScroll={handleScroll}
+            scrollEventThrottle={400}
           >
-            {readings.map(reading => {
-              reading.passage = processGeneratedReading(reading.passage ?? '')
-              return <ReadingCard key={reading.id} reading={reading} onDelete={handleDelete} />
-            })}
+            {readings.map(reading => (
+              <ReadingCard 
+                key={reading.id} 
+                readingId={reading.id} 
+                title={reading.title}
+                description={reading.description}
+                onDelete={(id) => setReadings(prevReadings => prevReadings.filter(reading => reading.id !== id))} 
+              />
+            ))}
+            {loadingMore && (
+              <ActivityIndicator size="small" style={tw`mt-5`} />
+            )}
           </RefreshableScrollView>
         )}
       </View>

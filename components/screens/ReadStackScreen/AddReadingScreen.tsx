@@ -19,7 +19,7 @@ const AddReadingScreen: React.FC = () => {
   const { theme, isDarkTheme } = useTheme();
 
   const navigation = useNavigation<AddReadingsListScreenNavigationProp>();
-  const [description, setDescription] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
   const [difficulty, setDifficulty] = useState<string>('medium');
   const [wordCount, setWordCount] = useState<string>('100');
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,9 +40,16 @@ const AddReadingScreen: React.FC = () => {
       if (!user) {
         throw new Error('No user is authenticated');
       }
-      const passage = await generateReadingPassage({ targetLanguage, description, difficulty, wordCount: wordCountNum });
-
+      const passage = await generateReadingPassage({ 
+        targetLanguage, 
+        description: title, 
+        difficulty, 
+        wordCount: 
+        wordCountNum 
+      });
+      const description = passage.slice(0, Math.min(passage.length, 70))
       const readingRef = await firebase.firestore().collection('users').doc(user.uid).collection('readings').add({
+        title,
         description,
         difficulty,
         wordCount: wordCountNum,
@@ -52,6 +59,7 @@ const AddReadingScreen: React.FC = () => {
 
       const reading = {
         id: readingRef.id,
+        title,
         description,
         difficulty,
         wordCount: wordCountNum,
@@ -60,7 +68,7 @@ const AddReadingScreen: React.FC = () => {
         wordTimestamps: null,
       } as Reading;
 
-      navigation.navigate('Reading', { reading });
+      navigation.navigate('Reading', { reading, readingId: reading.id });
     } catch (error) {
       console.error('Error adding reading:', error);
     }
@@ -79,8 +87,8 @@ const AddReadingScreen: React.FC = () => {
       <Text style={tw`text-2xl mb-4 ${theme.classes.textPrimary}`}>New Reading</Text>
       <ThemedTextInput
         label="What do you want to read about?"
-        value={description}
-        onChangeText={setDescription}
+        value={title}
+        onChangeText={setTitle}
         placeholder="E.g. History of the Roman Empire"
       />
       <Text style={tw`mb-2 mt-4 text-base ${theme.classes.textPrimary}`}>Difficulty</Text>

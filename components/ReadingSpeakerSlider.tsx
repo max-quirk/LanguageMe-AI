@@ -8,7 +8,7 @@ import Slider from '@react-native-community/slider';
 import { fetchSpeechUrl } from '../services/chatGpt';
 import { Reading } from 'types';
 import { useAudio } from '../contexts/AudioContext';
-import TrackPlayer, { useProgress, usePlaybackState, State, useTrackPlayerEvents, Event } from 'react-native-track-player';
+import TrackPlayer, { useProgress, useTrackPlayerEvents, Event } from 'react-native-track-player';
 import { useTheme } from '../contexts/ThemeContext';
 
 type ReadingSpeakerSliderProps = {
@@ -26,14 +26,12 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
     setCurrentFile, 
     currentFileWordTimestamps,
     trackEnded,
+    playing,
     setTrackEnded,
-    wordTimeStampsFailed: wordTimeStampsFailedState
+    wordTimeStampsFailed: wordTimeStampsFailedState,
    } = useAudio();
-  const playbackState = usePlaybackState();
   const { position, duration } = useProgress(50);
   const { theme } = useTheme();
-
-  const isPlaying = playbackState.state === State.Playing;
   
   const timeStampsFailed = Boolean(wordTimeStampsFailedState || reading.timeStampsFailed)
   const timestampsLoading = !timeStampsFailed && !currentFileWordTimestamps
@@ -132,7 +130,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   const handleRestart = async () => {
     if (currentFile) {
       await TrackPlayer.seekTo(0);
-      if (isPlaying) {
+      if (playing) {
         await TrackPlayer.play();
       }
     }
@@ -169,7 +167,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
             <ActivityIndicator size="small" />
           ) : (
             <MaterialCommunityIcons 
-              name={trackEnded ? "restart" : isPlaying ? "pause" : "play"} 
+              name={trackEnded ? "restart" : playing ? "pause" : "play"} 
               size={24} 
               color={theme.colors.textPrimary} 
             />

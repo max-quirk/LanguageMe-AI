@@ -1,6 +1,5 @@
 import React from 'react';
 import { TouchableOpacity, Alert, Text } from 'react-native';
-import { Reading } from '../../../../types';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
 import { deleteReading } from '../../../../utils/readings';
@@ -9,18 +8,25 @@ import { ReadingsListScreenNavigationProp } from './../ReadingsListScreen';
 import ThemedCard from '../../../ThemedCard';
 
 type ReadingCardProps = {
-  reading: Reading;
+  title: string;
+  description: string,
+  readingId: string,
   onDelete: (id: string) => void;
 };
 
-const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onDelete }) => {
+const ReadingCard: React.FC<ReadingCardProps> = ({ 
+  title,
+  description,
+  readingId, 
+  onDelete 
+}) => {
   const navigation = useNavigation<ReadingsListScreenNavigationProp>();
 
   const handleDelete = () => {
     const user = firebase.auth().currentUser;
     if (user) {
-      deleteReading({ userId: user.uid, readingId: reading.id }).then(() => {
-        onDelete(reading.id);
+      deleteReading({ userId: user.uid, readingId: readingId }).then(() => {
+        onDelete(readingId);
       });
     }
   };
@@ -45,10 +51,10 @@ const ReadingCard: React.FC<ReadingCardProps> = ({ reading, onDelete }) => {
 
   return (
     <ThemedCard
-      onPress={() => navigation.navigate('Reading', { reading })}
+      onPress={() => navigation.navigate('Reading', { readingId })}
       renderRightActions={renderRightActions}
-      title={reading.description}
-      description={reading.passage}
+      title={title}
+      description={description}
     />
   );
 };

@@ -2,18 +2,20 @@ import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { Text, ScrollView, View } from 'react-native';
 import tw from 'twrnc';
 import { RouteProp, useFocusEffect } from '@react-navigation/native';
-import { RootStackParamList } from '../../../types';
+import { Reading, RootStackParamList } from '../../../types';
 import HelperPopup from '../../HelperPopup';
 import DefinitionModal from './components/DefinitionModal';
 import ReadingSpeakerSlider from '../../ReadingSpeakerSlider';
 import { useAudio } from '../../../contexts/AudioContext';
 import { useTheme } from '../../../contexts/ThemeContext';
 import TrackPlayer, { useProgress } from 'react-native-track-player';
-import { getWordTimeStamps } from '../../../services/whisper';
+import { getReading } from '../../../utils/readings';
 import { cleanPunctuation, updateFirebaseReadingWordTimestamps } from '../../../utils/readings';
 import { isFirstTimeUser } from '../../../utils/storageUtils';
 import ParagraphComponent from './components/ParagraphComponent';
 import { LanguageContext } from '../../../contexts/LanguageContext';
+import { ActivityIndicator } from 'react-native-paper';
+import { getWordTimeStamps } from '../../../services/whisper';
 
 type ReadingScreenRouteProp = RouteProp<RootStackParamList, 'Reading'>;
 
@@ -24,7 +26,8 @@ type Props = {
 const READING_PING_TIME_MS = 50;
 
 const ReadingScreen: React.FC<Props> = ({ route }) => {
-  const { reading } = route.params;
+  const { readingId, reading: paramsReading } = route.params;
+  const [reading, setReading] = useState<Reading | undefined | null>(paramsReading);
   const [definitionModalVisible, setDefinitionModalVisible] = useState(false);
   const [selectedWord, setSelectedWord] = useState<string>('');
   const [highlightedWordIndices, setHighlightedWordIndices] = useState<{ paragraphIndex: number; wordIndex: number } | null>(null);
@@ -43,12 +46,23 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
     setWordTimeStampsFailed
   } = useAudio();
   const { position } = useProgress(READING_PING_TIME_MS);
-
   const { theme } = useTheme();
 
   useEffect(() => {
-    setWordTimestamps(reading.wordTimestamps);
-    setWordTimeStampsFailed(Boolean(reading.wordTimestamps))
+    const fetchReading = async () => {
+      const fetchedReading = await getReading(readingId);
+      setReading(fetchedReading);
+    };
+    if (!paramsReading) {
+      fetchReading();
+    }
+  }, [readingId, paramsReading]);
+
+  useEffect(() => {
+    if (reading) {
+      setWordTimestamps(reading.wordTimestamps);
+      setWordTimeStampsFailed(Boolean(reading.wordTimestamps));
+    }
 
     const checkFirstTimeUser = async () => {
       const firstTime = await isFirstTimeUser();
@@ -59,31 +73,31 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       }
     };
     checkFirstTimeUser();
-  }, []);
+  }, [reading]);
 
   useEffect(() => {
     const fetchTranscription = async () => {
-      if (audioFile && reading.passage) {
+      if (audioFile && reading?.passage) {
         try {
           const readingWithWordTimeStamps = await getWordTimeStamps({
             audioUrl: audioFile, 
             languageCode: targetLanguage,
             passage: reading.passage,
-          })
+          });
           await updateFirebaseReadingWordTimestamps(reading.id, readingWithWordTimeStamps);
           setWordTimestamps(readingWithWordTimeStamps);
         } catch (error) {
           await updateFirebaseReadingWordTimestamps(reading.id, null);
-          setWordTimeStampsFailed(true)
+          setWordTimeStampsFailed(true);
           console.info('Error fetching transcription:', error);
         }
       }
     };
     // if wordTimeStamps have failed before, don't try again
-    if (!wordTimestamps && !reading.timeStampsFailed) {
+    if (!wordTimestamps && reading && !reading.timeStampsFailed) {
       fetchTranscription();
     }
-  }, [audioFile]);
+  }, [audioFile, reading, wordTimestamps]);
 
   useEffect(() => {
     if (wordTimestamps) {
@@ -119,7 +133,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   };
 
   const updateHighlightedWordIndices = (currentPosition: number) => {
-    const adjustedPosition = currentPosition + 0.4 // make words highlight slightly early 
+    const adjustedPosition = currentPosition + 0.4; // make words highlight slightly early 
     if (wordTimestamps?.paragraphs) {
       for (let paragraphIndex = 0; paragraphIndex < wordTimestamps.paragraphs.length; paragraphIndex++) {
         const paragraph = wordTimestamps.paragraphs[paragraphIndex];
@@ -147,10 +161,18 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
     }, [playing, pauseAudio])
   );
 
+  if (!reading) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <ActivityIndicator size="large" color={theme.colors.purplePrimary} />
+      </View>
+    );
+  }
+
   return (
     <View style={tw`flex-1 ${theme.classes.backgroundPrimary} px-5`}>
       <ScrollView style={tw`flex-1 px-5 pt-20`}>
-        <Text style={tw`text-2xl mb-4 ${theme.classes.textPrimary}`}>{reading.description}</Text>
+        <Text style={tw`text-2xl mb-4 ${theme.classes.textPrimary}`}>{reading.title}</Text>
         <View style={tw`mb-60`}>
           {reading.passage?.split('\n').map((line, index) => (
             <ParagraphComponent

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import TrackPlayer from 'react-native-track-player';
+import TrackPlayer, { State, usePlaybackState } from 'react-native-track-player';
 import { ReadingWithWordTimeStamps } from 'services/whisper';
 
 type AudioContextType = {
@@ -20,16 +20,18 @@ type AudioContextType = {
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [playing, setPlaying] = useState<boolean>(false);
   const [currentFile, setCurrentFile] = useState<string | null>(null);
   const [currentFileWordTimestamps, setCurrentFileWordTimestamps] = useState<ReadingWithWordTimeStamps | null>(null);
   const [wordTimeStampsFailed, setWordTimeStampsFailed] = useState(false)
   const [trackEnded, setTrackEnded] = useState<boolean>(false);
 
+  const playbackState = usePlaybackState();
+
+  const playing = playbackState.state === State.Playing
+
   const playPauseAudio = async (audioFile: string) => {
     if (playing) {
       await TrackPlayer.pause();
-      setPlaying(false);
     } else {
       if (currentFile === audioFile) {
         await TrackPlayer.play();
@@ -41,21 +43,18 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         await TrackPlayer.play();
         setCurrentFile(audioFile);
       }
-      setPlaying(true);
     }
   };
 
   const pauseAudio = async () => {
     if (playing) {
       await TrackPlayer.pause();
-      setPlaying(false);
     }
   };
 
   const resumeAudio = async () => {
     if (!playing) {
       await TrackPlayer.play();
-      setPlaying(true);
     }
   }
 
@@ -63,7 +62,6 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return () => {
       TrackPlayer.stop();
       TrackPlayer.reset();
-      setPlaying(false);
       setCurrentFile(null);
     };
   }, []);

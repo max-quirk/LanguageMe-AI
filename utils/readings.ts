@@ -1,5 +1,74 @@
 import { ReadingWithWordTimeStamps } from '../services/whisper';
 import { firebase } from '../config/firebase';
+import { Reading } from 'types';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+
+export type ReadingSkeleton = {
+  title: string,
+  description: string,
+  id: string,
+}
+
+export const getReadingsPaginated = async (
+  lastDoc?: FirebaseFirestoreTypes.QueryDocumentSnapshot,
+  pageSize = 7
+) => {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    let query = firebase.firestore()
+      .collection('users')
+      .doc(user.uid)
+      .collection('readings')
+      .orderBy('createdAt', 'desc')
+      .limit(pageSize);
+
+    if (lastDoc) {
+      query = query.startAfter(lastDoc);
+    }
+
+    const snapshot = await query.get();
+
+    if (snapshot.empty) {
+      return { readings: [], lastDoc };
+    }
+
+    const readings: ReadingSkeleton[] = snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
+      id: doc.id,
+      title: doc.data().title,
+      description: doc.data().description,
+    }));
+
+    return { readings, lastDoc: snapshot.docs[snapshot.docs.length - 1] };
+  }
+  return { readings: [] as ReadingSkeleton[], lastDoc: undefined };
+};
+
+export const getReading = async (id: string) => {
+  const user = firebase.auth().currentUser;
+  if (user) {
+    const doc = await firebase.firestore()
+      .collection('users')
+      .doc(user.uid)
+      .collection('readings')
+      .doc(id)
+      .get();
+
+    if (doc.exists) {
+      return {
+        id: doc.id,
+        title: doc.data()?.title,
+        description: doc.data()?.description,
+        difficulty: doc.data()?.difficulty,
+        wordCount: doc.data()?.wordCount,
+        passage: doc.data()?.passage,
+        createdAt: doc.data()?.createdAt.toDate(),
+        wordTimestamps: doc.data()?.wordTimestamps,
+        timeStampsFailed: doc.data()?.timeStampsFailed,
+      } as Reading;
+    }
+  }
+  return null;
+};
 
 export const deleteReading = async ({
   userId,

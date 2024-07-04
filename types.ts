@@ -18,7 +18,8 @@ export type RootStackParamList = {
   ReadingsList: undefined;
   AddReading: undefined;
   Reading: {
-    reading: Reading;
+    reading?: Reading;
+    readingId: string;
   };
   Login: undefined;
 };
@@ -48,6 +49,7 @@ export type FlashCard = {
 
 export type Reading = {
   id: string;
+  title: string;
   description: string;
   difficulty: string;
   wordCount: number;

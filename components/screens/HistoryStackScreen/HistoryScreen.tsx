@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, Text, ActivityIndicator, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { firebase } from '../../../config/firebase';
 import tw from 'twrnc';
 import { FlashCard } from '../../../types';
 import WordModal from './WordModal';
