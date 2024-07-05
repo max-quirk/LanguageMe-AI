@@ -4,6 +4,7 @@ import { firebase } from '../config/firebase';
 interface UserDoc {
   nativeLanguage?: string;
   targetLanguage?: string;
+  displayLanguage?: string;
 }
 
 export const getUserDoc = async (userId: string): Promise<UserDoc | null> => {
@@ -25,15 +26,17 @@ export const getUserLanguageFromFirebase = async (
   userId: string
 ): Promise<{ 
   nativeLanguage: LanguageCode; 
-  targetLanguage: LanguageCode 
+  targetLanguage: LanguageCode;
+  displayLanguage: LanguageCode;
 } | null> => {
   try {
     const userDoc = await getUserDoc(userId);
     if (userDoc) {
-      const { nativeLanguage, targetLanguage } = userDoc;
+      const { nativeLanguage, targetLanguage, displayLanguage } = userDoc;
       return { 
         nativeLanguage: nativeLanguage as LanguageCode, 
-        targetLanguage: targetLanguage as LanguageCode
+        targetLanguage: targetLanguage as LanguageCode,
+        displayLanguage: displayLanguage as LanguageCode
       };
     } else {
       return null;

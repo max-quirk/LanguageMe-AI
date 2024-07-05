@@ -15,6 +15,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../types';
 import Button from '../../Button';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { useTranslation } from 'react-i18next';
 
 // Define the type for the navigation prop
 type HistoryScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
@@ -32,6 +33,7 @@ const HistoryScreen = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const { theme } = useTheme();
   const navigation = useNavigation<HistoryScreenNavigationProp>();
+  const { t } = useTranslation();
 
   const loadInitialFlashcards = async () => {
     setLoading(true);
@@ -128,7 +130,7 @@ const HistoryScreen = () => {
           onRefresh={handleRefresh}
           contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
         >
-          <Text style={tw`text-xl mb-8 text-center px-4 ${theme.classes.textPrimary}`}>You haven&apos;t added any flashcards from your readings yet!</Text>
+          <Text style={tw`text-xl mb-8 text-center px-4 ${theme.classes.textPrimary}`}>{t('no_flashcards_added')}</Text>
           <Button
             mode="contained"
             onPress={() => navigation.reset({
@@ -137,7 +139,7 @@ const HistoryScreen = () => {
             })}
             style={tw`bg-purple-600`}
           >
-            <Text style={tw`text-white`}>Go to Readings</Text>
+            <Text style={tw`text-white`}>{t('go_to_readings')}</Text>
           </Button>
         </RefreshableScrollView>
       </BackgroundView>
@@ -158,7 +160,7 @@ const HistoryScreen = () => {
         onScroll={handleScroll}
         scrollEventThrottle={400}
       >
-        <ScreenTitle title="My Words" />
+        <ScreenTitle title={t('my_words')} />
         <WordListSettings
           showTranslations={showTranslations}
           setShowTranslations={setShowTranslations}

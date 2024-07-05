@@ -16,6 +16,7 @@ import ParagraphComponent from './components/ParagraphComponent';
 import { LanguageContext } from '../../../contexts/LanguageContext';
 import { ActivityIndicator } from 'react-native-paper';
 import { getWordTimeStamps } from '../../../services/whisper';
+import { useTranslation } from 'react-i18next';
 
 type ReadingScreenRouteProp = RouteProp<RootStackParamList, 'Reading'>;
 
@@ -46,6 +47,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   } = useAudio();
   const { position, duration } = useProgress(READING_PING_TIME_MS);
   const { theme } = useTheme();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchReading = async () => {
@@ -183,8 +185,8 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
           ))}
         </View>
         <HelperPopup
-          title="How to use"
-          text="Tap any word you don't know to see its definition and add it to your flashcards."
+          title={t('how_to_use')}
+          text={t('tap_to_define')}
           visible={helperVisible}
           onClose={() => setHelperVisible(false)}
         />

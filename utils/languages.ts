@@ -2,7 +2,7 @@ import iso6391, { LanguageCode } from 'iso-639-1';
 
 import ISO6391 from 'iso-639-1';
 
-const chatGptSupportedLanguages = new Set([
+export const chatGptSupportedLanguages = new Set([
   'Albanian', 'Amharic', 'Arabic', 'Armenian', 'Bengali', 'Bosnian', 'Bulgarian', 
   'Burmese', 'Catalan', 'Chinese', 'Croatian', 'Czech', 'Danish', 'Dutch', 'Estonian', 'English',
   'Finnish', 'French', 'Georgian', 'German', 'Greek', 'Gujarati', 'Hindi', 'Hungarian', 

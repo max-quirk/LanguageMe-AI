@@ -14,18 +14,21 @@ import LanguageSelector from '../../LanguageSelector';
 import MoreSettings from './MoreSettings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useTranslation } from 'react-i18next';
 
-type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+export type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 type Props = {
   navigation: SettingsScreenNavigationProp;
 };
 
 const SettingsScreen: React.FC<Props> = ({ navigation }) => {
-  const { saveLanguages, nativeLanguage, targetLanguage } = useContext(LanguageContext);
+  const { t } = useTranslation();
+  const { saveLanguages, nativeLanguage, targetLanguage, displayLanguage } = useContext(LanguageContext);
   const { theme, toggleTheme } = useTheme();
   const [formNativeLanguage, setFormNativeLanguage] = useState<LanguageCode>(nativeLanguage);
   const [formTargetLanguage, setFormTargetLanguage] = useState<LanguageCode>(targetLanguage);
+  const [formDisplayLanguage, setFormDisplayLanguage] = useState<LanguageCode>(displayLanguage);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
@@ -39,7 +42,11 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         nativeLanguage: formNativeLanguage,
         targetLanguage: formTargetLanguage,
       });
-      saveLanguages(formNativeLanguage, formTargetLanguage);
+      saveLanguages({
+        nativeLanguage: formNativeLanguage, 
+        targetLanguage: formTargetLanguage,
+        displayLanguage: formDisplayLanguage,
+      });
       setSuccess(true);
       setTimeout(() => {
         setSuccess(false);
@@ -53,15 +60,15 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const themeClasses = theme.classes;
-  const languageSelectorClasses = tw`w-32`
+  const languageSelectorClasses = tw`w-32`;
 
   return (
     <BackgroundView style={tw`pt-40 ${themeClasses.backgroundPrimary}`}>
       <ScrollView contentContainerStyle={tw`p-5`}>
-        <Text style={tw`${themeClasses.textPrimary} text-3xl text-center mb-8 font-bold`}>Settings</Text>
+        <Text style={tw`${themeClasses.textPrimary} text-3xl text-center mb-8 font-bold`}>{t('settings')}</Text>
 
         <View style={tw`mb-6 flex flex-row items-center justify-between`}>
-          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>Native Language</Text>
+          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>{t('native_language')}:</Text>
           <LanguageSelector
             selectedLanguage={formNativeLanguage}
             onSelectLanguage={setFormNativeLanguage}
@@ -70,7 +77,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         </View>
 
         <View style={tw`mb-6 flex flex-row items-center justify-between`}>
-          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>Target Language</Text>
+          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>{t('target_language')}:</Text>
           <LanguageSelector
             selectedLanguage={formTargetLanguage}
             onSelectLanguage={setFormTargetLanguage}
@@ -79,7 +86,17 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
         </View>
 
         <View style={tw`mb-6 flex flex-row items-center justify-between`}>
-          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>Theme</Text>
+          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>{t('display_language')}:</Text>
+          <LanguageSelector
+            selectedLanguage={formDisplayLanguage}
+            onSelectLanguage={setFormDisplayLanguage}
+            style={languageSelectorClasses}
+            languageOptions={[formNativeLanguage, formTargetLanguage]}
+          />
+        </View>
+
+        <View style={tw`mb-6 flex flex-row items-center justify-between`}>
+          <Text style={tw`${themeClasses.textPrimary} text-base mb-2`}>{t('theme')}:</Text>
           <TouchableOpacity style={tw`flex-row items-center rounded w-12 h-12`} onPress={toggleTheme}>
             <Icon
               name={theme.dark ? 'white-balance-sunny' : 'weather-night'}
@@ -97,7 +114,7 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
           labelStyle={tw`text-white`}
           disabled={loading}
         >
-          {loading ? <ActivityIndicator color="white" /> : (success ? 'Saved!' : 'Save')}
+          {loading ? <ActivityIndicator color="white" /> : (success ? t('saved') : t('save'))}
         </Button>
 
         <Divider style={tw`my-4`} />

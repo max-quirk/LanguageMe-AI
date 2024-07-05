@@ -17,6 +17,7 @@ export type RootStackParamList = {
   ForgotPassword: undefined;
   LanguageSelection: undefined;
   TargetLanguageSelection: { nativeLanguage: LanguageCode };
+  DisplayLanguageSelection: { nativeLanguage: LanguageCode, targetLanguage: LanguageCode };
   ReadingsList: undefined;
   AddReading: undefined;
   Reading: {

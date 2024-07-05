@@ -50,7 +50,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
       <Button
         mode="contained"
         onPress={handlePasswordReset}
-        style={tw`mt-4 ${'bg-purple-600'}`}
+        style={tw`mt-4 bg-purple-600`}
         disabled={loading}
       >
         {loading ? <ActivityIndicator color="white" style={tw`pt-[3px]`} /> : 'Get Link'}

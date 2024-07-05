@@ -7,6 +7,7 @@ import RomanizeButton from '../../RomanizeButton';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import { Dialog, Portal, Button } from 'react-native-paper';
+import { useTranslation } from 'react-i18next';
 
 type WordRowProps = {
   card: LightWeightFlashCard;
@@ -26,6 +27,7 @@ const WordRow: React.FC<WordRowProps> = ({
   onDelete,
 }) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const [showRomanized, setShowRomanized] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
 
@@ -42,11 +44,11 @@ const WordRow: React.FC<WordRowProps> = ({
       <TouchableOpacity 
         onPress={() => (
           Alert.alert(
-            'Confirm Deletion',
-            'Are you sure you want to delete this word from your deck?',
+            t('confirm_deletion'),
+            t('confirm_deletion_message'),
             [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Delete', style: 'destructive', onPress: handleDelete },
+              { text: t('cancel'), style: 'cancel' },
+              { text: t('delete'), style: 'destructive', onPress: handleDelete },
             ]
           )
         )}
@@ -61,13 +63,13 @@ const WordRow: React.FC<WordRowProps> = ({
     <GestureHandlerRootView>
       <Portal>
         <Dialog visible={confirmVisible} onDismiss={() => setConfirmVisible(false)}>
-          <Dialog.Title>Confirm Deletion</Dialog.Title>
+          <Dialog.Title>{t('confirm_deletion')}</Dialog.Title>
           <Dialog.Content>
-            <Text>Are you sure you want to delete this flashcard?</Text>
+            <Text>{t('confirm_flashcard_deletion_message')}</Text>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button onPress={() => setConfirmVisible(false)}>Cancel</Button>
-            <Button onPress={handleDelete}>Delete</Button>
+            <Button onPress={() => setConfirmVisible(false)}>{t('cancel')}</Button>
+            <Button onPress={handleDelete}>{t('delete')}</Button>
           </Dialog.Actions>
         </Dialog>
       </Portal>

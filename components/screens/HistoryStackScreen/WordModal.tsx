@@ -11,6 +11,7 @@ import Collapse from '../../Collapse';
 import { Divider, ActivityIndicator } from 'react-native-paper';
 import { fetchFullFlashcard, storeTranslationsFirebase } from '../../../utils/flashcards';
 import TextToSpeechButton from '../../TextToSpeechButton';
+import { useTranslation } from 'react-i18next';
 
 type WordModalProps = {
   visible: boolean;
@@ -21,6 +22,7 @@ type WordModalProps = {
 
 const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismiss }) => {
   const { theme, isDarkTheme } = useTheme();
+  const { t } = useTranslation();
   const [showRomanized, setShowRomanized] = useState(false);
   const [fullFlashcard, setFullFlashcard] = useState<FlashCard | null>(null);
   const [translationsList, setTranslationsList] = useState<string[] | null>(null);
@@ -52,7 +54,7 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
       />
       <Divider style={tw`my-4`} />
       <Collapse 
-        label="Example" 
+        label={t('example')} 
         contentStyle={tw`pb-2 pr-2`}
       >
         <View style={tw`mt-0 flex-row items-center`}>
@@ -74,8 +76,6 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
                 />
               </Text>
             </View>
-
-
           )}
         </View>
         <Text style={tw`mt-0 text-base ${theme.classes.textSecondary} ${fullFlashcard?.front.exampleRomanized ? 'pl-12' : ''}`}>
@@ -87,12 +87,12 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
         {loading ? (
           <ActivityIndicator size="small" color={theme.colors.purplePrimary} />
         ) : (
-          <Text style={tw`text-base ${theme.classes.textPrimary} font-medium`}># Reviews: {fullFlashcard?.reps}</Text>
+          <Text style={tw`text-base ${theme.classes.textPrimary} font-medium`}>{t('reviews')}: {fullFlashcard?.reps}</Text>
         )}
         {fullFlashcard?.reps && fullFlashcard.reps > 0 ? (
           <View style={tw`flex flex-row items-center justify-center`}>
             <Text style={tw`text-base font-medium ${theme.classes.textPrimary}`}>
-              Ease: 
+              {t('ease')}: 
             </Text>
             {loading ? (
               <ActivityIndicator size="small" color={theme.colors.purplePrimary} />

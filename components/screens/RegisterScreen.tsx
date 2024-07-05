@@ -8,6 +8,7 @@ import { RootStackParamList } from '../../types';
 import Button from '../Button';
 import ThemedTextInput from '../ThemedTextInput';
 import { useTheme } from '../../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 
 type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
 
@@ -21,6 +22,7 @@ type FirebaseAuthError = {
 
 const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -44,16 +46,16 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
       <View style={tw`flex items-center`}>
         <Image source={require('../../assets/images/logo-full.png')} style={tw`w-70 h-70 mb-6`} />
       </View>
-      <Text style={tw`text-xl mb-4 ${theme.classes.textPrimary}`}>Register</Text>
+      <Text style={tw`text-xl mb-4 ${theme.classes.textPrimary}`}>{t('register')}</Text>
       {error && <Text style={tw`text-red-500 mb-4`}>{error}</Text>}
       <ThemedTextInput
-        label="Email"
+        label={t('email')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
       />
       <ThemedTextInput
-        label="Password"
+        label={t('password')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -62,17 +64,17 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
       <Button
         mode="contained"
         onPress={handleRegister}
-        style={tw`mt-4 ${'bg-purple-600'}`}
+        style={tw`mt-4 bg-purple-600`}
         disabled={loading}
       >
-        {loading ? <ActivityIndicator color="white" style={tw`pt-[3px]`} /> : 'Register'}
+        {loading ? <ActivityIndicator color="white" style={tw`pt-[3px]`} /> : t('register')}
       </Button>
       <Button
         mode="text"
         onPress={() => navigation.navigate('Login')}
         style={tw`mt-2 ${theme.classes.textPrimary}`}
       >
-        Already have an account? Login
+        {t('already_have_account')}
       </Button>
     </View>
   );

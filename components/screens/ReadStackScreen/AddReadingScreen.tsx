@@ -11,12 +11,14 @@ import { Reading, RootStackParamList } from '../../../types';
 import Button from '../../Button';
 import { useTheme } from '../../../contexts/ThemeContext';
 import ThemedTextInput from '../../ThemedTextInput';
+import { useTranslation } from 'react-i18next';
 
 type AddReadingsListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'AddReading'>;
 
 const AddReadingScreen: React.FC = () => {
   const { targetLanguage } = useContext(LanguageContext);
   const { theme, isDarkTheme } = useTheme();
+  const { t } = useTranslation();
 
   const navigation = useNavigation<AddReadingsListScreenNavigationProp>();
   const [title, setTitle] = useState<string>('');
@@ -30,7 +32,7 @@ const AddReadingScreen: React.FC = () => {
   const handleAddReading = async () => {
     const wordCountNum = parseInt(wordCount, 10);
     if (wordCountNum > MAX_WORD_COUNT) {
-      setError(`Word count cannot exceed ${MAX_WORD_COUNT} words.`);
+      setError(t('word_count_exceed', { max: MAX_WORD_COUNT }));
       return;
     }
     setError('');
@@ -44,8 +46,7 @@ const AddReadingScreen: React.FC = () => {
         targetLanguage, 
         description: title, 
         difficulty, 
-        wordCount: 
-        wordCountNum 
+        wordCount: wordCountNum 
       });
       const description = passage.slice(0, Math.min(passage.length, 70))
       const readingRef = await firebase.firestore().collection('users').doc(user.uid).collection('readings').add({
@@ -64,7 +65,6 @@ const AddReadingScreen: React.FC = () => {
         difficulty,
         wordCount: wordCountNum,
         passage,
-        createdAt: new Date(),
         wordTimestamps: null,
       } as Reading;
 
@@ -84,34 +84,34 @@ const AddReadingScreen: React.FC = () => {
 
   return (
     <ScrollView style={tw`flex-1 p-5 pt-20 ${theme.classes.backgroundPrimary}`}>
-      <Text style={tw`text-2xl mb-4 ${theme.classes.textPrimary}`}>New Reading</Text>
+      <Text style={tw`text-2xl mb-4 ${theme.classes.textPrimary}`}>{t('new_reading')}</Text>
       <ThemedTextInput
-        label="What do you want to read about?"
+        label={t('reading_topic')}
         value={title}
         onChangeText={setTitle}
-        placeholder="E.g. History of the Roman Empire"
+        placeholder={t('reading_topic_placeholder')}
       />
-      <Text style={tw`mb-2 mt-4 text-base ${theme.classes.textPrimary}`}>Difficulty</Text>
+      <Text style={tw`mb-2 mt-4 text-base ${theme.classes.textPrimary}`}>{t('difficulty')}</Text>
       <RadioButton.Group
         onValueChange={(newDifficulty: string) => setDifficulty(newDifficulty)}
         value={difficulty}
       >
         <RadioButton.Item 
-          label="Beginner" 
+          label={t('beginner')} 
           value="easy" 
           style={tw`border rounded-t-[4px] ${theme.classes.borderPrimary} ${getBackgroundClass('easy')}`} 
           labelStyle={tw`text-sm ${theme.classes.textPrimary}`} 
           theme={{ colors: { primary: theme.colors.purplePrimary } }} 
         />
         <RadioButton.Item 
-          label="Intermediate" 
+          label={t('intermediate')} 
           value="medium" 
           style={tw`border border-t-0 ${theme.classes.borderPrimary} ${getBackgroundClass('medium')}`} 
           labelStyle={tw`text-sm ${theme.classes.textPrimary}`} 
           theme={{ colors: { primary: theme.colors.purplePrimary } }} 
         />
         <RadioButton.Item 
-          label="Advanced" 
+          label={t('advanced')} 
           value="hard" 
           style={tw`border border-t-0 ${theme.classes.borderPrimary} ${getBackgroundClass('hard')}`} 
           labelStyle={tw`text-sm ${theme.classes.textPrimary}`} 
@@ -119,7 +119,7 @@ const AddReadingScreen: React.FC = () => {
         />
       </RadioButton.Group>
       <ThemedTextInput
-        label="Word Count"
+        label={t('word_count')}
         value={wordCount}
         onChangeText={setWordCount}
         keyboardType="numeric"
@@ -130,9 +130,9 @@ const AddReadingScreen: React.FC = () => {
         mode="contained"
         onPress={handleAddReading}
         loading={loading}
-        style={tw`mt-4 'bg-purple-600`}
+        style={tw`mt-4 bg-purple-600`}
       >
-        Generate Reading
+        {t('generate_reading')}
       </Button>
     </ScrollView>
   );

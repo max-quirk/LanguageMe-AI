@@ -23,7 +23,6 @@ const LanguageSelectionScreen: React.FC = () => {
       <LanguageSelector
         selectedLanguage={nativeLanguage}
         onSelectLanguage={setNativeLanguage}
-        centerText
         style={tw`py-3`}
       />
       <Button

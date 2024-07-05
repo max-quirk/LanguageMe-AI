@@ -10,6 +10,7 @@ import BackButton from '../components/BackButton';
 import { RootStackParamList } from '../types';
 import ForgotPasswordScreen from '../components/screens/ForgotPassword';
 import { useTheme } from '../contexts/ThemeContext';
+import DisplayLanguageSelection from '../components/screens/DisplayLanguageSelection';
 
 const RootStack = createStackNavigator<RootStackParamList>();
 
@@ -51,6 +52,17 @@ const RootNavigator = () => {
         <RootStack.Screen
           name="TargetLanguageSelection"
           component={TargetLanguageSelectionScreen}
+          options={({ navigation }) => ({
+            headerShown: true,
+            title: '',
+            headerLeft: () => (
+              <BackButton onPress={() => navigation.goBack()} />
+            ),
+          })}
+        />
+        <RootStack.Screen
+          name="DisplayLanguageSelection"
+          component={DisplayLanguageSelection}
           options={({ navigation }) => ({
             headerShown: true,
             title: '',

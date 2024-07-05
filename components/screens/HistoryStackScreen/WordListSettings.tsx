@@ -4,6 +4,7 @@ import { Menu, IconButton } from 'react-native-paper';
 import tw from 'twrnc';
 import { useTheme } from '../../../contexts/ThemeContext';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { useTranslation } from 'react-i18next';
 
 type WordListSettingsProps = {
   showTranslations: boolean;
@@ -19,6 +20,7 @@ const WordListSettings: React.FC<WordListSettingsProps> = ({
   setReverseOrder,
 }) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
 
   const openMenu = () => setVisible(true);
@@ -32,14 +34,14 @@ const WordListSettings: React.FC<WordListSettingsProps> = ({
           setShowTranslations(!showTranslations);
           closeMenu();
         }}
-        title={showTranslations ? 'Hide translations' : 'Show translations'}
+        title={showTranslations ? t('hide_translations') : t('show_translations')}
       />
       <Menu.Item
         onPress={() => {
           setReverseOrder(!reverseOrder);
           closeMenu();
         }}
-        title={reverseOrder ? 'Order added latest-earliest' : 'Order added earliest-latest'}
+        title={reverseOrder ? t('order_added_latest_earliest') : t('order_added_earliest_latest')}
       />
     </>
   );

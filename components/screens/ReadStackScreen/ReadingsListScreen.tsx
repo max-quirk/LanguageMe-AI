@@ -16,10 +16,12 @@ import ReadingCard from './components/ReadingCard';
 import HelperPopup from '../../HelperPopup';
 import { isFirstTimeUser } from '../../../utils/storageUtils';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { useTranslation } from 'react-i18next';
 
 export type ReadingsListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reading', 'AddReading'>;
 
 const ReadingsListScreen: React.FC = () => {
+  const { t } = useTranslation();
   const [readings, setReadings] = useState<ReadingSkeleton[]>([]);
   const [lastDoc, setLastDoc] = useState<FirebaseFirestoreTypes.QueryDocumentSnapshot | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
@@ -83,12 +85,12 @@ const ReadingsListScreen: React.FC = () => {
     <BackgroundView>
       <View style={tw`flex-1 px-5 mt-20 ${theme.classes.backgroundPrimary}`}>
         <HelperPopup
-          title="Getting Started"
-          text="Welcome! Start by creating a reading passage on a topic you love. Tap on any word to view its definition and add it to your flashcards for easy review."
+          title={t('getting_started')}
+          text={t('welcome_popup_text')}
           visible={helperVisible}
           onClose={() => setHelperVisible(false)}
         />
-        <ScreenTitle title='Readings' />
+        <ScreenTitle title={t('readings')} />
         <Button
           mode="contained"
           onPress={() => navigation.navigate('AddReading')}
@@ -97,7 +99,7 @@ const ReadingsListScreen: React.FC = () => {
         >
           <View style={tw`flex flex-row gap-2 pt-1 items-center`}>
             <Icon name="plus" size={28} color="white"/>
-            <Text style={tw`text-lg text-white font-bold`}>Generate Reading</Text>
+            <Text style={tw`text-lg text-white font-bold`}>{t('generate_reading')}</Text>
           </View>
         </Button>
         {loading ? (

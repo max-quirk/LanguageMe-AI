@@ -7,6 +7,8 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import RootNavigator from './navigation/RootNavigator';
 import { usePlayerSetup } from './setup/PlayerSetup';
 import { LogBox } from 'react-native';
+import i18n from './localization/i18n';
+import { I18nextProvider } from 'react-i18next';
 
 // Ignore specific warning messages
 LogBox.ignoreLogs(['When setting overflow to hidden on Surface the shadow will not be displayed correctly']);
@@ -15,17 +17,19 @@ const App = () => {
   usePlayerSetup();
 
   return (
-    <ThemeProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <LanguageProvider>
-          <AudioProvider>
-            <PaperProvider>
-              <RootNavigator />
-            </PaperProvider>
-          </AudioProvider>
-        </LanguageProvider>
-      </GestureHandlerRootView>
-    </ThemeProvider>
+      <ThemeProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <LanguageProvider>
+            <I18nextProvider i18n={i18n}>
+              <AudioProvider>
+                <PaperProvider>
+                  <RootNavigator />
+                </PaperProvider>
+              </AudioProvider>
+            </I18nextProvider>
+          </LanguageProvider>
+        </GestureHandlerRootView>
+      </ThemeProvider>
   );
 };
 

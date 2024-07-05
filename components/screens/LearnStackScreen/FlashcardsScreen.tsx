@@ -15,10 +15,12 @@ import RomanizeButton from '../../RomanizeButton';
 import { useTheme } from '../../../contexts/ThemeContext';
 import BackgroundView from '../../BackgroundView';
 import RefreshableScrollView from '../../RefreshableScrollView';
+import { useTranslation } from 'react-i18next';
 
 type FlashcardsScreenNavigationProp = NavigationProp<RootStackParamList>;
 
 const FlashcardsScreen = () => {
+  const { t } = useTranslation();
   const [flashcards, setFlashcards] = useState<FlashCard[]>([]);
   const [currentFlashcard, setCurrentFlashcard] = useState<FlashCard | null>(null);
   const [isFront, setIsFront] = useState(true);
@@ -160,7 +162,7 @@ const FlashcardsScreen = () => {
           onRefresh={handleRefresh}
           contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
         >
-          <Text style={tw`text-xl mb-8 text-center px-4 ${theme.classes.textPrimary}`}>You haven&apos;t added any flashcards from your readings yet!</Text>
+          <Text style={tw`text-xl mb-8 text-center px-4 ${theme.classes.textPrimary}`}>{t('no_flashcards')}</Text>
           <Button
             mode="contained"
             onPress={() => navigation.reset({
@@ -169,7 +171,7 @@ const FlashcardsScreen = () => {
             })}
             style={tw`bg-purple-600`}
           >
-            <Text style={tw`text-white`}>Go to Readings</Text>
+            <Text style={tw`text-white`}>{t('go_to_readings')}</Text>
           </Button>
         </RefreshableScrollView>
       </BackgroundView>
@@ -193,14 +195,14 @@ const FlashcardsScreen = () => {
           </TouchableOpacity>
         )}
         <HelperPopup 
-          title="How to use"
-          text="Tap the flashcard to reveal the other side."
+          title={t('how_to_use')}
+          text={t('tap_flashcard_to_reveal')}
           visible={frontCardHelperVisible}
           onClose={() => setFrontCardHelperVisible(false)}
         />
         <HelperPopup 
-          title="Select difficulty"
-          text="Select how easy you found the card. The difficulty you select determines how frequently you will see the card."
+          title={t('select_difficulty')}
+          text={t('select_how_easy')}
           visible={backCardHelperVisible}
           onClose={() => setBackCardHelperVisible(false)}
         />
