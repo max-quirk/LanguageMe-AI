@@ -161,7 +161,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
 
   if (!reading) {
     return (
-      <View style={tw`flex-1 justify-center items-center`}>
+      <View style={tw`flex-1 justify-center items-center ${theme.classes.backgroundPrimary}`}>
         <ActivityIndicator size="large" color={theme.colors.purplePrimary} />
       </View>
     );

@@ -10,6 +10,7 @@ import { getEaseColor } from '../../../utils/colors';
 import Collapse from '../../Collapse';
 import { Divider, ActivityIndicator } from 'react-native-paper';
 import { fetchFullFlashcard, storeTranslationsFirebase } from '../../../utils/flashcards';
+import TextToSpeechButton from '../../TextToSpeechButton';
 
 type WordModalProps = {
   visible: boolean;
@@ -52,7 +53,7 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
       <Divider style={tw`my-4`} />
       <Collapse 
         label="Example" 
-        contentStyle={tw`pb-2`}
+        contentStyle={tw`pb-2 pr-2`}
       >
         <View style={tw`mt-0 flex-row items-center`}>
           {!loading && fullFlashcard?.front.exampleRomanized && (
@@ -61,9 +62,20 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
           {loading ? (
             <ActivityIndicator size="small" color={theme.colors.purplePrimary} />
           ) : (
-            <Text style={tw`text-base ${theme.classes.textPrimary}`}>
-              {showRomanized ? fullFlashcard?.front.exampleRomanized : fullFlashcard?.front.example}
-            </Text>
+            <View style={tw`flex flex-row flex-wrap`}>
+              <Text style={tw`text-base ${theme.classes.textPrimary} mr-2`}>
+                {showRomanized ? fullFlashcard?.front.exampleRomanized : fullFlashcard?.front.example}
+                <TextToSpeechButton
+                  type='flashcard' 
+                  text={`${word}. ${fullFlashcard?.front.example}`} 
+                  id={flashcard?.id ?? `flashcard_${word}`} 
+                  size={20}
+                  style={tw`pl-2 h-5`}
+                />
+              </Text>
+            </View>
+
+
           )}
         </View>
         <Text style={tw`mt-0 text-base ${theme.classes.textSecondary} ${fullFlashcard?.front.exampleRomanized ? 'pl-12' : ''}`}>

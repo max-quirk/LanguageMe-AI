@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, ViewStyle } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import tw from 'twrnc';
@@ -12,9 +12,16 @@ type TextToSpeechButtonProps = {
   type: 'word' | 'flashcard' 
   id: string
   size?: number
+  style?: ViewStyle | ViewStyle[]
 };
 
-const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({ text, type, id, size=24 }) => {
+const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({ 
+  text, 
+  type, 
+  id, 
+  size=24,
+  style 
+}) => {
   const [audioFile, setAudioFile] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isFirstClick, setIsFirstClick] = useState<boolean>(true);
@@ -59,9 +66,9 @@ const TextToSpeechButton: React.FC<TextToSpeechButtonProps> = ({ text, type, id,
   };
 
   return (
-    <TouchableOpacity style={tw`flex-row items-center rounded w-12 h-12`} onPress={handlePress} disabled={loading}>
+    <TouchableOpacity style={[tw`flex-row items-center rounded w-12 h-12`, style]} onPress={handlePress} disabled={loading}>
       {loading ? (
-        <ActivityIndicator size="small" style={tw`mr-3`} />
+        <ActivityIndicator size={size} style={tw`mr-3`} />
       ) : (
         <MaterialCommunityIcons name="volume-high" size={size} color={theme.colors.textPrimary} />
       )}

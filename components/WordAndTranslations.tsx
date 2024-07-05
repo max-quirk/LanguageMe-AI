@@ -77,7 +77,6 @@ const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({
             romanized ? romanized : <ActivityIndicator size="small" />
           ) : word}
         </Dialog.Title>
-        {/* <TextToSpeechButton text={word} id={word} type={'word'} /> // Removing until OpenAI improves single word TTS ability. */} 
       </View>
       <Dialog.Content style={tw`pb-0`}>
         {wordLoading || translationsFetchLoading ? (
