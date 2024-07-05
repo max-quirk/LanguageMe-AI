@@ -8,6 +8,7 @@ import TargetLanguageSelectionScreen from '../components/screens/TargetLanguageS
 import TabNavigator from './TabNavigator';
 import BackButton from '../components/BackButton';
 import { RootStackParamList } from '../types';
+import ForgotPasswordScreen from '../components/screens/ForgotPassword';
 
 const RootStack = createStackNavigator<RootStackParamList>();
 
@@ -22,6 +23,11 @@ const RootNavigator = () => (
       <RootStack.Screen 
         name="Register" 
         component={RegisterScreen} 
+        options={{ headerShown: false }} 
+      />
+      <RootStack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen} 
         options={{ headerShown: false }} 
       />
       <RootStack.Screen 

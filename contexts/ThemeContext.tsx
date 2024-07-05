@@ -9,6 +9,7 @@ const themes = {
       ...DefaultTheme.colors,
       textPrimary: '#1c1b1f',
       textSecondary: '#4b5563',
+      textTertiary: '#676d75',
       backgroundPrimary: '#f8f4f4',
       purplePrimary: '#7C3AED', // purple-500
       tomato: '#ff644c',
@@ -19,6 +20,7 @@ const themes = {
       backgroundTertiary: 'bg-[#fafafa]',
       textPrimary: 'text-[#1c1b1f]',
       textSecondary: 'text-[#4b5563]',
+      textTertiary: 'text-[#676d75]',
       borderPrimary: 'border-gray-300'
     }
   },

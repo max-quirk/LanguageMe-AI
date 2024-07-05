@@ -23,8 +23,8 @@ type FirebaseAuthError = {
 
 const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const { theme } = useTheme();
-  const [email, setEmail] = useState<string>('max.q.807+legit@gmail.com');
-  const [password, setPassword] = useState<string>('bball4life1');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const { saveLanguages } = useContext(LanguageContext);
@@ -39,14 +39,14 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         const data = userDoc.data();
         if (data && data.nativeLanguage && data.targetLanguage) {
           saveLanguages(data.nativeLanguage, data.targetLanguage);
-          navigation.navigate('Main', { screen: 'Home' }); 
+          navigation.navigate('Main', { screen: 'Home' });
         } else {
           navigation.navigate('LanguageSelection');
         }
       }
     } catch (error) {
       const firebaseError = error as FirebaseAuthError;
-      console.error('firebaseError: ', firebaseError.code)
+      console.info('firebaseError: ', firebaseError.code)
 
       if (firebaseError.code === 'auth/invalid-credential') {
         setError('Email or password not found. Please try again.');
@@ -58,7 +58,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={tw`flex-1 justify-center p-5 ${theme.classes.backgroundPrimary}`}>
+    <View style={tw`flex-1 justify-center mt-12 p-5 ${theme.classes.backgroundPrimary}`}>
       <View style={tw`flex items-center`}>
         <Image source={require('../../assets/images/logo-full.png')} style={tw`w-70 h-70 mb-6`} />
       </View>
@@ -77,6 +77,14 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         secureTextEntry
         autoCapitalize="none"
       />
+      <View style={tw`flex flex-row justify-end`}>
+        <Text
+          onPress={() => navigation.navigate('ForgotPassword')}
+          style={tw`${theme.classes.textSecondary} py-0 underline text-sm`}
+        >
+          Forgot Password?
+        </Text>
+      </View>
       <Button
         mode="contained"
         onPress={handleLogin}
@@ -88,7 +96,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       <Button
         mode="text"
         onPress={() => navigation.navigate('Register')}
-        style={tw`mt-2 ${theme.classes.textPrimary}`}
+        style={tw`mt-2`}
       >
         Don&apos;t have an account? Register
       </Button>

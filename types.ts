@@ -12,7 +12,9 @@ export type MainTabParamList = {
 
 export type RootStackParamList = {
   Main: NavigatorScreenParams<MainTabParamList>; 
+  Login: undefined;
   Register: undefined;
+  ForgotPassword: undefined;
   LanguageSelection: undefined;
   TargetLanguageSelection: { nativeLanguage: LanguageCode };
   ReadingsList: undefined;
@@ -21,7 +23,6 @@ export type RootStackParamList = {
     reading?: Reading;
     readingId: string;
   };
-  Login: undefined;
 };
 
 
