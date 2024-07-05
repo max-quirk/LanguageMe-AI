@@ -61,7 +61,7 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
         <Button
           mode="contained"
           onPress={handleAddToFlashcards}
-          style={tw`${added ? 'w-[160px] bg-grey-500' : 'w-[160px] bg-purple-600'}`}
+          style={tw`${added ? 'w-[160px] bg-gray-500' : 'w-[160px] bg-purple-600'}`}
           disabled={added}
         >
           <>

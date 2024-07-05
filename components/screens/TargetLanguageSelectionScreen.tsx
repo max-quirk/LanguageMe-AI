@@ -10,6 +10,7 @@ import { LanguageContext } from '../../contexts/LanguageContext';
 import Button from '../Button';
 import LanguageSelector from '../LanguageSelector';
 import { LanguageCode } from 'iso-639-1';
+import { useTheme } from '../../contexts/ThemeContext';
 
 type Props = {
   navigation: StackNavigationProp<RootStackParamList, 'TargetLanguageSelection'>;
@@ -17,6 +18,8 @@ type Props = {
 };
 
 const TargetLanguageSelectionScreen: React.FC<Props> = ({ navigation, route }) => {
+  const { theme } = useTheme();
+  const themeClasses = theme.classes;
   const { nativeLanguage } = route.params;
   const { saveLanguages } = useContext(LanguageContext);
   const [targetLanguage, setTargetLanguage] = useState<LanguageCode>('es');
@@ -51,8 +54,8 @@ const TargetLanguageSelectionScreen: React.FC<Props> = ({ navigation, route }) =
   };
 
   return (
-    <View style={tw`flex-1 justify-center px-5 mt-[-100px]`}>
-      <Text style={tw`text-2xl text-center mb-4`}>Select Your Target Language</Text>
+    <View style={tw`flex-1 justify-center px-5 mt-[-100px] ${themeClasses.backgroundPrimary}`}>
+      <Text style={tw`text-2xl text-center mb-4 ${themeClasses.textPrimary}`}>Select Your Target Language</Text>
       <LanguageSelector
         selectedLanguage={targetLanguage}
         onSelectLanguage={setTargetLanguage}
@@ -62,7 +65,7 @@ const TargetLanguageSelectionScreen: React.FC<Props> = ({ navigation, route }) =
       <Button
         mode="contained"
         onPress={handleFinish}
-        style={tw`mt-4 bg-purple-600`}
+        style={tw`mt-4`}
       >
         Let&apos;s go
       </Button>

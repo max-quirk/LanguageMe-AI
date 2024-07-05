@@ -58,8 +58,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={tw`flex-1 justify-center mt-12 p-5 ${theme.classes.backgroundPrimary}`}>
-      <View style={tw`flex items-center`}>
+    <View style={tw`flex-1 justify-center p-5 ${theme.classes.backgroundPrimary}`}>
+      <View style={tw`flex items-center pt-14`}>
         <Image source={require('../../assets/images/logo-full.png')} style={tw`w-70 h-70 mb-6`} />
       </View>
       <Text style={tw`text-xl mb-4 ${theme.classes.textPrimary}`}>Login</Text>
