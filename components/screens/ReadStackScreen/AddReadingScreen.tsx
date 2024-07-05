@@ -130,7 +130,7 @@ const AddReadingScreen: React.FC = () => {
         mode="contained"
         onPress={handleAddReading}
         loading={loading}
-        style={tw`mt-4 ${loading ? 'bg-grey-500' : 'bg-purple-600'}`}
+        style={tw`mt-4 'bg-purple-600`}
       >
         Generate Reading
       </Button>

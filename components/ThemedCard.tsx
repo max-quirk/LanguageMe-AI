@@ -18,7 +18,7 @@ const ThemedCard: React.FC<ThemedCardProps> = ({ onPress, renderRightActions, ti
   return (
     <Swipeable renderRightActions={renderRightActions}>
       <TouchableOpacity onPress={onPress}>
-        <Card style={tw`mb-4 shadow-lg rounded-lg overflow-hidden ${theme.classes.backgroundTertiary} border ${theme.classes.borderPrimary}`}>
+        <Card style={tw`mb-4 rounded-lg overflow-hidden ${theme.classes.backgroundTertiary} border ${theme.classes.borderPrimary}`}>
           <Card.Content>
             <Text
               style={tw`text-lg font-bold ${theme.classes.textPrimary} pb-2`}

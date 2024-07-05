@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text } from 'react-native';
 import tw from 'twrnc';
 import Modal from '../../Modal';
@@ -9,7 +9,7 @@ import { LightWeightFlashCard, FlashCard } from 'types';
 import { getEaseColor } from '../../../utils/colors';
 import Collapse from '../../Collapse';
 import { Divider, ActivityIndicator } from 'react-native-paper';
-import { fetchFullFlashcard } from '../../../utils/flashcards';
+import { fetchFullFlashcard, storeTranslationsFirebase } from '../../../utils/flashcards';
 
 type WordModalProps = {
   visible: boolean;
@@ -22,6 +22,7 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
   const { theme, isDarkTheme } = useTheme();
   const [showRomanized, setShowRomanized] = useState(false);
   const [fullFlashcard, setFullFlashcard] = useState<FlashCard | null>(null);
+  const [translationsList, setTranslationsList] = useState<string[] | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,15 +30,25 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
       setLoading(true);
       const data = await fetchFullFlashcard(flashcard.id);
       setFullFlashcard(data);
+      setTranslationsList(data ? data.translationsList : null);
       setLoading(false);
     };
     fetchData();
   }, [flashcard.id]);
-  
+
+  const setAndStoreTranslations = useCallback(async (_translationsList: string[]) => {
+    setTranslationsList(_translationsList);
+    await storeTranslationsFirebase(flashcard.id, _translationsList);
+  }, [flashcard.id]);
 
   return (
     <Modal visible={visible} onDismiss={onDismiss}>
-      <WordAndTranslations word={word} />
+      <WordAndTranslations 
+        word={word} 
+        translationsList={translationsList}
+        setTranslationsList={setAndStoreTranslations}
+        wordLoading={loading}
+      />
       <Divider style={tw`my-4`} />
       <Collapse 
         label="Example" 
@@ -74,7 +85,7 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
             {loading ? (
               <ActivityIndicator size="small" color={theme.colors.purplePrimary} />
             ) : (
-              <View style={tw`w-6 h-6 ml-3 rounded-sm ${getEaseColor(fullFlashcard.lastEase, isDarkTheme)}`} />
+              <View style={tw`w-6 h-6 ml-3 rounded-sm ${fullFlashcard.lastEase ? getEaseColor(fullFlashcard.lastEase, isDarkTheme): ''}`} />
             )}
           </View>
         ) : null}

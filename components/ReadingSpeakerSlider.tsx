@@ -28,13 +28,12 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
     trackEnded,
     playing,
     setTrackEnded,
-    wordTimeStampsFailed: wordTimeStampsFailedState,
    } = useAudio();
   const { position, duration } = useProgress(50);
   const { theme } = useTheme();
   
-  const timeStampsFailed = Boolean(wordTimeStampsFailedState || reading.timeStampsFailed)
-  const timestampsLoading = !timeStampsFailed && !currentFileWordTimestamps
+  const timestampsLoading = !currentFileWordTimestamps
+  
   useEffect(() => {
     const fetchAudio = async () => {
       setFetchingAudio(true);

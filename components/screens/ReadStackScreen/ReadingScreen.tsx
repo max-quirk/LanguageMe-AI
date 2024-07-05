@@ -9,7 +9,7 @@ import ReadingSpeakerSlider from '../../ReadingSpeakerSlider';
 import { useAudio } from '../../../contexts/AudioContext';
 import { useTheme } from '../../../contexts/ThemeContext';
 import TrackPlayer, { useProgress } from 'react-native-track-player';
-import { getReading } from '../../../utils/readings';
+import { getReading, processGeneratedReading } from '../../../utils/readings';
 import { cleanPunctuation, updateFirebaseReadingWordTimestamps } from '../../../utils/readings';
 import { isFirstTimeUser } from '../../../utils/storageUtils';
 import ParagraphComponent from './components/ParagraphComponent';
@@ -43,9 +43,8 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
     currentFile: audioFile,
     currentFileWordTimestamps: wordTimestamps,
     setCurrentFileWordTimestamps: setWordTimestamps,
-    setWordTimeStampsFailed
   } = useAudio();
-  const { position } = useProgress(READING_PING_TIME_MS);
+  const { position, duration } = useProgress(READING_PING_TIME_MS);
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -61,7 +60,6 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   useEffect(() => {
     if (reading) {
       setWordTimestamps(reading.wordTimestamps);
-      setWordTimeStampsFailed(Boolean(reading.wordTimestamps));
     }
 
     const checkFirstTimeUser = async () => {
@@ -77,10 +75,11 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
 
   useEffect(() => {
     const fetchTranscription = async () => {
-      if (audioFile && reading?.passage) {
+      if (audioFile && reading?.passage && duration) {
         try {
           const readingWithWordTimeStamps = await getWordTimeStamps({
-            audioUrl: audioFile, 
+            audioUrl: audioFile,
+            audioDuration: duration, 
             languageCode: targetLanguage,
             passage: reading.passage,
           });
@@ -88,16 +87,15 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
           setWordTimestamps(readingWithWordTimeStamps);
         } catch (error) {
           await updateFirebaseReadingWordTimestamps(reading.id, null);
-          setWordTimeStampsFailed(true);
           console.info('Error fetching transcription:', error);
         }
       }
     };
-    // if wordTimeStamps have failed before, don't try again
-    if (!wordTimestamps && reading && !reading.timeStampsFailed) {
+
+    if (reading && !wordTimestamps) {
       fetchTranscription();
     }
-  }, [audioFile, reading, wordTimestamps]);
+  }, [audioFile, reading, wordTimestamps, duration]);
 
   useEffect(() => {
     if (wordTimestamps) {
@@ -168,13 +166,13 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       </View>
     );
   }
-
+  const passage = processGeneratedReading(reading.passage ?? '')
   return (
     <View style={tw`flex-1 ${theme.classes.backgroundPrimary} px-5`}>
       <ScrollView style={tw`flex-1 px-5 pt-20`}>
         <Text style={tw`text-2xl mb-4 ${theme.classes.textPrimary}`}>{reading.title}</Text>
         <View style={tw`mb-60`}>
-          {reading.passage?.split('\n').map((line, index) => (
+          {passage.split('\n').map((line, index) => (
             <ParagraphComponent
               key={index}
               paragraph={line}

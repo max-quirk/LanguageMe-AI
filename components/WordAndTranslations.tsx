@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, ViewStyle } from 'react-native';
 import { Paragraph, ActivityIndicator, Dialog } from 'react-native-paper';
 import tw from 'twrnc';
-import TextToSpeechButton from './TextToSpeechButton';
 import RomanizeButton from './RomanizeButton';
 import { useTheme } from '../contexts/ThemeContext';
 import { LanguageContext } from '../contexts/LanguageContext';
@@ -12,45 +11,60 @@ import { cleanLeadingHyphens, cleanPunctuation } from '../utils/readings';
 type WordAndTranslationsProps = {
   word: string;
   style?: ViewStyle | ViewStyle[]
+  translationsList: string[] | null
+  setTranslationsList: (_translationsList: string[]) => void
+  wordLoading?: boolean
 };
 
-const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({ word, style }) => {
+const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({ 
+  word, 
+  style,
+  translationsList,
+  setTranslationsList,
+  wordLoading,
+ }) => {
   const { nativeLanguage, targetLanguage, targetLanguageRomanizable } = useContext(LanguageContext);
-  const [definitionLoading, setDefinitionLoading] = useState(false);
-  const [translations, setTranslations] = useState<string[]>([]);
   const [romanized, setRomanized] = useState<string | null>(null);
+  const [translationsFetchLoading, setTranslationsFetchLoading] = useState<boolean>(false)
   const [showRomanized, setShowRomanized] = useState(false);
+
   const { theme } = useTheme();
 
   useEffect(() => {
-    const fetchTranslations = async () => {
-      setDefinitionLoading(true);
-      setTranslations([]);
+    const fetchAndStoreTranslations = async () => {
+      setTranslationsFetchLoading(true)
+      setTranslationsList?.([]);
       setRomanized(null);
       try {
-        const translationsList = await getPossibleTranslations({
+        const _translationsList = await getPossibleTranslations({
           word: cleanPunctuation(word),
           wordLanguage: targetLanguage,
           translateTo: nativeLanguage,
         });
-        const translationsArray = translationsList
+        const translationsArray = _translationsList
           ?.split('\n')
           .map(item => cleanLeadingHyphens(item))
           .filter(item => item !== '') ?? [];
-        setTranslations(translationsArray);
-
-        if (targetLanguageRomanizable) {
-          const romanizedText = await romanizeText({ text: word, language: targetLanguage });
-          setRomanized(romanizedText);
-        }
+        setTranslationsList?.(translationsArray);
+        setTranslationsFetchLoading(false)
       } catch (error) {
         console.error('Error fetching translations or romanized text:', error);
       }
-      setDefinitionLoading(false);
     };
+    if (!translationsList && !wordLoading) {
+      fetchAndStoreTranslations();
+    }
+  }, []);
 
-    fetchTranslations();
-  }, [word, nativeLanguage, targetLanguage, targetLanguageRomanizable]);
+  useEffect(() => {
+    const getRomanized = async () => {
+      const romanizedText = await romanizeText({ text: word, language: targetLanguage });
+      setRomanized(romanizedText);
+    }
+    if (targetLanguageRomanizable) {
+      getRomanized()
+    }
+  }, [word, targetLanguage, targetLanguageRomanizable])
 
   return (
     <View style={style}>
@@ -63,16 +77,16 @@ const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({ word, style }
             romanized ? romanized : <ActivityIndicator size="small" />
           ) : word}
         </Dialog.Title>
-        <TextToSpeechButton text={word} id={word} type={'word'} />
+        {/* <TextToSpeechButton text={word} id={word} type={'word'} /> // Removing until OpenAI improves single word TTS ability. */} 
       </View>
       <Dialog.Content style={tw`pb-0`}>
-        {definitionLoading ? (
+        {wordLoading || translationsFetchLoading ? (
           <ActivityIndicator style={tw`py-10`} size="large" />
         ) : (
           <View>
             <Paragraph style={tw`pl-4 ${theme.classes.textPrimary}`}>
-              {translations.length > 0 ? (
-                translations.map((translation, index) => (
+              {translationsList && translationsList.length > 0 ? (
+                translationsList.map((translation, index) => (
                   <Text style={tw`text-base`} key={index}>
                     &#8226; {translation.trim()}
                     {'\n'}

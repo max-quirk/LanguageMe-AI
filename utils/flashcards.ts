@@ -2,7 +2,7 @@ import { DAY_IN_MS } from "../constants/time";
 import { FlashCard, LightWeightFlashCard } from "types";
 import { generateExampleSentences, romanizeText } from "../services/chatGpt";
 import { firebase } from "@react-native-firebase/auth";
-import { getUserDoc, recordProgress } from "./firebase";
+import { getUserDoc } from "./firebase";
 import { FirebaseFirestoreTypes } from "@react-native-firebase/firestore";
 import { stripQuotes } from "./readings";
 import { LanguageCode } from "iso-639-1";
@@ -80,6 +80,20 @@ export async function adjustCard(card: FlashCard, ease: Ease): Promise<{ card: F
   return { card };
 }
 
+export const storeTranslationsFirebase = async (cardId: string, translationsList: string[]) => {
+  try {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      throw new Error('No user is authenticated');
+    }
+    const flashcardsCollectionRef = firebase.firestore().collection('users').doc(user.uid).collection('flashcards');
+    await flashcardsCollectionRef.doc(cardId).update({ translationsList });
+  } catch (error) {
+    console.error('Error storing translations:', error);
+    throw error;
+  }
+}
+
 export const editFlashcardOnFirebase = async (card: FlashCard) => {
   try {
     const user = firebase.auth().currentUser;
@@ -107,11 +121,13 @@ export const addFlashcard = async ({
   romanizedWord,
   wordLanguage,
   translateTo,
+  translationsList,
 }: {
   word: string,
   romanizedWord: string | null,
   wordLanguage: LanguageCode,
   translateTo: LanguageCode,
+  translationsList: string[] | null
 }) => {
   try {
     const user = firebase.auth().currentUser;
@@ -140,7 +156,7 @@ export const addFlashcard = async ({
       _romanizedWord = await romanizeText({ text: word, language: wordLanguage })
     }
 
-    const newFlashcard = {
+    const newFlashcard: Omit<FlashCard, 'id'> = {
       front: {
         word,
         wordRomanized: _romanizedWord,
@@ -148,7 +164,7 @@ export const addFlashcard = async ({
         exampleRomanized: stripQuotes(_exampleSentenceRomanized ?? '')
       },
       back: {
-        word: translation,
+        word: translation ?? '',
         example: stripQuotes(translatedExampleSentence ?? ''),
       },
       due: new Date(Date.now()),
@@ -157,6 +173,7 @@ export const addFlashcard = async ({
       factor: 2500,
       lastEase: null,
       reps: 0,
+      translationsList,
     };
     const flashcardsCollectionRef = firebase.firestore().collection('users').doc(user.uid).collection('flashcards');
     await flashcardsCollectionRef.add(newFlashcard);
@@ -267,6 +284,7 @@ export const fetchFullFlashcard = async (id: string): Promise<FlashCard | null> 
         factor: data?.factor,
         reps: data?.reps,
         lastEase: data?.lastEase,
+        translationsList: data?.translationsList
       };
     }
   }

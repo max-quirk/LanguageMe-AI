@@ -6,6 +6,10 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { Provider as PaperProvider } from 'react-native-paper';
 import RootNavigator from './navigation/RootNavigator';
 import { usePlayerSetup } from './setup/PlayerSetup';
+import { LogBox } from 'react-native';
+
+// Ignore specific warning messages
+LogBox.ignoreLogs(['When setting overflow to hidden on Surface the shadow will not be displayed correctly']);
 
 const App = () => {
   usePlayerSetup();

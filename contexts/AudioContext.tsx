@@ -11,8 +11,6 @@ type AudioContextType = {
   setCurrentFile: React.Dispatch<React.SetStateAction<string | null>>
   currentFileWordTimestamps: ReadingWithWordTimeStamps | null
   setCurrentFileWordTimestamps: React.Dispatch<React.SetStateAction<ReadingWithWordTimeStamps | null>>
-  wordTimeStampsFailed: boolean
-  setWordTimeStampsFailed: React.Dispatch<React.SetStateAction<boolean>>
   trackEnded: boolean
   setTrackEnded: React.Dispatch<React.SetStateAction<boolean>>
 };
@@ -22,7 +20,6 @@ const AudioContext = createContext<AudioContextType | undefined>(undefined);
 export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentFile, setCurrentFile] = useState<string | null>(null);
   const [currentFileWordTimestamps, setCurrentFileWordTimestamps] = useState<ReadingWithWordTimeStamps | null>(null);
-  const [wordTimeStampsFailed, setWordTimeStampsFailed] = useState(false)
   const [trackEnded, setTrackEnded] = useState<boolean>(false);
 
   const playbackState = usePlaybackState();
@@ -77,8 +74,6 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setCurrentFile,
         currentFileWordTimestamps,
         setCurrentFileWordTimestamps,
-        wordTimeStampsFailed,
-        setWordTimeStampsFailed,
         trackEnded,
         setTrackEnded
       }}>

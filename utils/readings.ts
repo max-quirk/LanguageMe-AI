@@ -63,7 +63,6 @@ export const getReading = async (id: string) => {
         passage: doc.data()?.passage,
         createdAt: doc.data()?.createdAt.toDate(),
         wordTimestamps: doc.data()?.wordTimestamps,
-        timeStampsFailed: doc.data()?.timeStampsFailed,
       } as Reading;
     }
   }
@@ -90,9 +89,9 @@ export const deleteReading = async ({
   }
 };
 
-// Removes all punctuation from string except hyphens
+// Removes all punctuation from string except hyphens and single quotes within words
 export const cleanPunctuation = (str: string) => {
-  return str.replace(/^\+/g, '').replace(/[\p{P}\p{S}]/gu, '').trim();
+  return str.replace(/(?!\B['’]|\b['’])[\p{P}\p{S}]/gu, '').trim();
 };
 
 // Removes leading hyphens and spaces e.g. "- gg" -> "gg" 
@@ -124,8 +123,6 @@ export const updateFirebaseReadingWordTimestamps = async (readingId: string, tim
     const readingRef = firebase.firestore().collection('users').doc(user.uid).collection('readings').doc(readingId);
     if (timeStamps !== null) {
       await readingRef.update({ wordTimestamps: timeStamps });
-    } else {
-      await readingRef.update({ timeStampsFailed: true });
     }
   } catch (error) {
     console.error('Error updating reading with segments:', error);
@@ -133,6 +130,9 @@ export const updateFirebaseReadingWordTimestamps = async (readingId: string, tim
   }
 };
 
+export function hasTrailingPunctuation(word: string): boolean {
+  return /[.,;:!?。，；！？]$/.test(word);
+}
 
 export const processGeneratedReading = (passage: string) => {
   // Ensure spaces are placed after punctuation, ignoring newline characters
@@ -152,8 +152,13 @@ export const processGeneratedReading = (passage: string) => {
 
   // Ensure there are never double new lines
   const singleNewlinePassage = noSpaceBeforePunctuationPassage.replace(/\n{2,}/g, '\n');
+  
+  // Remove single quotes that are both preceded and followed by a space
+  const noExtraSingleQuotesPassage = singleNewlinePassage.replace(/ (?=')'(?!\s)/g, '');
 
-  return singleNewlinePassage.trim();
+  // Adjusted regex for removing single quotes that are both preceded and followed by a space
+  const finalPassage = noExtraSingleQuotesPassage.replace(/ ' /g, ' ');
+  return finalPassage.trim();
 };
 
 export function filterBlankWords(word: string): boolean {

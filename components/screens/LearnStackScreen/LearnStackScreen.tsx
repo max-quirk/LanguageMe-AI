@@ -7,7 +7,7 @@ export default function LearnStackScreen() {
 
   return (
     <LearnStack.Navigator screenOptions={{ headerShown: false }}>
-      <LearnStack.Screen name="Flashcards" component={FlashcardsScreen} />
+      <LearnStack.Screen name="FlashcardsScreen" component={FlashcardsScreen} />
     </LearnStack.Navigator>
   );
 }

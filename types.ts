@@ -1,6 +1,6 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { LanguageCode } from "iso-639-1";
-import { ReadingWithWordTimeStamps, WordSegment } from "services/whisper";
+import { ReadingWithWordTimeStamps } from "services/whisper";
 import { Ease } from "utils/flashcards";
 
 export type MainTabParamList = {
@@ -29,9 +29,9 @@ export type FlashCard = {
   id: string,
   front: {
     word: string,
-    wordRomanized: string,
+    wordRomanized: string | null,
     example: string,
-    exampleRomanized: string,
+    exampleRomanized: string | null,
   },
   back: {
     word: string,
@@ -42,7 +42,8 @@ export type FlashCard = {
   interval: number,
   factor: number,
   reps: number,
-  lastEase: Ease
+  lastEase: Ease | null
+  translationsList: string[] | null
 }
 
 export type LightWeightFlashCard = {
@@ -66,5 +67,4 @@ export type Reading = {
   passage: string | null;
   createdAt: Date;
   wordTimestamps: ReadingWithWordTimeStamps | null
-  timeStampsFailed?: boolean
 };

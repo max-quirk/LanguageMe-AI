@@ -75,7 +75,7 @@ const WordRow: React.FC<WordRowProps> = ({
         <TouchableOpacity
           onPress={onPress}
           style={[
-            tw`overflow-hidden ${theme.classes.backgroundTertiary} border ${theme.classes.borderPrimary} ${isLast ? 'shadow-lg' : 'border-b-0'}`,
+            tw` ${theme.classes.backgroundTertiary} border ${theme.classes.borderPrimary} ${isLast ? 'shadow-lg' : 'border-b-0'}`,
             isFirst ? roundedTop : null,
             isLast ? roundedBottom : null,
           ]}
