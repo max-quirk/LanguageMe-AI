@@ -70,7 +70,7 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
             {added ? (
               t(`added`)
             ) : (
-              t(`added_to_flashcards`)
+              t(`add_to_flashcards`)
             )}
           </>
         </Button>

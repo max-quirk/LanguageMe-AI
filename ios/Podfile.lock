@@ -2349,8 +2349,6 @@ PODS:
   - RecaptchaInterop (100.0.0)
   - RNCAsyncStorage (1.23.1):
     - React-Core
-  - RNCMaskedView (0.1.11):
-    - React
   - RNFBApp (20.1.0):
     - Firebase/CoreOnly (= 10.27.0)
     - React-Core
@@ -2436,8 +2434,6 @@ PODS:
     - Yoga
   - RNSoundPlayer (0.14.3):
     - React-Core
-  - RNSVG (15.3.0):
-    - React-Core
   - SocketRocket (0.7.0)
   - SwiftAudioEx (1.1.0)
   - Yoga (0.0.0)
@@ -2508,7 +2504,6 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
-  - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
@@ -2518,7 +2513,6 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSoundPlayer (from `../node_modules/react-native-sound-player`)
-  - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -2667,8 +2661,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
-  RNCMaskedView:
-    :path: "../node_modules/@react-native-community/masked-view"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBAuth:
@@ -2687,8 +2679,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSoundPlayer:
     :path: "../node_modules/react-native-sound-player"
-  RNSVG:
-    :path: "../node_modules/react-native-svg"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -2774,7 +2764,6 @@ SPEC CHECKSUMS:
   ReactCommon: e5866ad8f7487779853fa3fe33f1c075207c3262
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
-  RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNFBApp: 1ae7462cddf74a49df206d3418bc0170f8fa53e5
   RNFBAuth: 9be3cd8b0f9083b06da34d52c146e66605d2ee74
   RNFBFirestore: 4c0b80a4b715b3615a3be2c39ccec32ec6ff5d3c
@@ -2784,7 +2773,6 @@ SPEC CHECKSUMS:
   RNReanimated: be44c56aefb04cd83dfe6dcfaff5b909ef627a1d
   RNScreens: fd2722bcc59f36a629205af8cc7b48e4bc0d09f5
   RNSoundPlayer: 490822518cc1d6d80495ca7e3223df5869c30851
-  RNSVG: a48668fd382115bc89761ce291a81c4ca5f2fd2e
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   SwiftAudioEx: f6aa653770f3a0d3851edaf8d834a30aee4a7646
   Yoga: 9ad2c02dbd9811bb5a35fe23081cb0f5d5a3f9dd
