@@ -9,6 +9,7 @@ import ThemedTextInput from '../ThemedTextInput';
 import { useTheme } from '../../contexts/ThemeContext';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types';
+import i18n from '../../localization/i18n'; // Importing localization
 
 type ForgotPasswordScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ForgotPassword'>;
 
@@ -29,7 +30,7 @@ const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
     setMessage(null);
     try {
       await firebase.auth().sendPasswordResetEmail(email);
-      setMessage('Password reset link has been sent to your email.');
+      setMessage(i18n.t('password_reset_link_sent'));
     } catch (error) {
       setError(error as string);
     }
@@ -38,11 +39,11 @@ const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={tw`flex-1 justify-center p-5 ${theme.classes.backgroundPrimary}`}>
-      <Text style={tw`text-xl mb-4 ${theme.classes.textPrimary}`}>Forgot Password</Text>
+      <Text style={tw`text-xl mb-4 ${theme.classes.textPrimary}`}>{i18n.t('forgot_password')}</Text>
       {error && <Text style={tw`text-red-500 mb-4`}>{error}</Text>}
       {message && <Text style={tw`text-green-500 mb-4`}>{message}</Text>}
       <ThemedTextInput
-        label="Email"
+        label={i18n.t('email')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -53,14 +54,14 @@ const ForgotPasswordScreen: React.FC<Props> = ({ navigation }) => {
         style={tw`mt-4 bg-purple-600`}
         disabled={loading}
       >
-        {loading ? <ActivityIndicator color="white" style={tw`pt-[3px]`} /> : 'Get Link'}
+        {loading ? <ActivityIndicator color="white" style={tw`pt-[3px]`} /> : i18n.t('get_link')}
       </Button>
       <Button
         mode="text"
         onPress={() => navigation.goBack()}
         style={tw`mt-2 ${theme.classes.textPrimary}`}
       >
-        Back to Login
+        {i18n.t('back_to_login')}
       </Button>
     </View>
   );

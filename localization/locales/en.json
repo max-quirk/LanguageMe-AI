@@ -11,6 +11,11 @@
   "already_have_account": "Already have an account? Login",
 
 
+  "password_reset_link_sent": "Password reset link has been sent to your email.",
+  "get_link": "Get Link",
+  "back_to_login": "Back to Login",
+
+
   "getting_started": "Getting Started",
   "welcome_popup_text": "Welcome! Start by creating a reading passage on a topic you love. Tap on any word to view its definition and add it to your flashcards for easy review.",
   "readings": "Readings",
@@ -31,6 +36,10 @@
   "how_to_use": "How to use",
   "tap_to_define": "Tap any word you don't know to see its definition and add it to your flashcards.",
   
+
+  "add_to_flashcards": "Add to flashcards",
+  "added": "Added",
+
 
   "no_flashcards": "You haven't added any flashcards from your readings yet!",
   "go_to_readings": "Go to Readings",
@@ -72,7 +81,7 @@
   "hard_refresh_app": "Hard Refresh App",
   "logout": "Logout",
 
-  
+
   "Read": "Read",
   "Flashcards": "Flashcards",
   "My Words": "My Words",

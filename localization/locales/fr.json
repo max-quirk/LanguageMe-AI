@@ -9,6 +9,10 @@
   "register": "Inscription",
   "already_have_account": "Vous avez déjà un compte? Connectez-vous",
 
+  "password_reset_link_sent": "Le lien de réinitialisation du mot de passe a été envoyé à votre adresse e-mail.",
+  "get_link": "Obtenir le lien",
+  "back_to_login": "Retour à la connexion",
+
   "getting_started": "Commencer",
   "welcome_popup_text": "Bienvenue! Commencez par créer un passage de lecture sur un sujet que vous aimez. Touchez n'importe quel mot pour voir sa définition et l'ajouter à vos cartes mémoire pour une révision facile.",
   "readings": "Lectures",
@@ -69,6 +73,10 @@
   "Flashcards": "Cartes Mémoire",
   "My Words": "Mes Mots",
   "Settings": "Paramètres",
+
+
+  "add_to_flashcards": "Ajouter aux cartes mémoire",
+  "added": "Ajouté",
 
 
   "languages": {

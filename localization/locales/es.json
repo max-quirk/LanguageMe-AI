@@ -9,6 +9,12 @@
   "register": "Registrarse",
   "already_have_account": "¿Ya tienes una cuenta? Inicia sesión",
 
+
+  "password_reset_link_sent": "El enlace de restablecimiento de contraseña ha sido enviado a tu correo electrónico.",
+  "get_link": "Obtener enlace",
+  "back_to_login": "Volver a iniciar sesión",
+
+
   "getting_started": "Empezando",
   "welcome_popup_text": "¡Bienvenido! Empieza creando un pasaje de lectura sobre un tema que te guste. Toca cualquier palabra para ver su definición y añadirla a tus tarjetas para una revisión fácil.",
   "readings": "Lecturas",
@@ -69,6 +75,10 @@
   "Flashcards": "Tarjetas",
   "My Words": "Mis Palabras",
   "Settings": "Configuraciones",
+
+
+  "add_to_flashcards": "Agregar a las tarjetas",
+  "added": "Agregado",
 
 
   "languages": {

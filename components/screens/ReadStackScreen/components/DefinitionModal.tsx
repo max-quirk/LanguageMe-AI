@@ -6,6 +6,7 @@ import Button from '../../../Button';
 import Modal from '../../../Modal';
 import WordAndTranslations from '../../../WordAndTranslations';
 import { LanguageContext } from '../../../../contexts/LanguageContext';
+import { useTranslation } from 'react-i18next';
 
 type DefinitionModalProps = {
   visible: boolean;
@@ -18,6 +19,7 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
   const [translationsList, setTranslationsList] = useState<string[] | null>(null)
   
   const { nativeLanguage, targetLanguage } = useContext(LanguageContext);
+  const { t } = useTranslation()
 
   useEffect(() => {
     // Run when modal first opens
@@ -66,9 +68,9 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
         >
           <>
             {added ? (
-              'Added'
+              t(`added`)
             ) : (
-              'Add to Flashcards'
+              t(`added_to_flashcards`)
             )}
           </>
         </Button>
