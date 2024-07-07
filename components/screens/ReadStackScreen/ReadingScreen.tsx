@@ -81,7 +81,6 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
         try {
           const readingWithWordTimeStamps = await getWordTimeStamps({
             audioUrl: audioFile,
-            audioDuration: duration, 
             languageCode: targetLanguage,
             passage: reading.passage,
           });

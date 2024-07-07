@@ -2,7 +2,7 @@ import RNFS from 'react-native-fs';
 import { FFmpegKit } from 'ffmpeg-kit-react-native';
 import { LanguageCode } from 'iso-639-1';
 import { filterBlankWords } from '../utils/readings';
-import { approximateTimeStamps, processWordTimeStamps, wordTimeStampsReasonable } from '../utils/wordTimeStamps';
+import { approximateTimeStamps, getAudioFileDuration, processWordTimeStamps, wordTimeStampsReasonable } from '../utils/wordTimeStamps';
 
 export interface WordSegment {
   start: number;
@@ -20,16 +20,15 @@ export type ReadingWithWordTimeStamps = {
 
 export const getWordTimeStamps = async ({
   audioUrl,
-  audioDuration,
   languageCode,
   passage,
   
 }: {
   audioUrl: string, 
-  audioDuration: number,
   languageCode: LanguageCode,
   passage: string,
 }): Promise<ReadingWithWordTimeStamps | null> => {
+  console.log('audioUrl: ', audioUrl)
   try {
     // Fetch the audio file from the URL
     const response = await fetch(audioUrl);
@@ -49,9 +48,7 @@ export const getWordTimeStamps = async ({
           // Write the base64 string to a file
           await RNFS.writeFile(filePath, base64String, 'base64');
 
-          // Convert the audio file to the correct format and bitrate
-          await FFmpegKit.execute(`-y -i ${filePath} -ar 16000 -ac 1 -c:a pcm_s16le ${fileUri}`);
-
+          const audioDuration = await getAudioFileDuration(filePath, fileUri)
           // Append the file directly to FormData
           const formData = new FormData();
           formData.append('file', {
@@ -77,7 +74,7 @@ export const getWordTimeStamps = async ({
           const data = await transcriptionResponse.json();
 
           const filteredWords = data.words.filter((segment: WordSegment) => filterBlankWords(segment.word))
-
+          
           let processedTimeStamps: ReadingWithWordTimeStamps | null = null;
           let timeStampsReasonable: boolean = false;
 
