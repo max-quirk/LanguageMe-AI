@@ -21,8 +21,8 @@
 		1D6B58E42C2E2C1800479AFB /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D6B58D02C2E2C1800479AFB /* Fontisto.ttf */; };
 		1D6B58E72C2E2C1800479AFB /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D6B58D32C2E2C1800479AFB /* MaterialCommunityIcons.ttf */; };
 		1D6B58EA2C2E2C1800479AFB /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D6B58D62C2E2C1800479AFB /* SimpleLineIcons.ttf */; };
-		1DD0F8502C20F3AD003C7D6B /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DD0F84F2C20F3AD003C7D6B /* hermes.xcframework */; };
-		1DD0F8512C20F3C1003C7D6B /* hermes.xcframework in Resources */ = {isa = PBXBuildFile; fileRef = 1DD0F84F2C20F3AD003C7D6B /* hermes.xcframework */; };
+		1D6DFD2D2C41056B00FCCD06 /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D6DFD2C2C41056B00FCCD06 /* hermes.xcframework */; };
+		1D6DFD2E2C41056B00FCCD06 /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D6DFD2C2C41056B00FCCD06 /* hermes.xcframework */; };
 		2DEC9967617EF4B6E48EDF1E /* Pods_LearnProAi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6D042B9C4E1C9C904F17837 /* Pods_LearnProAi.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		9433205931F17323B68F6A4E /* Pods_LearnProAi_LearnProAiTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2101CAFE35AC3426F232EC20 /* Pods_LearnProAi_LearnProAiTests.framework */; };
@@ -60,8 +60,8 @@
 		1D6B58D02C2E2C1800479AFB /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		1D6B58D32C2E2C1800479AFB /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
 		1D6B58D62C2E2C1800479AFB /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
+		1D6DFD2C2C41056B00FCCD06 /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = hermes.xcframework; sourceTree = "<group>"; };
 		1D92D0182C20FC1300450A20 /* LearnProAi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LearnProAi.entitlements; sourceTree = "<group>"; };
-		1DD0F84F2C20F3AD003C7D6B /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = hermes.xcframework; path = "Pods/hermes-engine/destroot/Library/Frameworks/universal/hermes.xcframework"; sourceTree = "<group>"; };
 		2101CAFE35AC3426F232EC20 /* Pods_LearnProAi_LearnProAiTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LearnProAi_LearnProAiTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-LearnProAi.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LearnProAi.debug.xcconfig"; path = "Target Support Files/Pods-LearnProAi/Pods-LearnProAi.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-LearnProAi.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LearnProAi.release.xcconfig"; path = "Target Support Files/Pods-LearnProAi/Pods-LearnProAi.release.xcconfig"; sourceTree = "<group>"; };
@@ -79,6 +79,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9433205931F17323B68F6A4E /* Pods_LearnProAi_LearnProAiTests.framework in Frameworks */,
+				1D6DFD2E2C41056B00FCCD06 /* hermes.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,7 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1DD0F8502C20F3AD003C7D6B /* hermes.xcframework in Frameworks */,
+				1D6DFD2D2C41056B00FCCD06 /* hermes.xcframework in Frameworks */,
 				2DEC9967617EF4B6E48EDF1E /* Pods_LearnProAi.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -149,7 +150,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1DD0F84F2C20F3AD003C7D6B /* hermes.xcframework */,
+				1D6DFD2C2C41056B00FCCD06 /* hermes.xcframework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				F6D042B9C4E1C9C904F17837 /* Pods_LearnProAi.framework */,
 				2101CAFE35AC3426F232EC20 /* Pods_LearnProAi_LearnProAiTests.framework */,
@@ -296,7 +297,6 @@
 			files = (
 				1D6B58E42C2E2C1800479AFB /* Fontisto.ttf in Resources */,
 				1D6B58E72C2E2C1800479AFB /* MaterialCommunityIcons.ttf in Resources */,
-				1DD0F8512C20F3C1003C7D6B /* hermes.xcframework in Resources */,
 				1D6B58DD2C2E2C1800479AFB /* FontAwesome.ttf in Resources */,
 				1D6B58EA2C2E2C1800479AFB /* SimpleLineIcons.ttf in Resources */,
 				1D6B58DF2C2E2C1800479AFB /* FontAwesome5_Regular.ttf in Resources */,
