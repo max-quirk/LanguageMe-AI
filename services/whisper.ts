@@ -1,8 +1,11 @@
 import RNFS from 'react-native-fs';
-import { FFmpegKit } from 'ffmpeg-kit-react-native';
 import { LanguageCode } from 'iso-639-1';
 import { filterBlankWords } from '../utils/readings';
 import { approximateTimeStamps, getAudioFileDuration, processWordTimeStamps, wordTimeStampsReasonable } from '../utils/wordTimeStamps';
+
+const extractFileName = (url: string): string => {
+  return url.substring(url.lastIndexOf('/') + 1).split('.')[0];
+};
 
 export interface WordSegment {
   start: number;
@@ -28,12 +31,13 @@ export const getWordTimeStamps = async ({
   languageCode: LanguageCode,
   passage: string,
 }): Promise<ReadingWithWordTimeStamps | null> => {
-  console.log('audioUrl: ', audioUrl)
+  console.info('audioUrl: ', audioUrl)
   try {
     // Fetch the audio file from the URL
     const response = await fetch(audioUrl);
     const blob = await response.blob();
 
+    const convertedFileName = `${extractFileName(audioUrl)}.wav`
     // Read the blob as a base64 string
     const reader = new FileReader();
     reader.readAsDataURL(blob);
@@ -42,18 +46,17 @@ export const getWordTimeStamps = async ({
         try {
           const base64data = reader.result as string;
           const base64String = base64data.split(',')[1];
-          const filePath = `${RNFS.DocumentDirectoryPath}/audio.wav`;
-          const fileUri = `${RNFS.DocumentDirectoryPath}/convertedFile.wav`;
+          const filePath = `${RNFS.DocumentDirectoryPath}/${convertedFileName}`;
 
           // Write the base64 string to a file
           await RNFS.writeFile(filePath, base64String, 'base64');
 
-          const audioDuration = await getAudioFileDuration(filePath, fileUri)
+          const audioDuration = await getAudioFileDuration(filePath)
           // Append the file directly to FormData
           const formData = new FormData();
           formData.append('file', {
-            uri: `file://${fileUri}`,
-            name: 'convertedFile.wav',
+            uri: `file://${filePath}`,
+            name: convertedFileName,
             type: 'audio/wav',
           });
           formData.append('model', 'whisper-1'); 

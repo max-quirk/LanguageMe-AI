@@ -63,8 +63,8 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
   const languageSelectorClasses = tw`w-32`;
 
   return (
-    <BackgroundView style={tw`pt-40 ${themeClasses.backgroundPrimary}`}>
-      <ScrollView contentContainerStyle={tw`p-5`}>
+    <BackgroundView style={tw`${themeClasses.backgroundPrimary}`}>
+      <ScrollView contentContainerStyle={tw`p-5 pt-40 `}>
         <Text style={tw`${themeClasses.textPrimary} text-3xl text-center mb-8 font-bold`}>{t('settings')}</Text>
 
         <View style={tw`mb-6 flex flex-row items-center justify-between`}>

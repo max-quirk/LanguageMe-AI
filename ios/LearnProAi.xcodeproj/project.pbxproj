@@ -548,7 +548,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = LearnProAi/LearnProAi.entitlements;
-				CURRENT_PROJECT_VERSION = 1.00;
+				CURRENT_PROJECT_VERSION = 1.01;
 				DEVELOPMENT_TEAM = KUWF7W9952;
 				ENABLE_BITCODE = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -640,7 +640,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00;
+				MARKETING_VERSION = 1.01;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -661,7 +661,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = LearnProAi/LearnProAi.entitlements;
-				CURRENT_PROJECT_VERSION = 1.00;
+				CURRENT_PROJECT_VERSION = 1.01;
 				DEVELOPMENT_TEAM = KUWF7W9952;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = LearnProAi/Info.plist;
@@ -669,7 +669,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.00;
+				MARKETING_VERSION = 1.01;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

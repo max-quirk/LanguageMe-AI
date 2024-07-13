@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image } from 'react-native';
+import { View, Image, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Text, ActivityIndicator } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { firebase } from '../../config/firebase';
@@ -42,41 +42,48 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={tw`flex-1 justify-center p-5 ${theme.classes.backgroundPrimary}`}>
-      <View style={tw`flex items-center`}>
-        <Image source={require('../../assets/images/logo-full.png')} style={tw`w-70 h-70 mb-6`} />
-      </View>
-      <Text style={tw`text-xl mb-4 ${theme.classes.textPrimary}`}>{t('register')}</Text>
-      {error && <Text style={tw`text-red-500 mb-4`}>{error}</Text>}
-      <ThemedTextInput
-        label={t('email')}
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-      />
-      <ThemedTextInput
-        label={t('password')}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        autoCapitalize="none"
-      />
-      <Button
-        mode="contained"
-        onPress={handleRegister}
-        style={tw`mt-4 bg-purple-600`}
-        disabled={loading}
-      >
-        {loading ? <ActivityIndicator color="white" style={tw`pt-[3px]`} /> : t('register')}
-      </Button>
-      <Button
-        mode="text"
-        onPress={() => navigation.navigate('Login')}
-        style={tw`mt-2 ${theme.classes.textPrimary}`}
-      >
-        {t('already_have_account')}
-      </Button>
-    </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+        <View style={tw`flex-1 justify-center p-5 ${theme.classes.backgroundPrimary}`}>
+          <View style={tw`flex items-center`}>
+            <Image source={require('../../assets/images/logo-full.png')} style={tw`w-60 h-60 mb-6`} />
+          </View>
+          <Text style={tw`text-xl mb-4 ${theme.classes.textPrimary}`}>{t('register')}</Text>
+          {error && <Text style={tw`text-red-500 mb-4`}>{error}</Text>}
+          <ThemedTextInput
+            label={t('email')}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+          />
+          <ThemedTextInput
+            label={t('password')}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+          />
+          <Button
+            mode="contained"
+            onPress={handleRegister}
+            style={tw`mt-4 bg-purple-600`}
+            disabled={loading}
+          >
+            {loading ? <ActivityIndicator color="white" style={tw`pt-[3px]`} /> : t('register')}
+          </Button>
+          <Button
+            mode="text"
+            onPress={() => navigation.navigate('Login')}
+            style={tw`mt-2 ${theme.classes.textPrimary}`}
+          >
+            {t('already_have_account')}
+          </Button>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

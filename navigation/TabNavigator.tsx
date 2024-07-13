@@ -35,7 +35,8 @@ function TabNavigator() {
         headerShown: false,
         tabBarActiveTintColor: 'tomato', 
         tabBarInactiveTintColor: theme.colors.textSecondary,
-        tabBarStyle: tw`${theme.classes.backgroundSecondary} h-24`,
+        tabBarStyle: tw`${theme.classes.backgroundSecondary} h-24 flex flex-col items-center justify-center`,
+        tabBarLabelStyle: tw``
       })}
     >
       <Tab.Screen 

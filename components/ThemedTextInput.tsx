@@ -9,7 +9,7 @@ const ThemedTextInput: React.FC<TextInputProps> = (props) => {
   return (
     <TextInput
       {...props}
-      style={[tw`${isDarkTheme ? theme.classes.backgroundTertiary : ''} mb-4`, props.style]}
+      style={[tw`${isDarkTheme ? theme.classes.backgroundTertiary : 'bg-[#e7e0ec]'} mb-4`, props.style]}
       placeholderTextColor={theme.colors.textSecondary}
       textColor={theme.colors.textPrimary}
       theme={{ 

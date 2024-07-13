@@ -1,4 +1,5 @@
-import { FFmpegKit } from "ffmpeg-kit-react-native";
+import { FFprobeKit } from "ffmpeg-kit-react-native";
+
 import { ReadingWithWordTimeStamps, WordSegment } from "../services/whisper";
 import { cleanPunctuation, filterBlankWords, hasTrailingPunctuation } from "./readings";
 
@@ -102,7 +103,7 @@ export function wordTimeStampsReasonable({
 
   // Check if the last word is within 2 seconds of the audio length
   if (audioDuration - lastWord.end > 3) {
-    console.log('unreasonable: duration length')
+    console.info('Unreasonable timestamps: duration length')
     return false;
   }
 
@@ -110,7 +111,7 @@ export function wordTimeStampsReasonable({
   for (const paragraph of readingTimeStamps.paragraphs) {
     for (let i = 1; i < paragraph.words.length; i++) {
       if (paragraph.words[i].start - paragraph.words[i - 1].start > 5) {
-        console.log('unreasonable: gap')
+        console.info('Unreasonable timestamps: gaps too large')
         return false;
       }
     }
@@ -127,8 +128,6 @@ export function approximateTimeStamps({
   passage: string,
   audioDuration: number
 }): ReadingWithWordTimeStamps {
-  console.log('audioDuration: ', audioDuration)
-  console.log('passage: ', passage)
   const paragraphs = passage.split('\n').map(paragraph => paragraph.trim()).filter(paragraph => paragraph !== '');
 
   // Calculate total characters including punctuation pauses
@@ -183,19 +182,22 @@ function cleanWord(word: string) {
 }
 
 
-export async function getAudioFileDuration(filePath: string, fileUri: string): Promise<number> {
-  const durationSession = await FFmpegKit.execute(`-y -i ${filePath} -ar 16000 -ac 1 -c:a pcm_s16le ${fileUri}`) as { returnCode: number; getOutput: () => string }
+export async function getAudioFileDuration(filePath: string): Promise<number> {
+  try {
+    const session = await FFprobeKit.getMediaInformation(filePath);
+    const information = await session.getMediaInformation();
 
-  const durationOutput: string = durationSession.getOutput();
-  const durationString = durationOutput.match(/Duration: (\d{2}:\d{2}:\d{2}.\d{2})/)?.[1]
-  if (durationString) {
-    return durationToSeconds(durationString)
+    if (information !== undefined) {
+      const durationString = information.getDuration();
+      if (durationString) {
+        return parseFloat(durationString);
+      }
+    } else {
+      console.error('FFprobe execution failed', session.getFailStackTrace());
+    }
+  } catch (error) {
+    console.error('Error fetching media information:', error);
   }
-  return 0
-}
 
-// e.g. converts 00:01:31.94 to 91.94
-function durationToSeconds(duration: string) {
-  const [hours, minutes, seconds] = duration.split(':').map(parseFloat);
-  return (hours * 3600) + (minutes * 60) + seconds;
+  return 0;
 }
