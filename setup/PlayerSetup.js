@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 
 export const usePlayerSetup = () => {
@@ -18,6 +19,13 @@ export const usePlayerSetup = () => {
           TrackPlayer.CAPABILITY_PAUSE,
         ],
       });
+
+      // Set the audio session category to allow playback in silent mode (iOS only)
+      if (Platform.OS === 'ios') {
+        await TrackPlayer.setCategory('playback', {
+          ducking: true,
+        });
+      }
     };
 
     setupPlayer();

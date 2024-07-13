@@ -3,6 +3,7 @@
 #import <React/RCTRootView.h>
 #import <Firebase.h>
 #import <RNGestureHandler/RNGestureHandler.h>
+#import <AVFoundation/AVFoundation.h>
 
 @implementation AppDelegate
 
@@ -11,6 +12,10 @@
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }
+
+  // Set AVAudioSession to allow playback even when the silent switch is on
+  [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+  [[AVAudioSession sharedInstance] setActive:YES error:nil];
 
   NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 
