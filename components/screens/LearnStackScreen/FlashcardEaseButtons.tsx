@@ -5,12 +5,14 @@ import { Ease } from '../../../utils/flashcards';
 import Button from '../../Button';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { getEaseColor } from '../../../utils/colors';
+import { useTranslation } from 'react-i18next';
 
 type FlashcardEaseButtonsProps = {
   handleNextFlashcard: (ease: Ease) => void;
 };
 
 const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({ handleNextFlashcard }) => {
+  const { t } = useTranslation();
   const { theme, isDarkTheme } = useTheme();
 
   const buttonBaseStyle = tw`h-12`;
@@ -27,7 +29,7 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({ handleNextF
           labelStyle={buttonLabelStyle}
           onPress={() => handleNextFlashcard(Ease.Again)}
         >
-          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>Forgot</Text>
+          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>{t('forgot')}</Text>
         </Button>
       </View>
       <View style={tw`flex-1 p-0 m-0`}>
@@ -38,7 +40,7 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({ handleNextF
           labelStyle={buttonLabelStyle}
           onPress={() => handleNextFlashcard(Ease.Hard)}
         >
-          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>Hard</Text>
+          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>{t('hard')}</Text>
         </Button>
       </View>
       <View style={tw`flex-1 p-0 m-0`}>
@@ -49,7 +51,7 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({ handleNextF
           labelStyle={buttonLabelStyle}
           onPress={() => handleNextFlashcard(Ease.Good)}
         >
-          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>Ok</Text>
+          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>{t('ok')}</Text>
         </Button>
       </View>
       <View style={tw`flex-1 p-0 m-0`}>
@@ -60,7 +62,7 @@ const FlashcardEaseButtons: React.FC<FlashcardEaseButtonsProps> = ({ handleNextF
           labelStyle={buttonLabelStyle}
           onPress={() => handleNextFlashcard(Ease.Easy)}
         >
-          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>Easy</Text>
+          <Text style={tw`${theme.classes.textPrimary} text-center font-medium w-full`}>{t('easy')}</Text>
         </Button>
       </View>
     </View>

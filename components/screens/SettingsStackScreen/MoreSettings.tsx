@@ -40,6 +40,27 @@ const MoreSettings: React.FC<Props> = ({ navigation }) => {
     );
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      await user.delete();
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      Alert.alert(t('error'), t('error_deleting_account'));
+    }
+  };
+
+  const confirmDeleteAccount = () => {
+    Alert.alert(
+      t('confirm_account_deletion'),
+      t('confirm_account_deletion_message'),
+      [
+        { text: t('cancel'), style: 'cancel' },
+        { text: t('delete'), style: 'destructive', onPress: handleDeleteAccount },
+      ]
+    );
+  };
+
   const themeClasses = theme.classes;
 
   return (
@@ -65,6 +86,13 @@ const MoreSettings: React.FC<Props> = ({ navigation }) => {
         style={tw`${themeClasses.borderPrimary} ${themeClasses.textSecondary} mt-4`}
       >
         {t('logout')}
+      </Button>
+      <Button
+        mode="outlined"
+        onPress={confirmDeleteAccount}
+        style={tw`${themeClasses.borderPrimary} ${themeClasses.textSecondary} mt-4`}
+      >
+        {t('delete_account')}
       </Button>
     </Collapse>
   );

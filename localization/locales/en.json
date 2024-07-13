@@ -35,10 +35,15 @@
 
   "how_to_use": "How to use",
   "tap_to_define": "Tap any word you don't know to see its definition and add it to your flashcards.",
-  
+  "got_it": "Got it",
 
   "add_to_flashcards": "Add to flashcards",
   "added": "Added",
+
+  "forgot": "Forgot",
+  "hard": "Hard",
+  "ok": "Ok",
+  "easy": "Easy",
 
 
   "no_flashcards": "You haven't added any flashcards from your readings yet!",
@@ -80,6 +85,12 @@
   "delete_all_flashcards": "Delete All Words/Flashcards",
   "hard_refresh_app": "Hard Refresh App",
   "logout": "Logout",
+  "delete_account": "Delete account",
+
+  "confirm_account_deletion": "Confirm Account Deletion",
+  "confirm_account_deletion_message": "Are you sure you want to delete your account? This action cannot be undone.",
+  "error": "Error",
+  "error_deleting_account": "There was an error deleting your account. Please try again.",
 
 
   "Read": "Read",

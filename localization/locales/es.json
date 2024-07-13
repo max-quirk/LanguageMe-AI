@@ -39,6 +39,13 @@
   "select_difficulty": "Seleccionar dificultad",
   "select_how_easy": "Selecciona lo fácil que encontraste la tarjeta. La dificultad que selecciones determinará con qué frecuencia verás la tarjeta.",
 
+
+  "forgot": "Olvidado",
+  "hard": "Difícil",
+  "ok": "Bien",
+  "easy": "Fácil",
+
+
   "no_flashcards_added": "¡Aún no has añadido ninguna tarjeta de tus lecturas!",
   "my_words": "Mis palabras",
 
@@ -69,7 +76,11 @@
   "delete_all_flashcards": "Eliminar todas las palabras/tarjetas",
   "hard_refresh_app": "Actualización dura de la aplicación",
   "logout": "Cerrar sesión",
-
+  "delete_account": "Eliminar cuenta",
+  "confirm_account_deletion": "Confirmar Eliminación de Cuenta",
+  "confirm_account_deletion_message": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
+  "error": "Error",
+  "error_deleting_account": "Hubo un error al eliminar tu cuenta. Por favor, inténtalo de nuevo.",
 
   "Read": "Leer",
   "Flashcards": "Tarjetas",

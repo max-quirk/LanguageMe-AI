@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import Button from './Button';
 import Modal from './Modal';
 import { useTheme } from '../contexts/ThemeContext';
+import i18n from '../localization/i18n';
 
 type HelperPopupProps = {
   title: string;
@@ -29,7 +30,7 @@ const HelperPopup: React.FC<HelperPopupProps> = ({ title, text, visible, onClose
         </View>
         <View style={tw`flex-row justify-end`}>
           <Button mode="contained" onPress={onClose} style={tw`bg-purple-600 w-[100px]`}>
-            Got it
+            {i18n.t('got_it')}
           </Button>
         </View>
       </Modal>
