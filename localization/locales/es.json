@@ -81,6 +81,7 @@
   "confirm_account_deletion_message": "¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.",
   "error": "Error",
   "error_deleting_account": "Hubo un error al eliminar tu cuenta. Por favor, inténtalo de nuevo.",
+  "must_set_description": "Debe establecer una descripción.",
 
   "Read": "Leer",
   "Flashcards": "Tarjetas",

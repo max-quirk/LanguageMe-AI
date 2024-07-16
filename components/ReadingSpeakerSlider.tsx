@@ -155,13 +155,13 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
         thumbTintColor={theme.colors.purplePrimary}
       />
       <View style={tw`flex-row justify-around items-center mb-2`}>
-        <TouchableOpacity onPress={handleRestart} disabled={fetchingAudio}>
+        <TouchableOpacity onPress={handleRestart} disabled={fetchingAudio} style={tw`flex-row items-center justify-center w-12 h-12`}>
           <Fontisto name="step-backwrad" size={12} color={theme.colors.textPrimary} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={rewindAudio} disabled={fetchingAudio}>
+        <TouchableOpacity onPress={rewindAudio} disabled={fetchingAudio} style={tw`flex-row items-center justify-center w-12 h-12`}>
           <MaterialCommunityIcons name="rewind-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handlePlayPause}>
+        <TouchableOpacity onPress={handlePlayPause} style={tw`flex-row items-center justify-center w-12 h-12`}>
           {showLoadingIcon ? (
             <ActivityIndicator size="small" />
           ) : (
@@ -172,14 +172,14 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
             />
           )}
         </TouchableOpacity>
-        <TouchableOpacity onPress={fastForwardAudio} disabled={fetchingAudio}>
+        <TouchableOpacity onPress={fastForwardAudio} disabled={fetchingAudio} style={tw`flex-row items-center justify-center w-12 h-12`}>
           <MaterialCommunityIcons name="fast-forward-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
         <Menu
           visible={speedControlVisible}
           onDismiss={() => setSpeedControlVisible(false)}
           anchor={
-            <TouchableOpacity onPress={() => setSpeedControlVisible(true)}>
+            <TouchableOpacity onPress={() => setSpeedControlVisible(true)} style={tw`flex-row items-center justify-center w-12 h-12`}>
               <Text style={tw`text-xl ${theme.classes.textPrimary}`}>{playbackSpeed.toFixed(1)}x</Text>
             </TouchableOpacity>
           }

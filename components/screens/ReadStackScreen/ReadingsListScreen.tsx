@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ReadingSkeleton, getReadingsPaginated } from '../../../utils/readings';
 import ReadingCard from './components/ReadingCard';
 import HelperPopup from '../../HelperPopup';
-import { isFirstTimeUser } from '../../../utils/storageUtils';
+import { isFirstTimeReadingUser } from '../../../utils/storageUtils';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
 
@@ -51,7 +51,7 @@ const ReadingsListScreen: React.FC = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const firstTimeUser = await isFirstTimeUser();
+      const firstTimeUser = await isFirstTimeReadingUser();
       if (firstTimeUser) {
         setTimeout(() => {
           setHelperVisible(true);

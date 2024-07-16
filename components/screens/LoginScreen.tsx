@@ -10,6 +10,7 @@ import Button from '../Button';
 import ThemedTextInput from '../ThemedTextInput';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -34,8 +35,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      await firebase.auth().signInWithEmailAndPassword(email, password);
-      const user = firebase.auth().currentUser;
+      const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+      const user = userCredential.user;
       if (user) {
         const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
         const data = userDoc.data();
@@ -45,6 +46,9 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             targetLanguage: data.targetLanguage,
             displayLanguage: data.displayLanguage,
           });
+  
+          await AsyncStorage.setItem('userToken', user.uid);
+          console.log('set async uid: ', user.uid);
           navigation.navigate('Main', { screen: 'Home' });
         } else {
           navigation.navigate('LanguageSelection');
@@ -53,7 +57,6 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     } catch (error) {
       const firebaseError = error as FirebaseAuthError;
       console.info('firebaseError: ', firebaseError.code);
-
       if (firebaseError.code === 'auth/invalid-credential') {
         setError(t('auth_invalid_credential'));
       } else {

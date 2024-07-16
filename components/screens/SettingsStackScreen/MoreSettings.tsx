@@ -9,6 +9,7 @@ import { firebase } from '../../../config/firebase';
 import { SettingsScreenNavigationProp } from './SettingsScreen';
 import Collapse from '../../Collapse';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
   navigation: SettingsScreenNavigationProp;
@@ -23,6 +24,7 @@ const MoreSettings: React.FC<Props> = ({ navigation }) => {
   const handleLogout = async () => {
     try {
       await firebase.auth().signOut();
+      await AsyncStorage.removeItem('userToken');
       navigation.navigate('Login');
     } catch (error) {
       console.error('Error logging out:', error);
@@ -43,6 +45,7 @@ const MoreSettings: React.FC<Props> = ({ navigation }) => {
   const handleDeleteAccount = async () => {
     try {
       await user.delete();
+      await AsyncStorage.removeItem('userToken');
       navigation.navigate('Login');
     } catch (error) {
       console.error('Error deleting account:', error);

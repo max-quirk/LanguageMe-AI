@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { ScrollView, View } from 'react-native';
 import { Text, ActivityIndicator, Divider } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -15,6 +15,7 @@ import MoreSettings from './MoreSettings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useTranslation } from 'react-i18next';
+import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 export type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -32,7 +33,16 @@ const SettingsScreen: React.FC<Props> = ({ navigation }) => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
-  const user = firebase.auth().currentUser;
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(firebase.auth().currentUser);
+
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((authUser) => {
+      setUser(authUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   if (!user) return null;
 
   const handleSaveLanguages = async () => {

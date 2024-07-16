@@ -31,7 +31,7 @@
   "advanced": "Advanced",
   "word_count": "Word Count",
   "word_count_exceed": "Word count cannot exceed {{max}} words.",  
-
+  "must_set_description": "You must set a description.",
 
   "how_to_use": "How to use",
   "tap_to_define": "Tap any word you don't know to see its definition and add it to your flashcards.",

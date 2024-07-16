@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { ScrollView, KeyboardAvoidingView, Platform, View } from 'react-native';
+import { ScrollView, KeyboardAvoidingView, Platform, View, Keyboard } from 'react-native';
 import { Text, RadioButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -30,9 +30,15 @@ const AddReadingScreen: React.FC = () => {
   const MAX_WORD_COUNT = 1000;
 
   const handleAddReading = async () => {
+    Keyboard.dismiss();
+
     const wordCountNum = parseInt(wordCount, 10);
     if (wordCountNum > MAX_WORD_COUNT) {
       setError(t('word_count_exceed', { max: MAX_WORD_COUNT }));
+      return;
+    }
+    if (title.length === 0) {
+      setError(t('must_set_description'));
       return;
     }
     setError('');

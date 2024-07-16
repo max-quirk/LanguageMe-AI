@@ -8,7 +8,7 @@ import { FlashCard, RootStackParamList } from 'types';
 import fetchAllFlashcards, { Ease, getNextCard, adjustCard } from '../../../utils/flashcards';
 import FlashcardEaseButtons from './FlashcardEaseButtons';
 import HelperPopup from '../../HelperPopup';
-import { isFirstTimeUser, setFirstTimeUser } from '../../../utils/storageUtils';
+import { isFirstTimeFlashcardUser, setFirstTimeFlashcardUser } from '../../../utils/storageUtils';
 import Button from '../../Button';
 import TextToSpeechButton from '../../TextToSpeechButton';
 import RomanizeButton from '../../RomanizeButton';
@@ -54,7 +54,7 @@ const FlashcardsScreen = () => {
 
   useEffect(() => {
     const initialize = async () => {
-      const firstTimeUser = await isFirstTimeUser();
+      const firstTimeUser = await isFirstTimeFlashcardUser();
       if (firstTimeUser) {
         _setFirstTimeUser(true);
         setTimeout(() => {
@@ -88,7 +88,7 @@ const FlashcardsScreen = () => {
       setTimeout(() => {
         setBackCardHelperVisible(true);
         // End of first time user flow popups
-        setFirstTimeUser(false);
+        setFirstTimeFlashcardUser(false);
         _setFirstTimeUser(false);
       }, 1000);
     }

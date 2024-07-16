@@ -110,8 +110,9 @@ export const extractPunctuation = (word: string) => {
   return { punctuationBefore, punctuationAfter, coreWord };
 };
 
+// Removes quotes from the start or end of a string
 export const stripQuotes = (str: string) => {
-  return str.replace(/["']/g, '');
+  return str.trim().replace(/^["']|["']$/g, '');
 }
 
 export const updateFirebaseReadingWordTimestamps = async (readingId: string, timeStamps: ReadingWithWordTimeStamps | null) => {

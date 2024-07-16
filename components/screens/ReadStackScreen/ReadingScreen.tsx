@@ -11,7 +11,7 @@ import { useTheme } from '../../../contexts/ThemeContext';
 import TrackPlayer, { useProgress } from 'react-native-track-player';
 import { getReading, processGeneratedReading } from '../../../utils/readings';
 import { cleanPunctuation, updateFirebaseReadingWordTimestamps } from '../../../utils/readings';
-import { isFirstTimeUser } from '../../../utils/storageUtils';
+import { isFirstTimeReadingUser, setFirstTimeReadingUser } from '../../../utils/storageUtils';
 import ParagraphComponent from './components/ParagraphComponent';
 import { LanguageContext } from '../../../contexts/LanguageContext';
 import { ActivityIndicator } from 'react-native-paper';
@@ -65,7 +65,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
     }
 
     const checkFirstTimeUser = async () => {
-      const firstTime = await isFirstTimeUser();
+      const firstTime = await isFirstTimeReadingUser();
       if (firstTime) {
         setTimeout(() => {
           setHelperVisible(true);
@@ -187,7 +187,10 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
           title={t('how_to_use')}
           text={t('tap_to_define')}
           visible={helperVisible}
-          onClose={() => setHelperVisible(false)}
+          onClose={() => {
+            setHelperVisible(false)
+            setFirstTimeReadingUser(false)
+          }}
         />
         <DefinitionModal
           visible={definitionModalVisible}
