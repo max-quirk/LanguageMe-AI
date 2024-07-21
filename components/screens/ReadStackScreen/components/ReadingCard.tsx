@@ -36,8 +36,8 @@ const ReadingCard: React.FC<ReadingCardProps> = ({
       style={tw`bg-red-600 justify-center p-4 mb-4 rounded-lg overflow-hidden`}
       onPress={() => {
         Alert.alert(
-          'Confirm Deletion',
-          'Are you sure you want to delete this reading?',
+          'confirm_deletion',
+          'confirm_reading_deletion',
           [
             { text: 'Cancel', style: 'cancel' },
             { text: 'Delete', style: 'destructive', onPress: handleDelete },

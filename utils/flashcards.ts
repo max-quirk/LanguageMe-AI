@@ -153,6 +153,8 @@ export const addFlashcard = async ({
     let _exampleSentenceRomanized;
     if (romanizable && exampleSentence) {
       _exampleSentenceRomanized = await romanizeText({ text: exampleSentence, language: wordLanguage })
+    }
+    if (romanizable && !_romanizedWord) {
       _romanizedWord = await romanizeText({ text: word, language: wordLanguage })
     }
 

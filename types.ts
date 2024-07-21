@@ -24,6 +24,7 @@ export type RootStackParamList = {
     reading?: Reading;
     readingId: string;
   };
+  AddWord: undefined;
 };
 
 

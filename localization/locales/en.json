@@ -68,6 +68,11 @@
   "order_added_latest_earliest": "Order added latest-earliest",
   "order_added_earliest_latest": "Order added earliest-latest",
 
+  "add_word": "Add Word",
+  "new_word": "New Word",
+  "search_a_word": "Search a word in any language",
+
+  "confirm_reading_deletion": "Are you sure you want to delete this reading?",
 
   "settings": "Settings",
   "native_language": "Native Language",

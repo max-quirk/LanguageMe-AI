@@ -6,11 +6,13 @@ import RomanizeButton from './RomanizeButton';
 import { useTheme } from '../contexts/ThemeContext';
 import { LanguageContext } from '../contexts/LanguageContext';
 import { getPossibleTranslations, romanizeText } from '../services/chatGpt';
-import { cleanLeadingHyphens, cleanPunctuation } from '../utils/readings';
+import { cleanPunctuation } from '../utils/readings';
 
 type WordAndTranslationsProps = {
   word: string;
   style?: ViewStyle | ViewStyle[]
+  romanizedWord: string | null,
+  setRomanizedWord?: (romanizedWord: string | null) => void,
   translationsList: string[] | null
   setTranslationsList: (_translationsList: string[]) => void
   wordLoading?: boolean
@@ -19,12 +21,13 @@ type WordAndTranslationsProps = {
 const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({ 
   word, 
   style,
+  romanizedWord,
+  setRomanizedWord,
   translationsList,
   setTranslationsList,
   wordLoading,
  }) => {
   const { nativeLanguage, targetLanguage, targetLanguageRomanizable } = useContext(LanguageContext);
-  const [romanized, setRomanized] = useState<string | null>(null);
   const [translationsFetchLoading, setTranslationsFetchLoading] = useState<boolean>(false)
   const [showRomanized, setShowRomanized] = useState(false);
 
@@ -34,17 +37,14 @@ const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({
     const fetchAndStoreTranslations = async () => {
       setTranslationsFetchLoading(true)
       setTranslationsList?.([]);
-      setRomanized(null);
+      setRomanizedWord?.(null);
       try {
-        const _translationsList = await getPossibleTranslations({
+        const translationsArray = await getPossibleTranslations({
           word: cleanPunctuation(word),
           wordLanguage: targetLanguage,
           translateTo: nativeLanguage,
         });
-        const translationsArray = _translationsList
-          ?.split('\n')
-          .map(item => cleanLeadingHyphens(item))
-          .filter(item => item !== '') ?? [];
+
         setTranslationsList?.(translationsArray);
         setTranslationsFetchLoading(false)
       } catch (error) {
@@ -59,9 +59,9 @@ const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({
   useEffect(() => {
     const getRomanized = async () => {
       const romanizedText = await romanizeText({ text: word, language: targetLanguage });
-      setRomanized(romanizedText);
+      setRomanizedWord?.(romanizedText);
     }
-    if (targetLanguageRomanizable) {
+    if (targetLanguageRomanizable && setRomanizedWord) {
       getRomanized()
     }
   }, [word, targetLanguage, targetLanguageRomanizable])
@@ -74,7 +74,7 @@ const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({
         )}
         <Dialog.Title style={tw`capitalize ${targetLanguageRomanizable ? 'ml-[-10px]' : ''} ${theme.classes.textPrimary}`}>
           {showRomanized ? (
-            romanized ? romanized : <ActivityIndicator size="small" />
+            romanizedWord ? romanizedWord : <ActivityIndicator size="small" />
           ) : word}
         </Dialog.Title>
       </View>

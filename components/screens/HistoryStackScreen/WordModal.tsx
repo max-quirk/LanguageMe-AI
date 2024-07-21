@@ -47,6 +47,7 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
   return (
     <Modal visible={visible} onDismiss={onDismiss}>
       <WordAndTranslations 
+        romanizedWord={fullFlashcard?.front.wordRomanized ?? null}
         word={word} 
         translationsList={translationsList}
         setTranslationsList={setAndStoreTranslations}

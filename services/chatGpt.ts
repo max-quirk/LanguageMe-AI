@@ -2,7 +2,7 @@ import { LanguageCode } from 'iso-639-1';
 import RNFS from 'react-native-fs';
 import { languageCodeToName, romanizableLangauges } from '../utils/languages';
 import openai from './openai';
-import { processGeneratedReading } from '../utils/readings';
+import { cleanLeadingHyphens, processGeneratedReading } from '../utils/readings';
 
 export const generateReadingPassage = async ({
   targetLanguage,
@@ -73,7 +73,7 @@ export const generateExampleSentences = async ({
     }
     // Translate the example sentence
     const translatedExampleSentenceResponse = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         { role: "user", content: `Translate the following sentence into ${translateToName}: "${exampleSentence}". No quotation marks. ${dontRomanizeClause}` }
       ],
@@ -85,7 +85,7 @@ export const generateExampleSentences = async ({
     
     // Translate the word
     const translationResponse = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         { role: "user", content: `Translate the ${wordLanguageName} word "${word}" into ${translateToName}. Just respond with the word. ${dontRomanizeClause}` }
       ],
@@ -115,7 +115,7 @@ export const getPossibleTranslations = async ({
   word: string;
   wordLanguage: LanguageCode,
   translateTo: LanguageCode;
-}) => {
+}): Promise<string[]> => {
   const wordLanguageName = languageCodeToName(wordLanguage)
   const translateToName = languageCodeToName(translateTo)
   let dontRomanizeClause;
@@ -124,18 +124,23 @@ export const getPossibleTranslations = async ({
   }
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         { 
           role: "user", 
           content: 
-            `List all possible unique translations for the ${wordLanguageName} word "${word}" in ${translateToName} as a bullet-point list. ${dontRomanizeClause}` }
+            `List possible unique translations (as few as possible, don't repeat basically the same word) for the ${wordLanguageName} word "${word}" in ${translateToName} as a bullet-point list. Just respond with the list, no extra text. ${dontRomanizeClause}` }
       ],
       temperature: 0.7,
       n: 1
     });
 
-    return response.choices[0].message.content;
+    const translationsListAsString = response.choices[0].message.content;
+    return translationsListAsString
+          ?.split('\n')
+          .map(item => cleanLeadingHyphens(item))
+          .filter(item => item !== '') ?? [];
+
   } catch (error) {
     console.error('Error getting translations:', error);
     throw error;
@@ -153,7 +158,7 @@ export const romanizeText = async ({
   const languageName = languageCodeToName(language)
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o-mini",
       messages: [
         { 
           role: "user", 
@@ -224,3 +229,48 @@ export const fetchSpeechUrl = async ({
 };
 
 
+// Fetches the possible translations for a word in a user's native language with some extra detail
+// e.g.  'table' returns: [{ word: '桌子', translation: 'furniture, desk' }, ...]
+export const getSearchResults = async ({ 
+  word,
+  wordLanguage,
+  translateTo,
+}: { 
+  word: string;
+  wordLanguage: LanguageCode,
+  translateTo: LanguageCode;
+}): Promise<{ word: string; translation: string }[]> => {
+  const wordLanguageName = languageCodeToName(wordLanguage)
+  const translateToName = languageCodeToName(translateTo)
+  let dontRomanizeClause;
+  if (romanizableLangauges.has(translateTo)) {
+    dontRomanizeClause = `Do not make any ${translateToName} words into their romanized versions (e.g. no Pinyin).`
+  }
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { 
+          role: "user", 
+          content: 
+            `List all possible unique translations for the ${wordLanguageName} word "${word}" in ${translateToName} as a bullet-point list. Next to each ${translateToName} word (separate with |), add as few ${wordLanguageName} words as possible to clarify the definition of the ${translateToName} word. Just respond with the list, no extra text. ${dontRomanizeClause}` }
+      ],
+      temperature: 0.7,
+      n: 1
+    });
+
+    const resultsAsString = response.choices[0].message.content;
+    const results = resultsAsString
+      ?.split('\n')
+      .map(item => cleanLeadingHyphens(item))
+      .filter(item => item !== '') ?? [];
+
+    return results.map(item => {
+      const [word, translation] = item.split(' | ');
+      return { word, translation };
+    });
+  } catch (error) {
+    console.error('Error getting translations:', error);
+    throw error;
+  }
+};

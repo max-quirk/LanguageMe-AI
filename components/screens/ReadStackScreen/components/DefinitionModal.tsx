@@ -17,7 +17,7 @@ type DefinitionModalProps = {
 const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDismiss }) => {
   const [added, setAdded] = useState(false);
   const [translationsList, setTranslationsList] = useState<string[] | null>(null)
-  
+  const [romanizedWord, setRomanizedWord] = useState<string | null>(null)
   const { nativeLanguage, targetLanguage } = useContext(LanguageContext);
   const { t } = useTranslation()
 
@@ -35,7 +35,7 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
     try {
       await addFlashcard({
         word,
-        romanizedWord: null,
+        romanizedWord,
         wordLanguage: targetLanguage, 
         translateTo: nativeLanguage, 
         translationsList, 
@@ -54,6 +54,8 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
   return (
     <Modal visible={visible} onDismiss={handleDismiss}>
       <WordAndTranslations 
+        romanizedWord={romanizedWord}
+        setRomanizedWord={setRomanizedWord}
         word={word} 
         style={tw`pb-6`}
         translationsList={translationsList}

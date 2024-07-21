@@ -8,7 +8,6 @@ import BackgroundView from '../../BackgroundView';
 import { deleteFlashcard, fetchFlashcardsPaginated } from '../../../utils/flashcards';
 import { ScreenTitle } from '../../ScreenTitle';
 import RefreshableScrollView from '../../RefreshableScrollView';
-import WordRow from './WordRow';
 import WordListSettings from './WordListSettings';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -16,9 +15,11 @@ import { RootStackParamList } from '../../../types';
 import Button from '../../Button';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import HistoricalWordRow from './HistoricalWordRow';
 
 // Define the type for the navigation prop
-type HistoryScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main'>;
+type HistoryScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Main', 'AddWordScreen'>;
 
 const HistoryScreen = () => {
   const [flashcards, setFlashcards] = useState<LightWeightFlashCard[]>([]);
@@ -167,12 +168,22 @@ const HistoryScreen = () => {
           reverseOrder={reverseOrder}
           setReverseOrder={setReverseOrder}
         />
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate('AddWord')}
+          style={tw`bg-purple-600 mt-4 mb-4`}
+        >
+          <View style={tw`flex flex-row gap-2 items-center`}>
+            <Icon name="plus" size={28} color="white"/>
+            <Text style={tw`text-base text-white font-medium pt-[2px]`}>{t('add_word')}</Text>
+          </View>
+        </Button>
         <View style={tw`pb-10`}>
           {sortedDates.map(date => (
             <View key={date} style={tw`mb-5`}>
               <Text style={tw`text-base font-medium mb-3 ${theme.classes.textPrimary}`}>{date}:</Text>
               {sortedGroupedFlashcards[date].map((card, idx) => (
-                <WordRow
+                <HistoricalWordRow
                   key={card.id}
                   onDelete={handleDeleteFlashcard}
                   card={card}
