@@ -48,7 +48,6 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           });
   
           await AsyncStorage.setItem('userToken', user.uid);
-          console.log('set async uid: ', user.uid);
           navigation.navigate('Main', { screen: 'Home' });
         } else {
           navigation.navigate('LanguageSelection');

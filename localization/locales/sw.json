@@ -6,6 +6,12 @@
   "dont_have_account": "Huna akaunti? Jisajili",
   "auth_invalid_credential": "Barua pepe au nenosiri halijapatikana. Tafadhali jaribu tena.",
 
+  "confirm_reading_deletion": "Una uhakika unataka kufuta usomaji huu?",
+"add_word": "Ongeza neno",
+"new_word": "Neno jipya",
+"search_a_word": "Tafuta neno kwa lugha yoyote",
+"got_it": "Nimeelewa",
+
   "register": "Jisajili",
   "already_have_account": "Tayari una akaunti? Ingia",
 

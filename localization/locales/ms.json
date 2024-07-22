@@ -6,6 +6,12 @@
   "dont_have_account": "Tidak mempunyai akaun? Daftar",
   "auth_invalid_credential": "Emel atau kata laluan tidak dijumpai. Sila cuba lagi.",
 
+  "confirm_reading_deletion": "Adakah anda pasti mahu memadam bacaan ini?",
+"add_word": "Tambah perkataan",
+"new_word": "Perkataan baru",
+"search_a_word": "Cari perkataan dalam mana-mana bahasa",
+"got_it": "Faham",
+
   "register": "Daftar",
   "already_have_account": "Sudah mempunyai akaun? Log masuk",
 

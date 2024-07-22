@@ -6,6 +6,12 @@
   "dont_have_account": "Níl cuntas agat? Cláraigh",
   "auth_invalid_credential": "Níor aimsíodh ríomhphost nó focal faire. Bain triail eile as, le do thoil.",
 
+  "confirm_reading_deletion": "An bhfuil tú cinnte gur mhaith leat an léamh seo a scriosadh?",
+"add_word": "Cuir focal leis",
+"new_word": "Focal nua",
+"search_a_word": "Cuardaigh focal in aon teanga",
+"got_it": "Tuigthe",
+
   "register": "Cláraigh",
   "already_have_account": "An bhfuil cuntas agat cheana? Logáil Isteach",
 

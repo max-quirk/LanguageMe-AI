@@ -78,6 +78,12 @@
   "add_to_flashcards": "Ajouter aux cartes mémoire",
   "added": "Ajouté",
 
+  "confirm_reading_deletion": "Êtes-vous sûr de vouloir supprimer cette lecture?",
+  "add_word": "Ajouter un mot",
+  "new_word": "Nouveau mot",
+  "search_a_word": "Rechercher un mot dans n'importe quelle langue",
+  "got_it": "Compris",
+
 
   "languages": {
     "en": "Anglais",

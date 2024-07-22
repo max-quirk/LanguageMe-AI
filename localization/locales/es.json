@@ -92,6 +92,12 @@
   "add_to_flashcards": "Agregar a las tarjetas",
   "added": "Agregado",
 
+  "confirm_reading_deletion": "¿Estás seguro de que quieres eliminar esta lectura?",
+  "add_word": "Agregar palabra",
+  "new_word": "Nueva palabra",
+  "search_a_word": "Buscar una palabra en cualquier idioma",
+  "got_it": "Entendido",
+
 
   "languages": {
     "en": "Inglés",

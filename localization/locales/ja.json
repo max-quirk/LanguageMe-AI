@@ -6,6 +6,12 @@
   "dont_have_account": "アカウントをお持ちではありませんか? 登録する",
   "auth_invalid_credential": "メールまたはパスワードが見つかりませんでした。もう一度お試しください。",
 
+  "confirm_reading_deletion": "この読み取りを削除してもよろしいですか？",
+"add_word": "単語を追加",
+"new_word": "新しい単語",
+"search_a_word": "どの言語でも単語を検索",
+"got_it": "了解しました",
+
   "register": "登録する",
   "already_have_account": "既にアカウントをお持ちですか? ログイン",
 

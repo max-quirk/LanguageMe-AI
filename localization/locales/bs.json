@@ -5,6 +5,11 @@
   "forgot_password": "Zaboravili ste lozinku?",
   "dont_have_account": "Nemate račun? Registrujte se",
   "auth_invalid_credential": "E-pošta ili lozinka nije pronađena. Molimo pokušajte ponovo.",
+"confirm_reading_deletion": "Jeste li sigurni da želite obrisati ovo čitanje?",
+"add_word": "Dodaj riječ",
+"new_word": "Nova riječ",
+"search_a_word": "Pretraži riječ na bilo kojem jeziku",
+"got_it": "Razumijem",
 
   "register": "Registracija",
   "already_have_account": "Već imate račun? Prijavite se",

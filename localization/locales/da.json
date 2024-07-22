@@ -5,6 +5,11 @@
   "forgot_password": "Glemt adgangskode?",
   "dont_have_account": "Har du ikke en konto? Registrer",
   "auth_invalid_credential": "Email eller adgangskode blev ikke fundet. Prøv venligst igen.",
+"confirm_reading_deletion": "Er du sikker på, at du vil slette denne læsetekst?",
+"add_word": "Tilføj ord",
+"new_word": "Nyt ord",
+"search_a_word": "Søg efter et ord på et hvilket som helst sprog",
+"got_it": "Forstået",
 
   "register": "Registrer",
   "already_have_account": "Har du allerede en konto? Log ind",

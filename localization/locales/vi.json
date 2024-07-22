@@ -6,6 +6,13 @@
   "dont_have_account": "Chưa có tài khoản? Đăng ký",
   "auth_invalid_credential": "Email hoặc mật khẩu không đúng. Vui lòng thử lại.",
 
+  "confirm_reading_deletion": "Bạn có chắc chắn muốn xóa bài đọc này không?",
+"add_word": "Thêm từ",
+"new_word": "Từ mới",
+"search_a_word": "Tìm kiếm một từ trong bất kỳ ngôn ngữ nào",
+"got_it": "Hiểu rồi",
+
+
   "register": "Đăng ký",
   "already_have_account": "Đã có tài khoản? Đăng nhập",
 

@@ -5,6 +5,11 @@
   "forgot_password": "Zapomněli jste heslo?",
   "dont_have_account": "Nemáte účet? Zaregistrujte se",
   "auth_invalid_credential": "E-mail nebo heslo nebyly nalezeny. Zkuste to prosím znovu.",
+"confirm_reading_deletion": "Jste si jisti, že chcete smazat toto čtení?",
+"add_word": "Přidat slovo",
+"new_word": "Nové slovo",
+"search_a_word": "Hledat slovo v jakémkoli jazyce",
+"got_it": "Chápu",
 
   "register": "Zaregistrujte se",
   "already_have_account": "Již máte účet? Přihlaste se",

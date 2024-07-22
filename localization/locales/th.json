@@ -6,6 +6,12 @@
   "dont_have_account": "ไม่มีบัญชี? ลงทะเบียน",
   "auth_invalid_credential": "ไม่พบอีเมลหรือรหัสผ่าน กรุณาลองใหม่อีกครั้ง",
 
+  "confirm_reading_deletion": "คุณแน่ใจหรือว่าต้องการลบการอ่านนี้?",
+"add_word": "เพิ่มคำ",
+"new_word": "คำใหม่",
+"search_a_word": "ค้นหาคำในทุกภาษา",
+"got_it": "เข้าใจแล้ว",
+
   "register": "ลงทะเบียน",
   "already_have_account": "มีบัญชีแล้ว? เข้าสู่ระบบ",
 

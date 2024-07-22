@@ -6,6 +6,12 @@
   "dont_have_account": "Ma leedahay xisaab? Is diiwaangeli",
   "auth_invalid_credential": "Email ama furaha sirta ah lama helin. Fadlan isku day mar kale.",
 
+  "confirm_reading_deletion": "Ma hubtaa inaad tirtirto akhrintan?",
+"add_word": "Ku dar eray",
+"new_word": "Erey cusub",
+"search_a_word": "Raadi eray luqad kasta",
+"got_it": "Waayahay",
+
   "register": "Is diiwaangeli",
   "already_have_account": "Ma leedahay xisaab? Soo gal",
 

@@ -89,6 +89,11 @@
   "add_to_flashcards": "添加到闪卡",
   "added": "已添加",
 
+  "confirm_reading_deletion": "你确定要删除这篇阅读文章吗？",
+  "add_word": "添加单词",
+  "new_word": "新单词",
+  "search_a_word": "用任何语言搜索单词",
+
 
   "languages": {
     "en": "英语",

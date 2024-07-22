@@ -71,6 +71,13 @@
   "hard_refresh_app": "Proqramı yenidən yüklə",
   "logout": "Çıxış",
 
+  "confirm_reading_deletion": "Bu oxunu silmək istədiyinizdən əminsiniz?",
+  "add_word": "Söz əlavə et",
+  "new_word": "Yeni söz",
+  "search_a_word": "Hər hansı bir dildə söz axtarın",
+  "got_it": "Başqa düşdüm",
+
+
   "Read": "Oxu",
   "Flashcards": "Fləşkartlar",
   "My Words": "Mənim sözlərim",

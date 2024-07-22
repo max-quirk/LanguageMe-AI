@@ -6,6 +6,12 @@
   "dont_have_account": "Har du ikke en konto? Registrer deg",
   "auth_invalid_credential": "E-post eller passord ikke funnet. Vennligst prøv igjen.",
 
+  "confirm_reading_deletion": "Er du sikker på at du vil slette denne lesingen?",
+"add_word": "Legg til ord",
+"new_word": "Nytt ord",
+"search_a_word": "Søk etter et ord på hvilket som helst språk",
+"got_it": "Forstått",
+
   "register": "Registrer deg",
   "already_have_account": "Har du allerede en konto? Logg inn",
 

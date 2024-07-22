@@ -6,6 +6,12 @@
   "dont_have_account": "Nincs fiókod? Regisztrálj",
   "auth_invalid_credential": "Email vagy jelszó nem található. Próbáld újra.",
 
+  "confirm_reading_deletion": "Biztosan törölni szeretné ezt az olvasást?",
+"add_word": "Szó hozzáadása",
+"new_word": "Új szó",
+"search_a_word": "Keressen egy szót bármilyen nyelven",
+"got_it": "Értem",
+
   "register": "Regisztráció",
   "already_have_account": "Már van fiókod? Bejelentkezés",
 

@@ -6,6 +6,12 @@
   "dont_have_account": "अकाऊंट नाही? नोंदणी करा",
   "auth_invalid_credential": "ईमेल किंवा पासवर्ड आढळला नाही. कृपया पुन्हा प्रयत्न करा.",
 
+  "confirm_reading_deletion": "तुम्हाला हे वाचन हटवायचे आहे का?",
+"add_word": "शब्द जोडा",
+"new_word": "नवीन शब्द",
+"search_a_word": "कोणत्याही भाषेत शब्द शोधा",
+"got_it": "समजले",
+
   "register": "नोंदणी करा",
   "already_have_account": "आधीपासूनच अकाऊंट आहे? लॉगिन करा",
 

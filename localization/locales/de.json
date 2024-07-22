@@ -5,6 +5,11 @@
   "forgot_password": "Passwort vergessen?",
   "dont_have_account": "Haben Sie kein Konto? Registrieren",
   "auth_invalid_credential": "E-Mail oder Passwort nicht gefunden. Bitte versuchen Sie es erneut.",
+"confirm_reading_deletion": "Sind Sie sicher, dass Sie diesen Lesetext löschen möchten?",
+"add_word": "Wort hinzufügen",
+"new_word": "Neues Wort",
+"search_a_word": "Suche ein Wort in jeder Sprache",
+"got_it": "Verstanden",
 
   "register": "Registrieren",
   "already_have_account": "Haben Sie bereits ein Konto? Anmelden",

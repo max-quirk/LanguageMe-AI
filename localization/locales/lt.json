@@ -6,6 +6,12 @@
   "dont_have_account": "Neturite paskyros? Registruotis",
   "auth_invalid_credential": "El. paštas arba slaptažodis nerasti. Prašome bandyti dar kartą.",
 
+  "confirm_reading_deletion": "Ar tikrai norite ištrinti šį skaitymą?",
+"add_word": "Pridėti žodį",
+"new_word": "Naujas žodis",
+"search_a_word": "Ieškoti žodžio bet kuria kalba",
+"got_it": "Supratau",
+
   "register": "Registruotis",
   "already_have_account": "Jau turite paskyrą? Prisijungti",
 

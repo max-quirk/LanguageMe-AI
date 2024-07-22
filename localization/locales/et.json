@@ -5,6 +5,11 @@
   "forgot_password": "Unustasid parooli?",
   "dont_have_account": "Kas sul pole kontot? Registreeri",
   "auth_invalid_credential": "E-post või parool ei leitud. Palun proovi uuesti.",
+"confirm_reading_deletion": "Kas olete kindel, et soovite selle lugemise kustutada?",
+"add_word": "Lisa sõna",
+"new_word": "Uus sõna",
+"search_a_word": "Otsi sõna mis tahes keeles",
+"got_it": "Sain aru",
 
   "register": "Registreeri",
   "already_have_account": "Kas sul on juba konto? Logi sisse",

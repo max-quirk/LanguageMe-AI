@@ -6,6 +6,12 @@
   "dont_have_account": "ਖਾਤਾ ਨਹੀਂ ਹੈ? ਰਜਿਸਟਰ ਕਰੋ",
   "auth_invalid_credential": "ਈਮੇਲ ਜਾਂ ਪਾਸਵਰਡ ਨਹੀਂ ਮਿਲਿਆ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
 
+  "confirm_reading_deletion": "ਕੀ ਤੁਸੀਂ ਇਸ ਪੜ੍ਹਾਈ ਨੂੰ ਮਿਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?",
+"add_word": "ਸ਼ਬਦ ਸ਼ਾਮਲ ਕਰੋ",
+"new_word": "ਨਵਾਂ ਸ਼ਬਦ",
+"search_a_word": "ਕਿਸੇ ਵੀ ਭਾਸ਼ਾ ਵਿੱਚ ਸ਼ਬਦ ਲੱਭੋ",
+"got_it": "ਸਮਝ ਗਿਆ",
+
   "register": "ਰਜਿਸਟਰ ਕਰੋ",
   "already_have_account": "ਪਹਿਲਾਂ ਹੀ ਖਾਤਾ ਹੈ? ਲਾਗਿਨ ਕਰੋ",
 

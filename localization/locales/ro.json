@@ -6,6 +6,12 @@
   "dont_have_account": "Nu ai un cont? Înregistrează-te",
   "auth_invalid_credential": "Email sau parolă incorecte. Vă rugăm să încercați din nou.",
 
+  "confirm_reading_deletion": "Ești sigur că vrei să ștergi această lectură?",
+"add_word": "Adaugă cuvânt",
+"new_word": "Cuvânt nou",
+"search_a_word": "Caută un cuvânt în orice limbă",
+"got_it": "Înțeles",
+
   "register": "Înregistrează-te",
   "already_have_account": "Ai deja un cont? Conectează-te",
 

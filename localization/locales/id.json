@@ -6,6 +6,12 @@
   "dont_have_account": "Tidak punya akun? Daftar",
   "auth_invalid_credential": "Email atau kata sandi tidak ditemukan. Silakan coba lagi.",
 
+  "confirm_reading_deletion": "Apakah Anda yakin ingin menghapus bacaan ini?",
+"add_word": "Tambah kata",
+"new_word": "Kata baru",
+"search_a_word": "Cari kata dalam bahasa apa pun",
+"got_it": "Mengerti",
+
   "register": "Daftar",
   "already_have_account": "Sudah punya akun? Masuk",
 

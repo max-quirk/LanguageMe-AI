@@ -6,6 +6,12 @@
   "dont_have_account": "Nemáte účet? Zaregistrujte sa",
   "auth_invalid_credential": "E-mail alebo heslo nenájdené. Prosím, skúste to znova.",
 
+  "confirm_reading_deletion": "Ste si istý, že chcete odstrániť toto čítanie?",
+"add_word": "Pridať slovo",
+"new_word": "Nové slovo",
+"search_a_word": "Vyhľadajte slovo v ľubovoľnom jazyku",
+"got_it": "Rozumiem",
+
   "register": "Zaregistrujte sa",
   "already_have_account": "Máte už účet? Prihlásiť sa",
 

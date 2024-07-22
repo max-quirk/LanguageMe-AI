@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { ActivityIndicator, Dialog } from 'react-native-paper';
 import tw from 'twrnc';
-import { addFlashcard } from '../../../../utils/flashcards';
+import { addFlashcard, checkIfWordAdded } from '../../../../utils/flashcards';
 import Button from '../../../Button';
 import Modal from '../../../Modal';
 import WordAndTranslations from '../../../WordAndTranslations';
@@ -24,10 +24,13 @@ const DefinitionModal: React.FC<DefinitionModalProps> = ({ visible, word, onDism
   useEffect(() => {
     // Run when modal first opens
     setTranslationsList(null)
+    const _checkIfWordAdded = async() => {
+      setAdded(await checkIfWordAdded(word))
+    }
     if (visible) {
-      // Ensure added is false when first opening modal
-     setAdded(false);
-   }
+      // Ensure added is set correctly when first opening modal
+      _checkIfWordAdded();
+    }
   }, [visible]);
 
   const handleAddToFlashcards = async () => {

@@ -76,6 +76,13 @@
   "My Words": "ቃላቶቼ",
   "Settings": "ቅንብሮች",
 
+  "confirm_reading_deletion": "እርግጠኛ ነህ/ነሽ እንደምትሰርዝ ንባብ ትፈልጋለህ/ትፈልጋለህ?",
+  "add_word": "ቃል ጨምር",
+  "new_word": "አዲስ ቃል",
+  "search_a_word": "ቃልን በማንኛውም ቋንቋ ፈልግ",
+  "got_it": "ተረድቼለዋል",
+
+
   "languages": {
     "en": "እንግሊዝኛ",
     "es": "ስፓኒሽ",

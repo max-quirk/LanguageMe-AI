@@ -6,6 +6,12 @@
   "dont_have_account": "Nemate račun? Registrirajte se",
   "auth_invalid_credential": "Email ili lozinka nisu pronađeni. Pokušajte ponovno.",
 
+  "confirm_reading_deletion": "Jeste li sigurni da želite izbrisati ovo čitanje?",
+"add_word": "Dodaj riječ",
+"new_word": "Nova riječ",
+"search_a_word": "Pretraži riječ na bilo kojem jeziku",
+"got_it": "Shvatio sam",
+
   "register": "Registracija",
   "already_have_account": "Već imate račun? Prijavite se",
 

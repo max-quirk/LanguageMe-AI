@@ -308,4 +308,28 @@ export const deleteFlashcard = async (flashcardId: string) => {
   }
 };
 
+export const checkIfWordAdded = async (word: string): Promise<boolean> => {
+  try {
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      throw new Error('No user is authenticated');
+    }
+
+    const flashcardsCollectionRef = firebase.firestore()
+      .collection('users')
+      .doc(user.uid)
+      .collection('flashcards');
+
+    const querySnapshot = await flashcardsCollectionRef
+      .where('front.word', '==', word)
+      .limit(1)
+      .get();
+
+    return !querySnapshot.empty;
+  } catch (error) {
+    console.error('Error checking if word exists:', error);
+    throw error;
+  }
+};
+
 export default fetchAllFlashcards;

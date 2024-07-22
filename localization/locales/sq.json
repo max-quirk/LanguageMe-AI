@@ -6,6 +6,12 @@
   "dont_have_account": "Nuk keni llogari? Regjistrohuni",
   "auth_invalid_credential": "Email ose fjalëkalimi nuk u gjet. Ju lutemi provoni përsëri.",
 
+  "confirm_reading_deletion": "A jeni i sigurt që doni të fshini këtë lexim?",
+"add_word": "Shto fjalë",
+"new_word": "Fjalë e re",
+"search_a_word": "Kërkoni një fjalë në çdo gjuhë",
+"got_it": "E mora vesh",
+
   "register": "Regjistrohuni",
   "already_have_account": "Keni një llogari? Hyrje",
 

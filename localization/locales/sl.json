@@ -6,6 +6,12 @@
   "dont_have_account": "Nimate računa? Registrirajte se",
   "auth_invalid_credential": "E-pošta ali geslo ni bilo najdeno. Poskusite znova.",
 
+  "confirm_reading_deletion": "Ali ste prepričani, da želite izbrisati to branje?",
+"add_word": "Dodaj besedo",
+"new_word": "Nova beseda",
+"search_a_word": "Poiščite besedo v katerem koli jeziku",
+"got_it": "Razumem",
+
   "register": "Registrirajte se",
   "already_have_account": "Že imate račun? Prijavite se",
 

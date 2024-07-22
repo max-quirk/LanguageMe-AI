@@ -6,6 +6,12 @@
   "dont_have_account": "Eikö sinulla ole tiliä? Rekisteröidy",
   "auth_invalid_credential": "Sähköposti tai salasana ei löydy. Yritä uudelleen.",
 
+  "confirm_reading_deletion": "Oletko varma, että haluat poistaa tämän lukemisen?",
+"add_word": "Lisää sana",
+"new_word": "Uusi sana",
+"search_a_word": "Hae sanaa missä tahansa kielessä",
+"got_it": "Ymmärretty",
+
   "register": "Rekisteröidy",
   "already_have_account": "Onko sinulla jo tili? Kirjaudu sisään",
 

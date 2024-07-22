@@ -6,6 +6,12 @@
   "dont_have_account": "Wala pang account? Magrehistro",
   "auth_invalid_credential": "Email o password ay hindi natagpuan. Pakisubukang muli.",
 
+  "confirm_reading_deletion": "Sigurado ka bang gusto mong tanggalin ang pagbasa na ito?",
+"add_word": "Magdagdag ng salita",
+"new_word": "Bagong salita",
+"search_a_word": "Maghanap ng salita sa anumang wika",
+"got_it": "Nakuha",
+
   "register": "Magrehistro",
   "already_have_account": "May account na? Mag-login",
 

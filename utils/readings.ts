@@ -11,7 +11,7 @@ export type ReadingSkeleton = {
 
 export const getReadingsPaginated = async (
   lastDoc?: FirebaseFirestoreTypes.QueryDocumentSnapshot,
-  pageSize = 7
+  pageSize = 6
 ) => {
   const user = firebase.auth().currentUser;
   if (user) {

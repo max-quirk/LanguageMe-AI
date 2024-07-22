@@ -6,6 +6,12 @@
   "dont_have_account": "Nie masz konta? Zarejestruj się",
   "auth_invalid_credential": "Nie znaleziono emaila lub hasła. Proszę spróbować ponownie.",
 
+  "confirm_reading_deletion": "Czy na pewno chcesz usunąć tę lekturę?",
+"add_word": "Dodaj słowo",
+"new_word": "Nowe słowo",
+"search_a_word": "Wyszukaj słowo w dowolnym języku",
+"got_it": "Zrozumiałem",
+
   "register": "Zarejestruj się",
   "already_have_account": "Masz już konto? Zaloguj się",
 

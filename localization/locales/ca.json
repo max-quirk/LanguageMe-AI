@@ -5,6 +5,11 @@
   "forgot_password": "Has oblidat la contrasenya?",
   "dont_have_account": "No tens un compte? Registra't",
   "auth_invalid_credential": "El correu electrònic o la contrasenya no s'han trobat. Torna-ho a provar.",
+"confirm_reading_deletion": "Estàs segur que vols eliminar aquesta lectura?",
+"add_word": "Afegeix paraula",
+"new_word": "Nova paraula",
+"search_a_word": "Cerca una paraula en qualsevol idioma",
+"got_it": "Entès",
 
   "register": "Registrar-se",
   "already_have_account": "Ja tens un compte? Inicia sessió",

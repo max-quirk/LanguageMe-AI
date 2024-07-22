@@ -6,6 +6,12 @@
   "dont_have_account": "אין לך חשבון? הירשם",
   "auth_invalid_credential": "האימייל או הסיסמה לא נמצאו. אנא נסה שוב.",
 
+  "confirm_reading_deletion": "האם אתה בטוח שברצונך למחוק את הקריאה הזו?",
+"add_word": "הוסף מילה",
+"new_word": "מילה חדשה",
+"search_a_word": "חפש מילה בכל שפה",
+"got_it": "הבנתי",
+
   "register": "הירשם",
   "already_have_account": "כבר יש לך חשבון? התחבר",
 

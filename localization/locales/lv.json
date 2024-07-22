@@ -6,6 +6,12 @@
   "dont_have_account": "Nav konta? Reģistrēties",
   "auth_invalid_credential": "E-pasts vai parole nav atrasta. Lūdzu, mēģiniet vēlreiz.",
 
+  "confirm_reading_deletion": "Vai tiešām vēlaties dzēst šo lasījumu?",
+"add_word": "Pievienot vārdu",
+"new_word": "Jauns vārds",
+"search_a_word": "Meklēt vārdu jebkurā valodā",
+"got_it": "Saprotu",
+
   "register": "Reģistrēties",
   "already_have_account": "Jau ir konts? Pieteikties",
 

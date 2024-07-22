@@ -23,7 +23,6 @@ const RootNavigator = () => {
   useEffect(() => {
     const checkAuthState = async () => {
       const userToken = await AsyncStorage.getItem('userToken');
-      console.log('userToken: ', Boolean(userToken))
       if (userToken) {
         setInitialRoute('Main');
       } else {

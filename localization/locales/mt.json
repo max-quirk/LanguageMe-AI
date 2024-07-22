@@ -6,6 +6,12 @@
   "dont_have_account": "M'għandekx kont? Irreġistra",
   "auth_invalid_credential": "Email jew password ma nstabx. Jekk jogħġbok erġa' pprova.",
 
+  "confirm_reading_deletion": "Int żgur li trid tħassar dan il-qari?",
+"add_word": "Żid kelma",
+"new_word": "Kelma ġdida",
+"search_a_word": "Fittex kelma fi kwalunkwe lingwa",
+"got_it": "Mhux ħażin",
+
   "register": "Irreġistra",
   "already_have_account": "Diġà għandek kont? Illoggja",
 

@@ -9,7 +9,7 @@ import { LightWeightFlashCard, FlashCard } from 'types';
 import { getEaseColor } from '../../../utils/colors';
 import Collapse from '../../Collapse';
 import { Divider, ActivityIndicator, Dialog } from 'react-native-paper';
-import { addFlashcard, fetchFullFlashcard, storeTranslationsFirebase } from '../../../utils/flashcards';
+import { addFlashcard, checkIfWordAdded, fetchFullFlashcard, storeTranslationsFirebase } from '../../../utils/flashcards';
 import TextToSpeechButton from '../../TextToSpeechButton';
 import { useTranslation } from 'react-i18next';
 import { generateExampleSentences, getPossibleTranslations, romanizeText } from '../../../services/chatGpt';
@@ -62,11 +62,15 @@ const AddWordModal: React.FC<WordModalProps> = ({ visible, word, onDismiss }) =>
       setTranslatedExampleSentence(translatedExampleSentence)
       setLoading(false);
     }
-    const wordAlreadyAdded = false //check firebase to see if word exists
+    const _checkIfWordAdded = async() => {
+      setAdded(await checkIfWordAdded(word))
+    }
+    const wordAlreadyAdded = false
     if (wordAlreadyAdded) {
-      fetchExistingData();
+      fetchExistingData(); //todo, fetch word data from firebase instead of getting new gpt data if it is already added
     } else {
       fetchAllData();
+      _checkIfWordAdded()
     }
   }, [word]);
 

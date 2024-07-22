@@ -6,6 +6,12 @@
   "dont_have_account": "Дансгүй юу? Бүртгүүлэх",
   "auth_invalid_credential": "Имэйл эсвэл нууц үг буруу байна. Дахин оролдоно уу.",
 
+  "confirm_reading_deletion": "Та энэ уншлагыг устгахдаа итгэлтэй байна уу?",
+"add_word": "Үг нэмэх",
+"new_word": "Шинэ үг",
+"search_a_word": "Аль ч хэл дээр үг хайх",
+"got_it": "Ойлголоо",
+
   "register": "Бүртгүүлэх",
   "already_have_account": "Данс байгаа юу? Нэвтрэх",
 

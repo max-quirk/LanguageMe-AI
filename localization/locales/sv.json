@@ -6,6 +6,12 @@
   "dont_have_account": "Har du inget konto? Registrera dig",
   "auth_invalid_credential": "E-post eller lösenord hittades inte. Vänligen försök igen.",
 
+  "confirm_reading_deletion": "Är du säker på att du vill ta bort denna läsning?",
+"add_word": "Lägg till ord",
+"new_word": "Nytt ord",
+"search_a_word": "Sök ett ord på vilket språk som helst",
+"got_it": "Förstått",
+
   "register": "Registrera dig",
   "already_have_account": "Har du redan ett konto? Logga in",
 

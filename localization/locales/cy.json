@@ -5,6 +5,11 @@
   "forgot_password": "Wedi anghofio cyfrinair?",
   "dont_have_account": "Nid oes gennych gyfrif? Cofrestrwch",
   "auth_invalid_credential": "E-bost neu gyfrinair heb ei ddarganfod. Ceisiwch eto os gwelwch yn dda.",
+"confirm_reading_deletion": "Ydych chi'n siŵr eich bod eisiau dileu'r darlleniad hwn?",
+"add_word": "Ychwanegu gair",
+"new_word": "Gair newydd",
+"search_a_word": "Chwilio am air mewn unrhyw iaith",
+"got_it": "Deall",
 
   "register": "Cofrestru",
   "already_have_account": "Eisoes gennych gyfrif? Mewngofnodi",

@@ -6,6 +6,12 @@
   "dont_have_account": "Hesabınız yok mu? Kayıt Ol",
   "auth_invalid_credential": "E-posta veya şifre bulunamadı. Lütfen tekrar deneyin.",
 
+  "confirm_reading_deletion": "Bu okumayı silmek istediğinizden emin misiniz?",
+"add_word": "Kelime ekle",
+"new_word": "Yeni kelime",
+"search_a_word": "Herhangi bir dilde kelime ara",
+"got_it": "Anladım",
+
   "register": "Kayıt Ol",
   "already_have_account": "Zaten bir hesabınız var mı? Giriş Yap",
 

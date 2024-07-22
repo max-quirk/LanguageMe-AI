@@ -51,7 +51,7 @@ const WordAndTranslations: React.FC<WordAndTranslationsProps> = ({
         console.error('Error fetching translations or romanized text:', error);
       }
     };
-    if (!translationsList && !wordLoading) {
+    if (!(translationsList && translationsList.length > 0) && !wordLoading) {
       fetchAndStoreTranslations();
     }
   }, []);

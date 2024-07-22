@@ -6,6 +6,12 @@
   "dont_have_account": "Ertu ekki með reikning? Skráðu þig",
   "auth_invalid_credential": "Netfang eða lykilorð fannst ekki. Vinsamlegast reyndu aftur.",
 
+  "confirm_reading_deletion": "Ertu viss um að þú viljir eyða þessari lesningu?",
+"add_word": "Bæta við orði",
+"new_word": "Nýtt orð",
+"search_a_word": "Leitaðu að orði á hvaða tungumáli sem er",
+"got_it": "Skilja",
+
   "register": "Skráning",
   "already_have_account": "Ertu með reikning? Innskráning",
 

@@ -6,6 +6,12 @@
   "dont_have_account": "Nog geen account? Registreer",
   "auth_invalid_credential": "E-mail of wachtwoord niet gevonden. Probeer het opnieuw.",
 
+  "confirm_reading_deletion": "Weet je zeker dat je deze lezing wilt verwijderen?",
+"add_word": "Woord toevoegen",
+"new_word": "Nieuw woord",
+"search_a_word": "Zoek een woord in elke taal",
+"got_it": "Begrepen",
+
   "register": "Registreer",
   "already_have_account": "Heb je al een account? Inloggen",
 
