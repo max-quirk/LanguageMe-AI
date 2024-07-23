@@ -1,4 +1,4 @@
-import { ScrollView, View, Text } from "react-native";
+import { ScrollView, View, Text, Keyboard } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import React, { useContext, useState, useCallback } from 'react';
 import ThemedTextInput from "../../ThemedTextInput";
@@ -73,6 +73,7 @@ const AddWordScreen = () => {
                 word={result.word}
                 translation={result.translation}
                 onPress={() => {
+                  Keyboard.dismiss();
                   setSelectedWord(result.word);
                   setModalVisible(true);
                 }}

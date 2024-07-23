@@ -274,3 +274,24 @@ export const getSearchResults = async ({
     throw error;
   }
 };
+
+export async function useHardestWord(passage: string) {
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { 
+          role: "user", 
+          content: 
+            `${passage}\n. Tell me what the hardest word within this passage's first words in. Just respond with one number - the index of the word (first word is 0), nothing else.` }
+      ],
+      temperature: 0.7,
+      n: 1
+    });
+
+    return parseInt(response.choices[0].message.content ?? '')
+  } catch (error) {
+    console.error('Error getting hardest word:', error);
+    throw error;
+  }
+}

@@ -9,9 +9,16 @@ type Props = {
   paragraphIndex: number;
   handleWordPress: (word: string) => void;
   highlightedWordIndices: { paragraphIndex: number; wordIndex: number } | null;
+  flashingWordIndex: number | null
 };
 
-const ParagraphComponent: React.FC<Props> = ({ paragraph, paragraphIndex, handleWordPress, highlightedWordIndices }) => {
+const ParagraphComponent: React.FC<Props> = ({ 
+  paragraph, 
+  paragraphIndex, 
+  handleWordPress, 
+  highlightedWordIndices,
+  flashingWordIndex
+}) => {
   const { trackEnded } = useAudio()
   return (
     <View key={paragraphIndex} style={tw`flex-row flex-wrap mb-4`}>
@@ -28,6 +35,7 @@ const ParagraphComponent: React.FC<Props> = ({ paragraph, paragraphIndex, handle
             wordIndex={wordIndex}
             handleWordPress={handleWordPress}
             isHighlighted={isHighlighted}
+            isFlashing={flashingWordIndex === wordIndex}
           />
         )
       })}

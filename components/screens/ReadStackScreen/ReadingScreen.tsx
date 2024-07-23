@@ -17,6 +17,7 @@ import { LanguageContext } from '../../../contexts/LanguageContext';
 import { ActivityIndicator } from 'react-native-paper';
 import { getWordTimeStamps } from '../../../services/whisper';
 import { useTranslation } from 'react-i18next';
+import { useHardestWord } from '../../../services/chatGpt';
 
 type ReadingScreenRouteProp = RouteProp<RootStackParamList, 'Reading'>;
 
@@ -34,6 +35,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   const [highlightedWordIndices, setHighlightedWordIndices] = useState<{ paragraphIndex: number; wordIndex: number } | null>(null);
   const [helperVisible, setHelperVisible] = useState(false);
   const [pausedToOpenDefinition, setPausedToOpenDefinition] = useState(false);
+  const [flashingWordIndex, setFlashingWordIndex] = useState<number | null>(null);
 
   const { targetLanguage } = useContext(LanguageContext);
 
@@ -67,9 +69,11 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
     const checkFirstTimeUser = async () => {
       const firstTime = await isFirstTimeReadingUser();
       if (firstTime) {
+        const hardestWordIndex = await useHardestWord(reading?.passage ?? '');
         setTimeout(() => {
+          setFlashingWordIndex(hardestWordIndex);
           setHelperVisible(true);
-        }, 1000);
+        }, 500);
       }
     };
     checkFirstTimeUser();
@@ -116,6 +120,8 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       pauseAudio();
       setPausedToOpenDefinition(true);
     }
+    // Stop helper flashing when any word is clicked
+    setFlashingWordIndex(null);
   };
 
   const handleDefinitionModalClose = () => {
@@ -140,7 +146,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
         for (let wordIndex = 0; wordIndex < paragraph.words.length; wordIndex++) {
           const word = paragraph.words[wordIndex];
 
-          if (adjustedPosition >= word.start && adjustedPosition <= word.end) {
+          if (playing && adjustedPosition >= word.start && adjustedPosition <= word.end) {
             setHighlightedWordIndices({ paragraphIndex, wordIndex });
             return;
           }
@@ -167,7 +173,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       </View>
     );
   }
-  const passage = processGeneratedReading(reading.passage ?? '')
+  const passage = processGeneratedReading(reading.passage ?? '');
   return (
     <View style={tw`flex-1 ${theme.classes.backgroundPrimary} px-5`}>
       <ScrollView style={tw`flex-1 px-5 pt-20`}>
@@ -180,6 +186,7 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
               paragraphIndex={index}
               handleWordPress={handleWordPress}
               highlightedWordIndices={highlightedWordIndices}
+              flashingWordIndex={index === 0 ? flashingWordIndex : null}
             />
           ))}
         </View>
@@ -188,8 +195,8 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
           text={t('tap_to_define')}
           visible={helperVisible}
           onClose={() => {
-            setHelperVisible(false)
-            setFirstTimeReadingUser(false)
+            setHelperVisible(false);
+            setFirstTimeReadingUser(false);
           }}
         />
         <DefinitionModal

@@ -56,17 +56,19 @@ const WordModal: React.FC<WordModalProps> = ({ visible, word, flashcard, onDismi
       <Divider style={tw`my-4`} />
       <Collapse 
         label={t('example')} 
-        contentStyle={tw`pb-2 pr-2`}
+        contentStyle={tw`pb-2 pr-2 pl-3`}
       >
         <View style={tw`mt-0 flex-row items-center`}>
           {!loading && fullFlashcard?.front.exampleRomanized && (
             <RomanizeButton show={!showRomanized} onPress={() => setShowRomanized(!showRomanized)} />
           )}
           {loading ? (
-            <ActivityIndicator size="small" color={theme.colors.purplePrimary} />
+            <View style={tw`w-full flex-row items-center`}>
+              <ActivityIndicator size="small" color={theme.colors.purplePrimary} />
+            </View>
           ) : (
             <View style={tw`flex flex-row flex-wrap`}>
-              <Text style={tw`text-base ${theme.classes.textPrimary} mr-2`}>
+              <Text style={tw`text-base ${theme.classes.textPrimary} mr-0`}>
                 {showRomanized ? fullFlashcard?.front.exampleRomanized : fullFlashcard?.front.example}
                 <TextToSpeechButton
                   type='flashcard' 

@@ -5,17 +5,15 @@ import Modal from '../../Modal';
 import WordAndTranslations from '../../WordAndTranslations';
 import RomanizeButton from '../../RomanizeButton';
 import { useTheme } from '../../../contexts/ThemeContext';
-import { LightWeightFlashCard, FlashCard } from 'types';
-import { getEaseColor } from '../../../utils/colors';
+import { FlashCard } from 'types';
 import Collapse from '../../Collapse';
 import { Divider, ActivityIndicator, Dialog } from 'react-native-paper';
-import { addFlashcard, checkIfWordAdded, fetchFullFlashcard, storeTranslationsFirebase } from '../../../utils/flashcards';
+import { addFlashcard, checkIfWordAdded } from '../../../utils/flashcards';
 import TextToSpeechButton from '../../TextToSpeechButton';
 import { useTranslation } from 'react-i18next';
 import { generateExampleSentences, getPossibleTranslations, romanizeText } from '../../../services/chatGpt';
 import { LanguageContext } from '../../../contexts/LanguageContext';
 import Button from '../../Button';
-import { set } from 'lodash';
 
 type WordModalProps = {
   visible: boolean;
@@ -24,13 +22,13 @@ type WordModalProps = {
 };
 
 const AddWordModal: React.FC<WordModalProps> = ({ visible, word, onDismiss }) => {
-  const { theme, isDarkTheme } = useTheme();
+  const { theme } = useTheme();
   const { t } = useTranslation();
   const { nativeLanguage, targetLanguage, targetLanguageRomanizable } = useContext(LanguageContext);
   const [showRomanized, setShowRomanized] = useState(false);
   const [romanizedWord, setRomanizedWord] = useState<string | null>(null);
   const [romanizedExampleLoading, setRomanizedExampleLoading] = useState<boolean>(false);
-  const [completeWordData, setCompleteWordData] = useState<FlashCard | null>(null);
+  // const [completeWordData, setCompleteWordData] = useState<FlashCard | null>(null);
   const [translationsList, setTranslationsList] = useState<string[] | null>(null);
   const [translationsLoading, setTranslationsLoading] = useState<boolean>(false); 
   const [exampleSentence, setExampleSentence] = useState<string | null>(null);
@@ -41,7 +39,7 @@ const AddWordModal: React.FC<WordModalProps> = ({ visible, word, onDismiss }) =>
 
   useEffect(() => {
     const fetchExistingData = async() => {
-      setCompleteWordData(null)//await fetchFlashcardFromWord(word));
+      // setCompleteWordData(null)//await fetchFlashcardFromWord(word));
     }
     const fetchAllData = async() => {
       setTranslationsLoading(true);
@@ -92,7 +90,7 @@ const AddWordModal: React.FC<WordModalProps> = ({ visible, word, onDismiss }) =>
   const handleDismiss = () => {
     setAdded(false);
     setTranslationsList(null);
-    setCompleteWordData(null);
+    // setCompleteWordData(null);
     setRomanizedWord(null);
     setExampleSentence(null);
     setTranslatedExampleSentence(null);
@@ -133,7 +131,12 @@ const AddWordModal: React.FC<WordModalProps> = ({ visible, word, onDismiss }) =>
               }} />
           )}
           {loading ? (
-            <ActivityIndicator size="small" color={theme.colors.purplePrimary} />
+            <View style={tw`w-20 flex-row items-end`}>
+              <ActivityIndicator size="small" color={theme.colors.purplePrimary} />
+            </View>
+            // <SkeletonPlaceholder>
+            //   <SkeletonPlaceholder.Item width={200} height={20} borderRadius={4} />
+            // </SkeletonPlaceholder>
           ) : (
             <View style={tw`flex flex-row flex-wrap`}>
               <Text style={tw`text-base ${theme.classes.textPrimary} mr-10`}>
