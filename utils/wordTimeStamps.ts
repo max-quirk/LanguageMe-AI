@@ -102,7 +102,7 @@ export function wordTimeStampsReasonable({
   const lastWord = lastParagraph.words[lastParagraph.words.length - 1];
 
   // Check if the last word is within 2 seconds of the audio length
-  if (audioDuration - lastWord.end > 3) {
+  if (Math.abs(audioDuration - lastWord.end) > 3) {
     console.info('Unreasonable timestamps: duration length')
     return false;
   }
@@ -150,7 +150,6 @@ export function approximateTimeStamps({
 
       const cleanedWord = cleanWord(word);
       const wordLength = punctuationPause + cleanedWord.length;
-
       const wordLengthProportion = wordLength / totalCharactersAndPuncNum;
 
       const wordDuration = wordLengthProportion * audioDuration;
