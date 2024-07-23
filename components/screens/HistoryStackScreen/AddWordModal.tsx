@@ -117,21 +117,7 @@ const AddWordModal: React.FC<WordModalProps> = ({ visible, word, onDismiss }) =>
         label={t('example')} 
         contentStyle={tw`pb-2 pr-2`}
       >
-        <View style={tw`mt-0 flex-row items-center`}>
-          {!loading && targetLanguageRomanizable && (
-            <RomanizeButton 
-              show={!showRomanized} 
-              onPress={async () => {
-                setShowRomanized(!showRomanized)
-                if (!exampleRomanized && exampleSentence) {
-                  setRomanizedExampleLoading(true)
-                  const _exampleRomanized = await romanizeText({ text: exampleSentence, language: targetLanguage });
-                  setExampleRomanized(_exampleRomanized)
-                  setRomanizedExampleLoading(false)
-                }
-              }} />
-          )}
-          {loading ? (
+        {loading ? (
             <View>
               <SkeletonPlaceholder>
                 <SkeletonPlaceholder.Item style={tw`mb-2`} width={250} height={20} borderRadius={4} />
@@ -142,34 +128,48 @@ const AddWordModal: React.FC<WordModalProps> = ({ visible, word, onDismiss }) =>
             </View>
           ) : (
             <View>
-            <View style={tw`flex flex-row flex-wrap`}>
-              <Text style={tw`text-base ${theme.classes.textPrimary} mr-10`}>
-                {showRomanized ? 
-                  <>
-                    { romanizedExampleLoading ? 
-                      <ActivityIndicator size="small" color={theme.colors.textPrimary} /> 
+              <View style={tw`mt-0 flex-row items-center`}>
+                {!loading && targetLanguageRomanizable && (
+                  <RomanizeButton 
+                    show={!showRomanized} 
+                    onPress={async () => {
+                      setShowRomanized(!showRomanized)
+                      if (!exampleRomanized && exampleSentence) {
+                        setRomanizedExampleLoading(true)
+                        const _exampleRomanized = await romanizeText({ text: exampleSentence, language: targetLanguage });
+                        setExampleRomanized(_exampleRomanized)
+                        setRomanizedExampleLoading(false)
+                      }
+                    }} />
+                )}            
+                <View style={tw`flex flex-row flex-wrap`}>
+                  <Text style={tw`text-base ${theme.classes.textPrimary} mr-10`}>
+                    {showRomanized ? 
+                      <>
+                        { romanizedExampleLoading ? 
+                          <ActivityIndicator size="small" color={theme.colors.textPrimary} /> 
+                        : 
+                          <Text style={tw`text-base ${theme.classes.textPrimary} mr-2`}>{exampleRomanized}</Text> 
+                        }
+                      </>
                     : 
-                      <Text style={tw`text-base ${theme.classes.textPrimary} mr-2`}>{exampleRomanized}</Text> 
+                      <Text style={tw`text-base ${theme.classes.textPrimary} mr-2`}>{exampleSentence}</Text>
                     }
-                  </>
-                : 
-                  <Text style={tw`text-base ${theme.classes.textPrimary} mr-2`}>{exampleSentence}</Text>
-                }
-                <TextToSpeechButton
-                  type='flashcard' 
-                  text={`${word}. ${exampleSentence}`} 
-                  id={`flashcard_${word}`} 
-                  size={20}
-                  style={tw`pl-2 h-5`}
-                />
+                    <TextToSpeechButton
+                      type='flashcard' 
+                      text={`${word}. ${exampleSentence}`} 
+                      id={`flashcard_${word}`} 
+                      size={20}
+                      style={tw`pl-2 h-5`}
+                    />
+                  </Text>
+                </View>
+              </View>
+              <Text style={tw`mt-0 text-base ${theme.classes.textSecondary} ${exampleRomanized ? 'pl-12' : ''}`}>
+                {translatedExampleSentence}
               </Text>
             </View>
-            <Text style={tw`mt-0 text-base ${theme.classes.textSecondary} ${exampleRomanized ? 'pl-12' : ''}`}>
-              {translatedExampleSentence}
-            </Text>
-            </View>
           )}
-        </View>
       </Collapse>
       <Divider style={tw`my-4`} />
       <Dialog.Actions style={tw`mb-0 mt-10 pb-0 pr-0`}>
