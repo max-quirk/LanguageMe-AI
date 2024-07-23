@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { generateExampleSentences, getPossibleTranslations, romanizeText } from '../../../services/chatGpt';
 import { LanguageContext } from '../../../contexts/LanguageContext';
 import Button from '../../Button';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 type WordModalProps = {
   visible: boolean;
@@ -131,13 +132,16 @@ const AddWordModal: React.FC<WordModalProps> = ({ visible, word, onDismiss }) =>
               }} />
           )}
           {loading ? (
-            <View style={tw`w-20 flex-row items-end`}>
-              <ActivityIndicator size="small" color={theme.colors.purplePrimary} />
+            <View>
+              <SkeletonPlaceholder>
+                <SkeletonPlaceholder.Item style={tw`mb-2`} width={250} height={20} borderRadius={4} />
+              </SkeletonPlaceholder>
+              <SkeletonPlaceholder>
+                <SkeletonPlaceholder.Item width={250} height={20} borderRadius={4} />
+              </SkeletonPlaceholder>
             </View>
-            // <SkeletonPlaceholder>
-            //   <SkeletonPlaceholder.Item width={200} height={20} borderRadius={4} />
-            // </SkeletonPlaceholder>
           ) : (
+            <View>
             <View style={tw`flex flex-row flex-wrap`}>
               <Text style={tw`text-base ${theme.classes.textPrimary} mr-10`}>
                 {showRomanized ? 
@@ -160,11 +164,12 @@ const AddWordModal: React.FC<WordModalProps> = ({ visible, word, onDismiss }) =>
                 />
               </Text>
             </View>
+            <Text style={tw`mt-0 text-base ${theme.classes.textSecondary} ${exampleRomanized ? 'pl-12' : ''}`}>
+              {translatedExampleSentence}
+            </Text>
+            </View>
           )}
         </View>
-        <Text style={tw`mt-0 text-base ${theme.classes.textSecondary} ${exampleRomanized ? 'pl-12' : ''}`}>
-          {translatedExampleSentence}
-        </Text>
       </Collapse>
       <Divider style={tw`my-4`} />
       <Dialog.Actions style={tw`mb-0 mt-10 pb-0 pr-0`}>
