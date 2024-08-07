@@ -44,7 +44,7 @@ const WordComponent: React.FC<Props> = ({
   }, [isFlashing]);
 
   const color = isHighlighted ? `text-[${theme.colors.tomato}]` : theme.classes.textPrimary;
-  const backgroundColor = flash ? 'bg-purple-300' : 'transparent';
+  const backgroundColor = flash ? 'bg-purple-300' : '';
 
   return (
     <View key={`${word}-${paragraphIndex}-${wordIndex}`} style={tw`flex-row`}>

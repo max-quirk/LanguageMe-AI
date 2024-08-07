@@ -295,3 +295,33 @@ export async function useHardestWord(passage: string) {
     throw error;
   }
 }
+
+
+export async function translatePassage({
+  passage,
+  language,
+  translateTo,
+}: {
+  passage: string
+  language: LanguageCode
+  translateTo: LanguageCode
+}) {
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { 
+          role: "user", 
+          content: 
+            `Translate the follow ${language} passage into ${translateTo}: \n\n${passage}. Only respond with the translated passage.` }
+      ],
+      temperature: 0.7,
+      n: 1
+    });
+
+    return response.choices[0].message.content
+  } catch (error) {
+    console.error('Error getting hardest word:', error);
+    throw error;
+  }
+}
