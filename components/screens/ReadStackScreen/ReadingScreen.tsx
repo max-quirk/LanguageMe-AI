@@ -17,7 +17,8 @@ import { LanguageContext } from '../../../contexts/LanguageContext';
 import { ActivityIndicator } from 'react-native-paper';
 import { getWordTimeStamps } from '../../../services/whisper';
 import { useTranslation } from 'react-i18next';
-import { useHardestWord } from '../../../services/chatGpt';
+import { translatePassage, useHardestWord } from '../../../services/chatGpt';
+import RomanizeButton from '../../RomanizeButton';
 
 type ReadingScreenRouteProp = RouteProp<RootStackParamList, 'Reading'>;
 
@@ -37,7 +38,11 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   const [pausedToOpenDefinition, setPausedToOpenDefinition] = useState(false);
   const [flashingWordIndex, setFlashingWordIndex] = useState<number | null>(null);
 
-  const { targetLanguage } = useContext(LanguageContext);
+  const [translationVisible, setTranslationVisible] = useState<boolean>(false);
+  const [translationLoading, setTranslationLoading] = useState<boolean>(false);
+  const [translation, setTranslation] = useState<string>();
+
+  const { targetLanguage, nativeLanguage } = useContext(LanguageContext);
 
   const { 
     pauseAudio, 
@@ -101,6 +106,24 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
       fetchTranscription();
     }
   }, [audioFile, reading, wordTimestamps, duration]);
+
+  useEffect(() => {
+    const fetchTranslation = async () => {
+      if (!reading?.passage) return
+      setTranslationLoading(true)
+      const translation = await translatePassage({
+        passage: reading.passage,
+        language: targetLanguage,
+        translateTo: nativeLanguage,
+      });
+      console.log('translation: ', translation)
+      setTranslation(translation ?? undefined);
+      setTranslationLoading(false)
+    };
+    if (!translation) {
+      fetchTranslation();
+    }
+  }, [reading?.passage]);
 
   useEffect(() => {
     if (wordTimestamps) {
@@ -177,7 +200,18 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   return (
     <View style={tw`flex-1 ${theme.classes.backgroundPrimary} px-5`}>
       <ScrollView style={tw`flex-1 px-5 pt-20`}>
-        <Text style={tw`text-2xl mb-4 ${theme.classes.textPrimary}`}>{reading.title}</Text>
+        <View style={tw`flex flex-row justify-between items-start`}>
+          <Text style={tw`text-2xl mb-4 ${theme.classes.textPrimary}`}>
+            {reading.title}
+          </Text>
+          {translationVisible && translationLoading ?
+            <ActivityIndicator size="small" color={theme.colors.purplePrimary} />
+          : <RomanizeButton show={!translationVisible} onPress={() => setTranslationVisible(!translationVisible)}/> }
+        </View>
+        { translationVisible ? 
+          <Text>{translation}</Text> 
+        : null}
+          
         <View style={tw`mb-60`}>
           {passage.split('\n').map((line, index) => (
             <ParagraphComponent

@@ -123,30 +123,6 @@ const HistoryScreen = () => {
     );
   }
 
-  if (flashcards.length === 0) {
-    return (
-      <BackgroundView>
-        <RefreshableScrollView
-          refreshing={refreshing}
-          onRefresh={handleRefresh}
-          contentContainerStyle={tw`flex-1 justify-center items-center p-5`}
-        >
-          <Text style={tw`text-xl mb-8 text-center px-4 ${theme.classes.textPrimary}`}>{t('no_flashcards_added')}</Text>
-          <Button
-            mode="contained"
-            onPress={() => navigation.reset({
-              index: 0,
-              routes: [{ name: 'Main', params: { screen: 'Read' } }],
-            })}
-            style={tw`bg-purple-600`}
-          >
-            <Text style={tw`text-white`}>{t('go_to_readings')}</Text>
-          </Button>
-        </RefreshableScrollView>
-      </BackgroundView>
-    );
-  }
-
   const handleDeleteFlashcard = async (id: string) => {
     await deleteFlashcard(id);
     setFlashcards(prevFlashcards => prevFlashcards.filter(card => card.id !== id));
@@ -179,6 +155,11 @@ const HistoryScreen = () => {
           </View>
         </Button>
         <View style={tw`pb-10`}>
+          {flashcards.length === 0 ?
+            <View style={tw`pt-20`}>
+              <Text style={tw`text-xl mb-8 text-center px-4 ${theme.classes.textPrimary}`}>{t('no_flashcards_added')}</Text>
+            </View>
+          : null}
           {sortedDates.map(date => (
             <View key={date} style={tw`mb-5`}>
               <Text style={tw`text-base font-medium mb-3 ${theme.classes.textPrimary}`}>{date}:</Text>
