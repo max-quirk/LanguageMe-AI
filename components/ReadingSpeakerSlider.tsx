@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
-import { ActivityIndicator, Menu } from 'react-native-paper';
+import { ActivityIndicator, Menu, ProgressBar } from 'react-native-paper';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import tw from 'twrnc';
@@ -10,14 +10,21 @@ import { Reading } from 'types';
 import { useAudio } from '../contexts/AudioContext';
 import TrackPlayer, { useProgress, useTrackPlayerEvents, Event } from 'react-native-track-player';
 import { useTheme } from '../contexts/ThemeContext';
+import { getWordTimeStamps } from '../services/whisper';
+import { updateFirebaseReadingWordTimestamps } from '../utils/readings';
+import { LanguageContext } from '../contexts/LanguageContext';
 
 type ReadingSpeakerSliderProps = {
   reading: Reading;
 };
 
+const LOAD_PROGRESS_FACTOR = 50
+
 const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) => {
-  const [showLoadingIcon, setShowLoadingIcon] = useState<boolean>(false);
-  const [fetchingAudio, setFetchingAudio] = useState<boolean>(false);
+  const { targetLanguage } = useContext(LanguageContext);
+  
+  const [audioLoading, setAudioLoading] = useState<boolean>(false);
+  const [loadProgress, setLoadProgress] = useState<number>(0);
   const [speedControlVisible, setSpeedControlVisible] = useState<boolean>(false);
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const { 
@@ -25,19 +32,45 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
     currentFile, 
     setCurrentFile, 
     currentFileWordTimestamps,
+    setCurrentFileWordTimestamps: setWordTimestamps,
     trackEnded,
     playing,
     setTrackEnded,
    } = useAudio();
+
   const { position, duration } = useProgress(50);
   const { theme } = useTheme();
-  
-  const timestampsLoading = !currentFileWordTimestamps
-  
-  useEffect(() => {
-    const fetchAudio = async () => {
-      setFetchingAudio(true);
+
+  const progressLoader = (start: number, end: number) => {
+    const stepTime = 50;
+    const approxTime = (reading.passage?.split(" ").length ?? 0) * LOAD_PROGRESS_FACTOR
+    const stepAmount = (end - start) / (approxTime / stepTime);
+
+    let progress = start;
+    const interval = setInterval(() => {
+      progress += stepAmount;
+      setLoadProgress(Math.min(progress, end));
+
+      if (progress >= end) {
+        clearInterval(interval);
+      }
+    }, stepTime);
+
+    return {
+      finish: () => {
+        clearInterval(interval)
+        setLoadProgress(end)
+      }
+    }
+  };
+
+  const fetchAudioFile = async () => {
+    if (reading.passage && !reading.wordTimestamps) {
+      setAudioLoading(true);
+      let job = progressLoader(0, 0.33); 
       const filePath = await fetchSpeechUrl({ text: reading.passage as string, type: 'reading', id: reading.id });
+      job.finish()
+      job = progressLoader(0.33, 1);
       if (filePath) {
         setCurrentFile(filePath);
         await TrackPlayer.reset();
@@ -45,18 +78,43 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
           id: reading.id,
           url: filePath,
         });
-        setFetchingAudio(false);
-      }
-    };
-    setTrackEnded(false); 
+        await fetchTranscription(filePath)
+        job.finish()
 
-    fetchAudio();
+        setTimeout(() => {
+          setAudioLoading(false);
+        }, 600); 
+      }
+    }
+  };
+
+  const fetchTranscription = async (filePath: string) => {
+    const readingHasTimeStamps = Boolean(reading.wordTimestamps?.paragraphs.length)
+    if (reading?.passage && !readingHasTimeStamps) {
+      try {
+        const readingWithWordTimeStamps = await getWordTimeStamps({
+          audioUrl: filePath,
+          languageCode: targetLanguage,
+          passage: reading.passage,
+        });
+        await updateFirebaseReadingWordTimestamps(reading.id, readingWithWordTimeStamps);
+        setWordTimestamps(readingWithWordTimeStamps);
+      } catch (error) {
+        await updateFirebaseReadingWordTimestamps(reading.id, null);
+        console.info('Error fetching transcription:', error);
+      }
+    }
+  };
+    
+  useEffect(() => {
+    fetchAudioFile();
 
     return () => {
       TrackPlayer.stop();
       setTrackEnded(false); 
       TrackPlayer.reset();
       setCurrentFile(null);
+      setLoadProgress(0)
     };
   }, [reading.passage]);
 
@@ -100,9 +158,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   };
 
   const handlePlayPause = async () => {
-    if (!currentFile || timestampsLoading) {
-      setShowLoadingIcon(true);
-    } else {
+    if (currentFile && currentFileWordTimestamps) {
       if (trackEnded) {
         await TrackPlayer.seekTo(0);
         await TrackPlayer.play();
@@ -112,19 +168,6 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
       }
     }
   };
-
-  const handleAudioReady = async () => {
-    if (showLoadingIcon) {
-      await TrackPlayer.play();
-      setShowLoadingIcon(false);
-    }
-  };
-
-  useEffect(() => {
-    if (currentFile && !timestampsLoading && showLoadingIcon) {
-      handleAudioReady();
-    }
-  }, [currentFile, timestampsLoading, showLoadingIcon]);
 
   const handleRestart = async () => {
     if (currentFile) {
@@ -145,24 +188,32 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
 
   return (
     <View style={tw`absolute bottom-0 left-0 right-0 ${theme.classes.backgroundTertiary} p-4 border-t ${theme.classes.borderPrimary}`}>
-      <Slider
-        style={tw`w-full my-2`}
-        minimumValue={0}
-        maximumValue={1}
-        value={duration ? position / duration : 0}
-        onSlidingComplete={handleSliderChange}
-        minimumTrackTintColor={theme.colors.purplePrimary}
-        thumbTintColor={theme.colors.purplePrimary}
-      />
+      {audioLoading ? (
+        <ProgressBar 
+          progress={loadProgress} 
+          color={currentFile && currentFileWordTimestamps ? '#32c71e' : theme.colors.purplePrimary}
+          style={tw`w-full mb-6 mt-6 h-2 rounded-md`}
+        />
+      ): (
+        <Slider
+          style={tw`w-full my-2`}
+          minimumValue={0}
+          maximumValue={1}
+          value={duration ? position / duration : 0}
+          onSlidingComplete={handleSliderChange}
+          minimumTrackTintColor={theme.colors.purplePrimary}
+          thumbTintColor={theme.colors.purplePrimary}
+        />
+      )}
       <View style={tw`flex-row justify-around items-center mb-2`}>
-        <TouchableOpacity onPress={handleRestart} disabled={fetchingAudio} style={tw`flex-row items-center justify-center w-12 h-12`}>
+        <TouchableOpacity onPress={handleRestart} disabled={audioLoading} style={tw`flex-row items-center justify-center w-12 h-12`}>
           <Fontisto name="step-backwrad" size={12} color={theme.colors.textPrimary} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={rewindAudio} disabled={fetchingAudio} style={tw`flex-row items-center justify-center w-12 h-12`}>
+        <TouchableOpacity onPress={rewindAudio} disabled={audioLoading} style={tw`flex-row items-center justify-center w-12 h-12`}>
           <MaterialCommunityIcons name="rewind-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
         <TouchableOpacity onPress={handlePlayPause} style={tw`flex-row items-center justify-center w-12 h-12`}>
-          {showLoadingIcon ? (
+          {audioLoading ? (
             <ActivityIndicator size="small" />
           ) : (
             <MaterialCommunityIcons 
@@ -172,7 +223,7 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
             />
           )}
         </TouchableOpacity>
-        <TouchableOpacity onPress={fastForwardAudio} disabled={fetchingAudio} style={tw`flex-row items-center justify-center w-12 h-12`}>
+        <TouchableOpacity onPress={fastForwardAudio} disabled={audioLoading} style={tw`flex-row items-center justify-center w-12 h-12`}>
           <MaterialCommunityIcons name="fast-forward-5" size={24} color={theme.colors.textPrimary} />
         </TouchableOpacity>
         <Menu
@@ -199,4 +250,4 @@ const ReadingSpeakerSlider: React.FC<ReadingSpeakerSliderProps> = ({ reading }) 
   );
 };
 
-export default ReadingSpeakerSlider;
+export default ReadingSpeakerSlider

@@ -17,6 +17,7 @@ import HelperPopup from '../../HelperPopup';
 import { isFirstTimeReadingUser } from '../../../utils/storageUtils';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
+import { runAnalytics } from '../../../utils/analytics/runAnalytics';
 
 export type ReadingsListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reading', 'AddReading'>;
 
@@ -69,6 +70,8 @@ const ReadingsListScreen: React.FC = () => {
   );
 
   const handleRefresh = () => {
+    // runAnalytics()
+    
     setRefreshing(true);
     fetchInitialReadings();
   };

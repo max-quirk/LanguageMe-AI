@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Text, ScrollView, View } from 'react-native';
 import tw from 'twrnc';
 import { RouteProp, useFocusEffect } from '@react-navigation/native';
@@ -10,12 +10,10 @@ import { useAudio } from '../../../contexts/AudioContext';
 import { useTheme } from '../../../contexts/ThemeContext';
 import TrackPlayer, { useProgress } from 'react-native-track-player';
 import { getReading, processGeneratedReading } from '../../../utils/readings';
-import { cleanPunctuation, updateFirebaseReadingWordTimestamps } from '../../../utils/readings';
+import { cleanPunctuation } from '../../../utils/readings';
 import { isFirstTimeReadingUser, setFirstTimeReadingUser } from '../../../utils/storageUtils';
 import ParagraphComponent from './components/ParagraphComponent';
-import { LanguageContext } from '../../../contexts/LanguageContext';
 import { ActivityIndicator } from 'react-native-paper';
-import { getWordTimeStamps } from '../../../services/whisper';
 import { useTranslation } from 'react-i18next';
 import { useHardestWord } from '../../../services/chatGpt';
 
@@ -37,17 +35,14 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
   const [pausedToOpenDefinition, setPausedToOpenDefinition] = useState(false);
   const [flashingWordIndex, setFlashingWordIndex] = useState<number | null>(null);
 
-  const { targetLanguage } = useContext(LanguageContext);
-
   const { 
     pauseAudio, 
     resumeAudio, 
     playing, 
-    currentFile: audioFile,
     currentFileWordTimestamps: wordTimestamps,
     setCurrentFileWordTimestamps: setWordTimestamps,
   } = useAudio();
-  const { position, duration } = useProgress(READING_PING_TIME_MS);
+  const { position } = useProgress(READING_PING_TIME_MS);
   const { theme } = useTheme();
   const { t } = useTranslation();
 
@@ -78,29 +73,6 @@ const ReadingScreen: React.FC<Props> = ({ route }) => {
     };
     checkFirstTimeUser();
   }, [reading]);
-
-  useEffect(() => {
-    const fetchTranscription = async () => {
-      if (audioFile && reading?.passage && duration) {
-        try {
-          const readingWithWordTimeStamps = await getWordTimeStamps({
-            audioUrl: audioFile,
-            languageCode: targetLanguage,
-            passage: reading.passage,
-          });
-          await updateFirebaseReadingWordTimestamps(reading.id, readingWithWordTimeStamps);
-          setWordTimestamps(readingWithWordTimeStamps);
-        } catch (error) {
-          await updateFirebaseReadingWordTimestamps(reading.id, null);
-          console.info('Error fetching transcription:', error);
-        }
-      }
-    };
-
-    if (reading && !wordTimestamps) {
-      fetchTranscription();
-    }
-  }, [audioFile, reading, wordTimestamps, duration]);
 
   useEffect(() => {
     if (wordTimestamps) {

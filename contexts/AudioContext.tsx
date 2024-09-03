@@ -75,7 +75,7 @@ export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         currentFileWordTimestamps,
         setCurrentFileWordTimestamps,
         trackEnded,
-        setTrackEnded
+        setTrackEnded, 
       }}>
       {children}
     </AudioContext.Provider>
