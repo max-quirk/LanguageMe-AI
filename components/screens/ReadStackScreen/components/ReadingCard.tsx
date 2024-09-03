@@ -6,6 +6,7 @@ import { deleteReading } from '../../../../utils/readings';
 import { firebase } from '../../../../config/firebase';
 import { ReadingsListScreenNavigationProp } from './../ReadingsListScreen';
 import ThemedCard from '../../../ThemedCard';
+import { useTranslation } from 'react-i18next';
 
 type ReadingCardProps = {
   title: string;
@@ -21,6 +22,7 @@ const ReadingCard: React.FC<ReadingCardProps> = ({
   onDelete 
 }) => {
   const navigation = useNavigation<ReadingsListScreenNavigationProp>();
+  const { t } = useTranslation();
 
   const handleDelete = () => {
     const user = firebase.auth().currentUser;
@@ -36,8 +38,8 @@ const ReadingCard: React.FC<ReadingCardProps> = ({
       style={tw`bg-red-600 justify-center p-4 mb-4 rounded-lg overflow-hidden`}
       onPress={() => {
         Alert.alert(
-          'confirm_deletion',
-          'confirm_reading_deletion',
+          t('confirm_deletion'),
+          t('confirm_reading_deletion'),
           [
             { text: 'Cancel', style: 'cancel' },
             { text: 'Delete', style: 'destructive', onPress: handleDelete },

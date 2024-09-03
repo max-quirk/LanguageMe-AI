@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, NativeSyntheticEvent, ActivityIndicator as NativeActivityIndicator, NativeScrollEvent } from 'react-native';
+import { View, Text, NativeSyntheticEvent, ActivityIndicator as NativeActivityIndicator, NativeScrollEvent, Image } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import tw from 'twrnc';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -17,7 +17,6 @@ import HelperPopup from '../../HelperPopup';
 import { isFirstTimeReadingUser } from '../../../utils/storageUtils';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
-import { runAnalytics } from '../../../utils/analytics/runAnalytics';
 
 export type ReadingsListScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reading', 'AddReading'>;
 
@@ -108,25 +107,36 @@ const ReadingsListScreen: React.FC = () => {
         {loading ? (
           <NativeActivityIndicator size="large" style={tw`mt-10`} color={theme.colors.purplePrimary} />
         ) : (
-          <RefreshableScrollView
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            onScroll={handleScroll}
-            scrollEventThrottle={400}
-          >
-            {readings.map(reading => (
-              <ReadingCard 
-                key={reading.id} 
-                readingId={reading.id} 
-                title={reading.title}
-                description={reading.description}
-                onDelete={(id) => setReadings(prevReadings => prevReadings.filter(reading => reading.id !== id))} 
-              />
-            ))}
-            {loadingMore && (
-              <ActivityIndicator size="small" style={tw`mt-5`} />
+          <>
+            {readings.length ? (
+              <RefreshableScrollView
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                onScroll={handleScroll}
+                scrollEventThrottle={400}
+              >
+                {readings.map(reading => (
+                  <ReadingCard 
+                    key={reading.id} 
+                    readingId={reading.id} 
+                    title={reading.title}
+                    description={reading.description}
+                    onDelete={(id) => setReadings(prevReadings => prevReadings.filter(reading => reading.id !== id))} 
+                  />
+                ))}
+                {loadingMore && (
+                  <ActivityIndicator size="small" style={tw`mt-5`} />
+                )}
+              </RefreshableScrollView>
+            ): (
+              <View style={tw`flex items-center justify-center mt-[30%]`}>
+                <Image 
+                  source={require('../../../assets/images/logo-full.png')} 
+                  style={[tw`w-60 h-60 mb-6`, { tintColor: 'gray', opacity: 0.7 }]} 
+                />
+              </View>
             )}
-          </RefreshableScrollView>
+          </>
         )}
       </View>
     </BackgroundView>
