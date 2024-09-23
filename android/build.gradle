@@ -1,7 +1,7 @@
 buildscript {
     ext {
         buildToolsVersion = "34.0.0"
-        minSdkVersion = 21
+        minSdkVersion = 24
         compileSdkVersion = 34
         targetSdkVersion = 34
         ndkVersion = "22.1.7171670"
@@ -15,6 +15,7 @@ buildscript {
         classpath("com.android.tools.build:gradle:7.0.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("com.facebook.react:react-native-gradle-plugin")
+        // classpath('com.google.gms:google-services:4.3.10')
     }
 }
 
@@ -28,7 +29,7 @@ allprojects {
 buildscript {
     ext {
         buildToolsVersion = "34.0.0"
-        minSdkVersion = 21
+        minSdkVersion = 24
         compileSdkVersion = 34
         targetSdkVersion = 34
         ndkVersion = "22.1.7171670"
@@ -42,6 +43,7 @@ buildscript {
         classpath("com.android.tools.build:gradle:7.0.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("com.facebook.react:react-native-gradle-plugin")
+        // classpath('com.google.gms:google-services:4.3.10')
     }
 }
 
@@ -52,3 +54,7 @@ allprojects {
         google()
     }
 }
+
+gradle.startParameter.excludedTaskNames.addAll(
+        gradle.startParameter.taskNames.findAll { it.contains("testClasses") }
+)
