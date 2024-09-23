@@ -68,6 +68,7 @@ export type Reading = {
   difficulty: string;
   wordCount: number;
   passage: string | null;
+  previewText: string; // first 100 characters of the passage
   createdAt: Date;
   wordTimestamps: ReadingWithWordTimeStamps | null
 };
